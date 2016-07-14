@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta charset="utf-8" />
+    <script src="objectViewer.js"></script>
+    <link href="f12js.css" rel="stylesheet" />
+</head>
+<body>
+    <script type="text/template" id="modify">
+        <div class="modify">
+            <div>
+                <div class="title">
+                    <h3 data-title></h3><input type="button" value="❌" data-close />
+                </div>
+                <table class="main">
+                    <tr>
+                        <td colspan="2"><textarea data-new></textarea></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">orignal: <span data-orignal></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" value="✔" data-modify />
+                            <input type="button" value="🔃" data-reset />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </script>
+    <script type="text/template" id="removedItem">
+        <div class="removedItem"><input type="button" /></div>
+    </script>
+    <script type="text/template" id="item">
+        <tr>
+            <td data-name></td>
+            <td data-type></td>
+            <td data-orignal></td>
+        </tr>
+    </script>
+    <script type="text/template" id="panel">
+        <div class="f12js">
+            <div class="layer">
+                <div class="title">
+                    <h3 data-title></h3><input type="button" value="❌" data-close />
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>name</th>
+                            <th>type</th>
+                            <th>value</th>
+                        </tr>
+                    </thead>
+                    <tbody data-container></tbody>
+                </table>
+                <div data-removed style="position: absolute; bottom: 88px; left: 0; width: 100%; text-align: center;"></div>
+                <div style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center;">
+                    <input type="range" name="name" data-range data-size />
+                    <br />
+                    <input type="range" name="name" data-range data-start data-tab0 />
+                </div>
+            </div>
+        </div>
+    </script>
+    <script src="god.js"></script>
+    <script src="god.f12js.js"></script>
+    <script type="text/javascript">
+        var top = 22;
+        var obj = createObj(4, 16, 0.5);
+        obj.doooo = function () {
+
+        };
+        obj.doooo.eeee = 1;
+        function createObj(chain, count, p) {
+            if (!chain) {
+                return god.random().number();
+            }
+            var obj = {};
+            chain--;
+            for (var i = 0; i < count; i++) {
+                obj["i" + i] = Math.random() < p ? god.random().keyboard(33) : createObj(chain, count, p);
+            }
+            return obj;
+        }
+        var p = god.f12js(obj, "testobj", 7);
+    </script>
+</body>
+</html>
