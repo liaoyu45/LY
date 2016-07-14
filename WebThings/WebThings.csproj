@@ -76,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="f12\f12js.css" />
-    <Content Include="f12\god.f12js.js" />
+    <Content Include="f12\f12js.js" />
     <Content Include="god.js" />
     <Content Include="f12\f12jstest.html" />
     <Content Include="Web.config" />
