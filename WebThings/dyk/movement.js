@@ -1,5 +1,6 @@
 ﻿/// <reference path="base.js" />
 /// <reference path="graphic.js" />
+/// <reference path="../god.js" />
 var movement = { startXY: [0, 0], ongoing: false, started: false, moved: 0, row: {}, first: {}, last: {} };
 Object.defineProperties(movement, {
     minOffset: {
@@ -9,12 +10,14 @@ Object.defineProperties(movement, {
     },
 });
 movement.stop = function () {
-    window.removeEventListener("mouseup", movement.stop);
-    window.removeEventListener("blur", movement.stop);
-    window.removeEventListener("mousemove", movement.moving);
-
-    window.removeEventListener("touchend", movement.stop);
-    window.removeEventListener("touchmove", movement.moving);
+    if (god.window.mobile) {
+        window.removeEventListener("touchend", movement.stop);
+        window.removeEventListener("touchmove", movement.moving);
+    } else {
+        window.removeEventListener("mouseup", movement.stop);
+        window.removeEventListener("blur", movement.stop);
+        window.removeEventListener("mousemove", movement.moving);
+    }
     if (!game.moving) {
         return;
     }
@@ -131,8 +134,9 @@ game.onTagChanged = function (e, n, s) {
     ele.tri.style.fill = graphic.fillArr[n];
 };
 movement.start = function () {
+    var ename = god.window.mobile ? "ontouchstart" : "onmousedown";
     graphic.allTris.forEach(function (e) {
-        e.tri.onmousedown = e.tri.ontouchstart = function (ev) {
+        e.tri[ename] = function (ev) {
             movement.started = true;
             if (ev.clientX) {
                 movement.startXY = [ev.clientX, ev.clientY];
@@ -146,12 +150,15 @@ movement.start = function () {
                 movement.cover.removeChild(movement.cover.firstChild);
             }
             graphic.arena.appendChild(movement.cover);
-            window.addEventListener("mouseup", movement.stop);
-            window.addEventListener("blur", movement.stop);
-            window.addEventListener("mousemove", movement.moving);
+            if (god.window.mobile) {
+                window.addEventListener("touchend", movement.stop);
+                window.addEventListener("touchmove", movement.moving);
+            } else {
+                window.addEventListener("mouseup", movement.stop);
+                window.addEventListener("blur", movement.stop);
+                window.addEventListener("mousemove", movement.moving);
+            }
 
-            window.addEventListener("touchend", movement.stop);
-            window.addEventListener("touchmove", movement.moving);
         };
     });
     var cover = graphic.arena.appendChild(graphic.arena.cloneNode());
