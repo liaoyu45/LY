@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body style="background-color:#433">
+    <input type="button" id="sssssssssss" name="name" value="start" />
+    <input type="button" id="mmmmmmm" name="name" value="move" />
+    <input type="button" id="dddddd" name="name" value="move" />
+    <div id="tt"></div>
+    <script src="game.js"></script>
+    <script src="graphic.js"></script>
+    <script src="movement.js"></script>
+    <script type="text/javascript">
+        game.load(7, 5);
+        var arena = graphic.load(32, 1);
+        document.body.appendChild(arena);
+        movement.start();
+        game.rRows[0].children.forEach(function (e) {
+            //graphic.getTri(e[0],e[1],e[2]).tri.style.fill = "red";
+        })
+        sssssssssss.onclick = function () {
+            game.startMoving(0, 2);
+            test();
+        };
+        mmmmmmm.onclick = function () {
+            game.moving(1);
+            test();
+        };
+        dddddd.onclick = function () {
+            game.moving(-1);
+            test();
+        }
+        function test() {
+            var id = "wlkerjwlekrj";
+            if (document.getElementById(id)) {
+                document.body.removeChild(document.getElementById(id));
+            }
+            var tt = document.createElement("div");
+            tt.id = id;
+            var rrrr = [];
+            function addLine() {
+                var lllll = document.createElement("div");
+                lllll.style.borderTop = "1px solid #432";
+                lllll.style.textAlign = "center";
+                for (var j = 0; j < rrrr.length; j++) {
+                    lllll.appendChild(rrrr[j]);
+                }
+                tt.appendChild(lllll);
+                rrrr = [];
+            }
+            for (var i = 0; i < game.all.length; i++) {
+                var p = game.all[i];
+                if (i > 0) {
+                    if (p.horizon != game.all[i - 1].horizon) {
+                        addLine();
+                    }
+                }
+                var sp = document.createElement("span");
+                sp.style.backgroundColor = graphic.fillArr[p.tag];
+                sp.style.display = "inline-block";
+                sp.style.width = "77px";
+                sp.style.height = "55px";
+                sp.innerHTML = '[' + p.horizon + '-' + p.right + '-' + p.left + ']' + p.tag + "<br />" +
+                game.hRows[p.horizon].children.indexOf(p) + '-' +
+                game.rRows[p.right].children.indexOf(p) + '-' +
+                game.lRows[p.left].children.indexOf(p)
+                rrrr.push(sp);
+                if (i == game.all.length - 1) {
+                    addLine();
+                }
+            }
+            //document.title = tt.children.length;
+            var aaaa = [];
+            for (var i = 0; i < tt.children.length; i++) {
+                aaaa.push(tt.children[i]);
+            }
+            for (var i = aaaa.length - 1; i >= 0; i--) {
+                tt.appendChild(aaaa[i]);
+            }
+            document.body.appendChild(tt);
+        }
+        function RRRRRRR(shaker) {
+            iii.innerHTML = "";
+            var line = iii.appendChild(document.createElement("div"));
+            for (var i = 0; i < shaker.arr.length; i++) {
+                var ele = line.appendChild(document.createElement("span"));
+                ele.innerHTML = shaker.arr[i];
+                ele.style.display = "inline-block";
+                if (i >= shaker.front && i <= shaker.arr.length - 1 - shaker.end) {
+                    ele.style.backgroundColor = "#902"
+                } else {
+                    ele.style.backgroundColor = "#ff2"
+                }
+                if (i >= shaker.added1 && i <= shaker.arr.length - 1 - shaker.added0) {
+                    ele.style.border = "2px solid #000";
+                    ele.style.padding = "2px"
+                }
+            }
+            line.scrollIntoView();
+        }
+    </script>
+    <div id="iii"></div>
+    <script type="text/javascript">
+        iii.innerHTML = "ontouchstart" in window;
+        iii.innerHTML += "onmousedown" in window;
+    </script>
+</body>
+</html>

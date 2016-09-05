@@ -46,11 +46,20 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="dyk\fck.html" />
+    <Content Include="dyk\game.js" />
+    <Content Include="dyk\graphic.js" />
+    <Content Include="dyk\movement.js" />
+    <Content Include="f12\f12js.css" />
+    <Content Include="f12\f12js.js" />
+    <Content Include="f12\f12jstest.html" />
+    <Content Include="god.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
