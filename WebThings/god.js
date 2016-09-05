@@ -59,6 +59,9 @@
                     })(),
                     language: (navigator.browserLanguage || navigator.language).toLowerCase()
                 },
+                mobile: (function () {
+                    return !!navigator.userAgent.match(/Mobile/);
+                })(),
                 dragable: function (ele, trigger) {
                     var _trigger = (function () {
                         var r;

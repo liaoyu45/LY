@@ -236,7 +236,7 @@ god.f12js = function (obj, name, page) {
     function titleText() {
         panel.dataset.title = name;
         var title = panel.querySelector("[data-title]");
-        if (!god.window.browser.versions.mobile) {
+        if (!god.window.browser.mobile) {
             god.window.dragable(panel, title);
         }
         title.innerHTML = "Debugger: ";
