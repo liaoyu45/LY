@@ -10,12 +10,12 @@ Object.defineProperties(movement, {
     },
 });
 movement.stop = function () {
+    window.removeEventListener("blur", movement.stop);
     if (god.window.mobile) {
         window.removeEventListener("touchend", movement.stop);
         window.removeEventListener("touchmove", movement.moving);
     } else {
         window.removeEventListener("mouseup", movement.stop);
-        window.removeEventListener("blur", movement.stop);
         window.removeEventListener("mousemove", movement.moving);
     }
     if (!game.moving) {
@@ -137,6 +137,7 @@ movement.start = function () {
     var ename = god.window.mobile ? "ontouchstart" : "onmousedown";
     graphic.allTris.forEach(function (e) {
         e.tri[ename] = function (ev) {
+            ev.preventDefault();
             movement.started = true;
             if (ev.clientX) {
                 movement.startXY = [ev.clientX, ev.clientY];
@@ -150,12 +151,12 @@ movement.start = function () {
                 movement.cover.removeChild(movement.cover.firstChild);
             }
             graphic.arena.appendChild(movement.cover);
+            window.addEventListener("blur", movement.stop);
             if (god.window.mobile) {
                 window.addEventListener("touchend", movement.stop);
                 window.addEventListener("touchmove", movement.moving);
             } else {
                 window.addEventListener("mouseup", movement.stop);
-                window.addEventListener("blur", movement.stop);
                 window.addEventListener("mousemove", movement.moving);
             }
 

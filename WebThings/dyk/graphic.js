@@ -64,6 +64,11 @@ graphic.load = function (w, s) {
     arena.setAttribute("width", maxW);
     arena.setAttribute("height", maxH);
     arena.style.overflow = "hidden";
+    if (god.window.mobile) {
+        graphic.arena.addEventListener("touchstart", function () {
+            arguments[0].preventDefault();
+        });
+    }
     var allTris = game.all.map(graphic.hrl2tri);
     allTris.forEach(function (e) {
         graphic.allTris.push(e);
@@ -78,9 +83,9 @@ graphic.load = function (w, s) {
         p.y = e[1];
         cover.points.appendItem(p);
     });
-    graphic.cover = cover;
     cover.style.stroke = "#9f9";
     cover.style.strokeWidth = 5;
+    graphic.cover = cover;
     arena.appendChild(cover);
     return arena;
 }
