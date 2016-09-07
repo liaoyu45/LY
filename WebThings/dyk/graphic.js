@@ -1,25 +1,29 @@
-﻿/// <reference path="base.js" />
+﻿/// <reference path="game.js" />
+/// <reference path="base.js" />
 var graphic = {};
 Object.defineProperties(graphic, {
     "namespaceURI": {
         value: "http://www.w3.org/2000/svg",
         writable: false
     },
-    angle:{
-        value:Math.sqrt(3),
+    angle: {
+        value: Math.sqrt(3),
         writable: false
     },
     allTris: {
-        value: [],
-        writable: false
-    },
-    fillArr: {
         value: [],
         writable: false
     }
 });
 graphic.width = 0;
 graphic.height = 0;
+game.onTagChanged = function (hrl, tag) {
+    var p = graphic.getTri(hrl);
+    var newT = graphic.fillArr[tag];
+    if (p.tri.style.fill != newT) {
+        p.tri.style.fill = newT;
+    }
+};
 graphic.hrl2tri = function (e) {
     var x0 = (game.count - 1 - (e.right - e.left)) * graphic.width / 2;
     var x1 = x0 + graphic.width / 2;
@@ -44,15 +48,16 @@ graphic.hrl2tri = function (e) {
     var tri = document.createElementNS(graphic.namespaceURI, "polygon");
     points.forEach(function (e) { tri.points.appendItem(e); });
     tri.style.fill = graphic.fillArr[e.tag];
-    return { hrl: e, tri: tri };
+    return tri;
 };
 graphic.load = function (w, s) {
-    var getRandomColor = function () {
-        return "#" + ("00000" + ((Math.random() * 16777215 + 0.5) >> 0).toString(16)).slice(-6);
-    }
-    for (var i = 0; i < game.tagsMax; i++) {
-        graphic.fillArr.push(getRandomColor());
-    }
+    //var getRandomColor = function () {
+    //    return "#" + ("00000" + ((Math.random() * 16777215 + 0.5) >> 0).toString(16)).slice(-6);
+    //}
+    //for (var i = 0; i < game.tagsMax; i++) {
+    //    graphic.fillArr.push(getRandomColor());
+    //}
+    graphic.fillArr = ["#000", "#888", "#fff", "#f00", "#00f"];
     var h = w * Math.sqrt(3) / 2 * s;
     graphic.width = w;
     graphic.height = h;
@@ -64,12 +69,9 @@ graphic.load = function (w, s) {
     arena.setAttribute("width", maxW);
     arena.setAttribute("height", maxH);
     arena.style.overflow = "hidden";
-    if (god.window.mobile) {
-        graphic.arena.addEventListener("touchstart", function () {
-            arguments[0].preventDefault();
-        });
-    }
-    var allTris = game.all.map(graphic.hrl2tri);
+    var allTris = game.all.map(function (e) {
+        return { tri: graphic.hrl2tri(e), hrl: e };
+    });
     allTris.forEach(function (e) {
         graphic.allTris.push(e);
         arena.appendChild(e.tri);
@@ -83,7 +85,8 @@ graphic.load = function (w, s) {
         p.y = e[1];
         cover.points.appendItem(p);
     });
-    cover.style.stroke = "#9f9";
+    cover.style.stroke = "#433";
+    cover.style.fill = "#433";
     cover.style.strokeWidth = 5;
     graphic.cover = cover;
     arena.appendChild(cover);
@@ -101,3 +104,4 @@ if (location.href.length == 11) {
     game.load(5, 5);
     graphic.load(23, 1);
 }
+graphic.debugging = false;

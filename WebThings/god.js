@@ -405,6 +405,70 @@
                 }
             }
         };
+        this.math = (function () {
+            //TODO:
+            return {};
+        })(),
+        this.arr = (function () {
+            function moveArray(distance, arr, instance) {
+                function innerMove(distance) {
+                    var tag = "uqpoirewuqwpeiruqwre";
+                    var front = 0, end = 0, endAdded = 0, frontAdded = 0;
+                    if (this[tag]) {
+                        front = this.front;
+                        end = this.end;
+                        frontAdded = this.frontAdded;
+                        endAdded = this.endAdded;
+                        arr = this.arr;
+                    }
+                    var d = Math.abs(distance);
+                    if (distance > 0) {
+                        for (var i = 0; i < d - end; i++) {
+                            arr.push(instance(arr[arr.length - 1], false));
+                            endAdded += d;
+                        }
+                    } else {
+                        for (var i = 0; i < d - front; i++) {
+                            arr.unshift(instance(arr[0], true));
+                            frontAdded += d;
+                        }
+                    }
+                    front += distance;
+                    end -= distance;
+                    if (front < 0) {
+                        front = 0;
+                    }
+                    if (end < 0) {
+                        end = 0;
+                    }
+                    this.end = end;
+                    this.front = front;
+                    this.endAdded = endAdded;
+                    this.frontAdded = frontAdded;
+                    this.arr = arr;
+                    if (!this.instance) {
+                        this.instance = instance;
+                    }
+                    if (!this.moveArray) {
+                        this.moveArray = innerMove;
+                    }
+                    if (!this.orignal) {
+                        this.orignal = arr;
+                    }
+                    this[tag] = true;
+                    return this;
+                }
+                return new innerMove(distance, arr, instance);
+            }
+            function removeItem(arr, filter) {
+                for (var i = arr.length - 1; i >= 0; i--) {
+                    if (filter.call(arr[i], i)) {
+                        arr.splice(i, 1);
+                    }
+                }
+            }
+            return { moveArray: moveArray, removeItem: removeItem };
+        })();
     };
     this.god = new GodThere();
 })();

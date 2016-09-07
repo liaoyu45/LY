@@ -7,9 +7,9 @@
     <meta charset="utf-8" />
 </head>
 <body style="background-color:#433">
-    <input type="button" id="sssssssssss" name="name" value="start" />
+    <!--<input type="button" id="sssssssssss" name="name" value="start" />
     <input type="button" id="mmmmmmm" name="name" value="move" />
-    <input type="button" id="dddddd" name="name" value="move" />
+    <input type="button" id="dddddd" name="name" value="move" />-->
     <div id="tt"></div>
     <script src="../god.js"></script>
     <script src="game.js"></script>
@@ -17,23 +17,28 @@
     <script src="movement.js"></script>
     <script type="text/javascript">
         game.load(7, 5);
-        var arena = graphic.load(32, 1);
+        var arena = graphic.load(42, 1);
         document.body.appendChild(arena);
+        movement.load();
         movement.start();
         game.rRows[0].children.forEach(function (e) {
             //graphic.getTri(e[0],e[1],e[2]).tri.style.fill = "red";
         })
-        sssssssssss.onclick = function () {
-            game.startMoving(0, 2);
-            test();
-        };
-        mmmmmmm.onclick = function () {
-            game.moving(1);
-            test();
-        };
-        dddddd.onclick = function () {
-            game.moving(-1);
-            test();
+        //sssssssssss.onclick = function () {
+        //    game.startMoving(0, 2);
+        //    test();
+        //};
+        //mmmmmmm.onclick = function () {
+        //    game.moving(1);
+        //    test();
+        //};
+        //dddddd.onclick = function () {
+        //    game.moving(-1);
+        //    test();
+        //}
+        window.onkeydown = function () {
+            graphic.debugging = !graphic.debugging;
+            god.window.toast(graphic.debugging);
         }
         function test() {
             var id = "wlkerjwlekrj";
@@ -103,43 +108,11 @@
             }
             line.scrollIntoView();
         }
-
-        var overscroll = function (el) {
-            el.addEventListener('touchstart', function () {
-                var top = el.scrollTop, totalScroll = el.scrollHeight, currentScroll = top + el.offsetHeight;
-                //If we're at the top or the bottom of the containers
-                //scroll, push up or down one pixel.
-                //
-                //this prevents the scroll from "passing through" to
-                //the body.
-                if (top === 0) {
-                    el.scrollTop = 1;
-                } else if (currentScroll === totalScroll) {
-                    el.scrollTop = top - 1;
-
-                }
-            });
-            el.addEventListener('touchmove', function (evt) {
-                //if the content is actually scrollable, i.e. the content is long enough
-                //that scrolling can occur
-                if (el.offsetHeight < el.scrollHeight)
-                    evt._isScroller = true;
-            });
-        }
-        overscroll(document.querySelector('.scroll'));
-        document.body.addEventListener('touchmove', function (evt) {
-            //In this case, the default behavior is scrolling the body, which
-            //would result in an overflow.  Since we don't want that, we preventDefault.
-            if (!evt._isScroller) {
-                evt.preventDefault();
-            }
-        });
     </script>
     <div id="iii"></div>
     <script type="text/javascript">
-        iii.innerHTML = "ontouchstart" in window;
-        iii.innerHTML += "onmousedown" in window;
+        //iii.innerHTML = "ontouchstart" in window;
+        //iii.innerHTML += "onmousedown" in window;
     </script>
-    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 </body>
 </html>

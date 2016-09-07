@@ -1,14 +1,25 @@
 ﻿/// <reference path="base.js" />
 /// <reference path="graphic.js" />
 /// <reference path="../god.js" />
-var movement = { startXY: [0, 0], ongoing: false, started: false, moved: 0, row: {}, first: {}, last: {} };
+var movement = { startXY: [0, 0], moved: 0, row: [] };
 Object.defineProperties(movement, {
     minOffset: {
         get: function () {
             return graphic.width / 6;
         }
     },
+    ongoing: {
+        get: function () {
+            return this.type > -1;
+        }
+    },
 });
+movement.getEdge = function (w) {
+    if (!movement.row.length) {
+        return;
+    }
+    return movement.row[w ? movement.row.length - 1 : 0];
+};
 movement.stop = function () {
     window.removeEventListener("blur", movement.stop);
     if (god.window.mobile) {
@@ -22,24 +33,19 @@ movement.stop = function () {
         return;
     }
     if (Math.abs(movement.offset % graphic.width) < graphic.width / 2) {
-        game.moving(movement.moved / -Math.abs(movement.moved));
+        movement.record = game.moving(movement.moved / -Math.abs(movement.moved));
     }
     game.stopMoving();
     graphic.arena.removeChild(movement.cover);
-    movement.started = movement.ongoing = false;
-    movement.moved = 0;
 };
 movement.moving = function (e) {
-    if (!movement.started) {
-        return;
-    }
     var x, y;
-    if (e.clientX) {
-        x = e.clientX - movement.startXY[0];
-        y = e.clientY - movement.startXY[1];
-    } else {
+    if (god.window.mobile) {
         x = e.touches[0].clientX - movement.startXY[0];
         y = e.touches[0].clientY - movement.startXY[1];
+    } else {
+        x = e.clientX - movement.startXY[0];
+        y = e.clientY - movement.startXY[1];
     }
     var t;
     if (movement.ongoing) {
@@ -76,14 +82,14 @@ movement.moving = function (e) {
         if (Math.abs(offset) < movement.minOffset) {
             return;
         }
-        movement.ongoing = true;
         movement.type = t;
-        var row = game.startMoving(t, movement.hrl[t]);
-        row.children.forEach(function (e) {
-            movement.cover.appendChild(graphic.hrl2tri(e).tri);
+        var dataRow = game.allRows[t][movement.hrl[t]];
+        game.startMoving(dataRow);
+        dataRow.children.forEach(function (e) {
+            var ele = graphic.hrl2tri(e);
+            movement.row.push(e);
+            movement.cover.appendChild(ele);
         });
-        movement.first = row.children[0];
-        movement.last = row.children[row.children.length - 1];
         graphic.arena.appendChild(graphic.cover);
     }
     movement.offset = offset;
@@ -104,69 +110,98 @@ movement.moving = function (e) {
             break;
     }
     movement.cover.setAttribute("x", x);
-    movement.cover.setAttribute("y", y);
+    if (y) {
+        movement.cover.setAttribute("y", y);
+    }
     if (s > 0) {
         s = Math.ceil(s);
     } else {
         s = Math.floor(s);
     }
-    var sNow = s - movement.moved;
-    movement.moved = s;
-    var record = game.moving(sNow);
-    if (movement.cover.childNodes.length < record.arr.length) {
-        var inc = s > 0;
-        var hrl = inc ? movement.last : movement.first;
-        var indexes = inc ? [record.arr.length - 2, record.arr.length - 1] : [1, 0];
-        for (var i = 0; i < 2; i++) {
-            hrl = game.nextHRL(hrl, t, inc);
-            movement.cover.appendChild(graphic.hrl2tri(hrl).tri).style.fill = graphic.fillArr[record.arr[indexes[i]]];
-        }
-        if (inc) {
-            movement.last = hrl;
+    var overDrag;
+    if (s > movement.maxMovedPlus) {
+        if (s - movement.maxMovedPlus > 1) {
+            overDrag = true;
         } else {
-            movement.first = hrl;
+            movement.maxMovedPlus = s;
+        }
+    } else if (s < movement.maxMovedMinus) {
+        if (s - movement.maxMovedMinus < -1) {
+            overDrag = true;
+        } else {
+            movement.maxMovedMinus = s;
         }
     }
-    movement.record = record;
+    if (overDrag) {
+        movement.stop();
+        return;
+    }
+    var sNow = s - movement.moved;
+    movement.moved = s;
+    if (!sNow) {
+        return;
+    }
+    var arr = game.moving(sNow);
+    if (movement.row.length < arr.length) {
+        var inc = s > 0;
+        for (var i = 0; i < 2; i++) {
+            var ti = inc ? arr.length - 2 + i : 1 - i;
+            var hrl = game.nextHRL(movement.getEdge(inc), t, inc);
+            hrl.tag = arr[ti];
+            movement.cover.appendChild(graphic.hrl2tri(hrl));
+            movement.row[inc ? "push" : "unshift"](hrl);
+        }
+    }
 };
-game.onTagChanged = function (e, n, s) {
-    var ele = graphic.getTri(e);
-    ele.tri.style.fill = graphic.fillArr[n];
+movement.startMoving = function (ev) {
+    ev.preventDefault();
+    movement.moved = 0;
+    movement.row = [];
+    movement.type = -1;
+    movement.maxMovedPlus = movement.maxMovedMinus = 0;
+    movement.hrl = graphic.allTris.filter(function (el) {
+        return ev.target == el.tri;
+    })[0].hrl;
+    while (movement.cover.firstChild) {
+        movement.cover.removeChild(movement.cover.firstChild);
+    }
+    graphic.arena.appendChild(movement.cover);
+    window.addEventListener("blur", movement.stop);
+    if (god.window.mobile) {
+        movement.startXY = [ev.touches[0].clientX, ev.touches[0].clientY];
+        window.addEventListener("touchend", movement.stop);
+        window.addEventListener("touchmove", movement.moving);
+    } else {
+        movement.startXY = [ev.clientX, ev.clientY];
+        window.addEventListener("mouseup", movement.stop);
+        window.addEventListener("mousemove", movement.moving);
+    }
+
 };
 movement.start = function () {
-    var ename = god.window.mobile ? "ontouchstart" : "onmousedown";
+    var ename = god.window.mobile ? "touchstart" : "mousedown";
     graphic.allTris.forEach(function (e) {
-        e.tri[ename] = function (ev) {
-            ev.preventDefault();
-            movement.started = true;
-            if (ev.clientX) {
-                movement.startXY = [ev.clientX, ev.clientY];
-            } else {
-                movement.startXY = [ev.touches[0].clientX, ev.touches[0].clientY];
-            }
-            movement.hrl = graphic.allTris.filter(function (el) {
-                return ev.target == el.tri;
-            })[0].hrl;
-            while (movement.cover.firstChild) {
-                movement.cover.removeChild(movement.cover.firstChild);
-            }
-            graphic.arena.appendChild(movement.cover);
-            window.addEventListener("blur", movement.stop);
-            if (god.window.mobile) {
-                window.addEventListener("touchend", movement.stop);
-                window.addEventListener("touchmove", movement.moving);
-            } else {
-                window.addEventListener("mouseup", movement.stop);
-                window.addEventListener("mousemove", movement.moving);
-            }
-
-        };
+        e.tri.addEventListener(ename, movement.startMoving);
     });
+};
+movement.pause = function () {
+    var ename = god.window.mobile ? "touchstart" : "mousedown";
+    graphic.allTris.forEach(function (e) {
+        e.tri.removeEventListener(ename, movement.startMoving);
+    });
+};
+movement.load = function () {
+    if (god.window.mobile) {
+        graphic.arena.addEventListener("touchstart", function (e) {
+            e.preventDefault();
+        });
+    }
     var cover = graphic.arena.appendChild(graphic.arena.cloneNode());
     cover.style.overflow = "visible";
     movement.cover = cover;
 };
 
 if (location.href.length == 11) {
+    movement.load();
     movement.start();
 }

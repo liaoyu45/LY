@@ -1,4 +1,5 @@
-﻿var game = {};
+﻿/// <reference path="../god.js" />
+var game = {};
 game.all = [];
 game.rRows = [];
 game.lRows = [];
@@ -45,99 +46,29 @@ game.createHRL = function (h, r, l) {
 game.allRows = [game.hRows, game.rRows, game.lRows];
 game.onTagsAdded = null;
 game.onTagChanged = null;
-game.startMoving = function (type, index) {
-    function moveArray(distance, arr, instance) {
-        function innerMove(distance) {
-            var tag = "uqpoirewuqwpeiruqwre";
-            var front = 0, end = 0, endAdded = 0, frontAdded = 0;
-            if (this[tag]) {
-                front = this.front;
-                end = this.end;
-                frontAdded = this.frontAdded;
-                endAdded = this.endAdded;
-                arr = this.arr;
-            }
-            var d = Math.abs(distance);
-            if (distance > 0) {
-                for (var i = 0; i < d - end; i++) {
-                    arr.push(instance(arr[arr.length - 1], false));
-                    endAdded += d;
-                }
-            } else {
-                for (var i = 0; i < d - front; i++) {
-                    arr.unshift(instance(arr[0], true));
-                    frontAdded += d;
-                }
-            }
-            front += distance;
-            end -= distance;
-            if (front < 0) {
-                front = 0;
-            }
-            if (end < 0) {
-                end = 0;
-            }
-            this.end = end;
-            this.front = front;
-            this.endAdded = endAdded;
-            this.frontAdded = frontAdded;
-            this.arr = arr;
-            if (!this.instance) {
-                this.instance = instance;
-            }
-            if (!this.moveArray) {
-                this.moveArray = innerMove;
-            }
-            if (!this.orignal) {
-                this.orignal = arr;
-            }
-            this[tag] = true;
-            return this;
-        }
-        return new innerMove(distance, arr, instance);
-    }
-    var row = game.allRows[type][index];
+game.startMoving = function (row) {
     var tags = row.children.map(function (e) {
         return e.tag;
     });
     var shaker;
     game.moving = function (d) {
-        d *= 2;
-        var f = 0, e = 0;
-        if (shaker) {
-            f = shaker.frontAdded;
-            e = shaker.endAdded;
-        }
+        d = d * 2;
         if (shaker) {
             shaker.moveArray(d);
         } else {
-            shaker = moveArray(d, tags, game.createTag);
+            shaker = god.arr.moveArray(d, tags, game.createTag);
         }
-        f = shaker.frontAdded - f;
-        e = shaker.endAdded - e;
-        if (typeof game.onTagsAdded == "function") {
-            var arr = shaker.arr.slice(f ? 0 : shaker.arr.length - e, f ? f : shaker.arr.length);
-            if (f) {
-                arr = arr.reverse();
-            }
-            game.onTagsAdded(arr, !!f);
-        }
-        for (var i = 0; i < row.children.length; i++) {
-            var newTag = shaker.arr[i + shaker.front];
-            var oldTag = row.children[i].tag;
-            if (typeof game.onTagChanged == "function") {
-                game.onTagChanged(row.children[i], newTag, shaker);
-            }
-            row.children[i].tag = newTag;
-        }
-        return shaker;
-        return { front: shaker.front, tags: tags, end: shaker.end };
+        return shaker.arr;
     };
     game.stopMoving = function () {
         delete game.moving;
         delete game.stopMoving;
+        for (var i = 0; i < row.children.length; i++) {
+            var newTag = shaker.arr[i + shaker.front];
+            god.safeFunction(game.onTagChanged).execute(row.children[i], newTag);
+            row.children[i].tag = newTag;
+        }
     };
-    return row;
 };
 game.load = function (count, tagsMax) {
     this.count = count;
