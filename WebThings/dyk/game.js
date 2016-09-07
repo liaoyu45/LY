@@ -4,11 +4,10 @@ game.all = [];
 game.rRows = [];
 game.lRows = [];
 game.hRows = [];
-game.nextHRL = function (hrl, t, o) {
-    var b = game.count - hrl[0] - hrl[1] - hrl[2] - 1;
+game.nextHRL = function (hrl, type, direction) {
     var newHRL = game.createHRL(hrl[0], hrl[1], hrl[2]);
-    newHRL[(t + 1) % 3] += b ? o ? 0 : 1 : o ? -1 : 0;
-    newHRL[(t + 2) % 3] += b ? o ? 1 : 0 : o ? 0 : -1;
+    newHRL[(type + 1) % 3] += !hrl.direction ? direction ? 0 : 1 : direction ? -1 : 0;
+    newHRL[(type + 2) % 3] += !hrl.direction ? direction ? 1 : 0 : direction ? 0 : -1;
     return newHRL;
 };
 game.createHRL = function (h, r, l) {
@@ -20,24 +19,14 @@ game.createHRL = function (h, r, l) {
         hrl[i] = arguments[i];
     }
     Object.defineProperties(hrl, {
-        horizon: {
-            get: function () {
-                return this[0];
-            }
-        },
-        right: {
-            get: function () {
-                return this[1];
-            }
-        },
-        left: {
-            get: function () {
-                return this[2];
-            }
-        },
         inside: {
             get: function () {
                 return this[0] > -1 && this[1] > -1 && this[2] > -1;
+            }
+        },
+        direction: {
+            get: function () {
+                return game.count - this[0] - this[1] - this[2] == 1;
             }
         }
     });
@@ -120,11 +109,32 @@ game.load = function (count, tagsMax) {
         });
     });
 };
+game.piece = function (r) {
+    for (var i = 0; i < r.children.length; i++) {
+        var arr = [];
+        for (var j = 0; j < 3; j++) {
+            var n = game.nextHRL(r.children[i], j);
+            if (!n.inside) {
+                break;
+            }
+            arr.push(n);
+        }
+        if (arr.length < 3) {
+            continue;
+        }
+        if (arr.some(function (e) {
+            return e.tag != arr[0].tag;
+        })) {
+            continue;
+        }
+    }
+};
 game.getElement = function (h, r, l) {
     return game.all.filter(function (e) {
-        return e.left == l && e.right == r && e.horizon == h;
+        return e[2] == l && e[1] == r && e[0] == h;
     })[0];
 };
 if (location.href.length == 11) {
     game.load(5, 3);
+    game.piece(game.rRows[0]);
 }

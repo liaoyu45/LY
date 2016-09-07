@@ -25,17 +25,16 @@ game.onTagChanged = function (hrl, tag) {
     }
 };
 graphic.hrl2tri = function (e) {
-    var x0 = (game.count - 1 - (e.right - e.left)) * graphic.width / 2;
+    var x0 = (game.count - 1 - (e[1] - e[2])) * graphic.width / 2;
     var x1 = x0 + graphic.width / 2;
     var x2 = x0 + graphic.width;
-    var y0 = (game.count - e.horizon) * graphic.height;
+    var y0 = (game.count - e[0]) * graphic.height;
     var y1 = y0 - graphic.height;
-    var up = game.count - e.horizon - e.left - e.right == 1;
     var points = [];
     for (var i = 0; i < 3; i++) {
         points.push(graphic.arena.createSVGPoint());
     }
-    if (up) {
+    if (e.direction) {
         points[0].y = points[2].y = y0;
         points[1].y = y1;
     } else {
@@ -94,7 +93,7 @@ graphic.load = function (w, s) {
 }
 graphic.getTri = function (hrl) {
     return graphic.allTris.filter(function (e) {
-        return e.hrl.horizon == hrl[0] && e.hrl.right == hrl[1] && e.hrl.left == hrl[2];
+        return e.hrl[0] == hrl[0] && e.hrl[1] == hrl[1] && e.hrl[2] == hrl[2];
     })[0];
 };
 graphic.getRow = function (t, i) {
