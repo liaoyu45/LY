@@ -165,6 +165,8 @@ movement.startMoving = function (ev) {
     while (movement.cover.firstChild) {
         movement.cover.removeChild(movement.cover.firstChild);
     }
+    movement.cover.setAttribute("x", 0);
+    movement.cover.setAttribute("y", 0);
     graphic.arena.appendChild(movement.cover);
     window.addEventListener("blur", movement.stop);
     if (god.window.mobile) {
@@ -176,18 +178,28 @@ movement.startMoving = function (ev) {
         window.addEventListener("mouseup", movement.stop);
         window.addEventListener("mousemove", movement.moving);
     }
-
+};
+movement.pick = function (e) {
+    var hrl = graphic.getHRL(e.target);
+    hrl.count = 1;
+    game.changeTag(hrl);
+    game.collect(hrl);
+    for (var i = 0; i < 3; i++) {
+        game.collect(game.getElement(game.nextHRL(hrl, i)));
+    }
 };
 movement.start = function () {
     var ename = god.window.mobile ? "touchstart" : "mousedown";
     graphic.allTris.forEach(function (e) {
         e.tri.addEventListener(ename, movement.startMoving);
+        e.tri.addEventListener("click", movement.pick);
     });
 };
 movement.pause = function () {
     var ename = god.window.mobile ? "touchstart" : "mousedown";
     graphic.allTris.forEach(function (e) {
         e.tri.removeEventListener(ename, movement.startMoving);
+        e.tri.removeEventListener("click", movement.pick);
     });
 };
 movement.load = function () {

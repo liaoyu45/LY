@@ -28,6 +28,9 @@ game.createHRL = function (h, r, l) {
             get: function () {
                 return game.count - this[0] - this[1] - this[2] == 1;
             }
+        },
+        count: {
+            value: 1
         }
     });
     return hrl;
@@ -52,12 +55,29 @@ game.startMoving = function (row) {
     game.stopMoving = function () {
         delete game.moving;
         delete game.stopMoving;
+        var offset = shaker.front - shaker.frontAdded;
         for (var i = 0; i < row.children.length; i++) {
+            var c = row.children[i];
             var newTag = shaker.arr[i + shaker.front];
-            god.safeFunction(game.onTagChanged).execute(row.children[i], newTag);
-            row.children[i].tag = newTag;
+            if (i + offset < row.children.length) {
+                c.count = row.children[i + offset].count;
+            } else {
+                c.count = 1;
+            }
+            game.changeTag(c, newTag);
+        }
+        var siblings = row.index == game.count - 1 ? [row.index - 1] : row.index == 0 ? [1] : [row.index - 1, row.index + 1];
+        for (var i = 0; i < siblings.length; i++) {
+            game.allRows[row.type][siblings[i]].children.forEach(game.collect);
         }
     };
+};
+game.changeTag = function (hrl, t) {
+    if (typeof t == "undefined") {
+        t = game.createTag();
+    }
+    god.safeFunction(game.onTagChanged).execute(hrl, t);
+    hrl.tag = t;
 };
 game.load = function (count, tagsMax) {
     this.count = count;
@@ -109,32 +129,36 @@ game.load = function (count, tagsMax) {
         });
     });
 };
-game.piece = function (r) {
-    for (var i = 0; i < r.children.length; i++) {
-        var arr = [];
-        for (var j = 0; j < 3; j++) {
-            var n = game.nextHRL(r.children[i], j);
-            if (!n.inside) {
-                break;
-            }
-            arr.push(n);
+game.collect = function (center) { 
+    var arr = []; 
+    for (var j = 0; j < 3; j++) {
+        var n = game.nextHRL(center, j);
+        if (!n.inside) {
+            return;
         }
-        if (arr.length < 3) {
-            continue;
-        }
-        if (arr.some(function (e) {
-            return e.tag != arr[0].tag;
-        })) {
-            continue;
-        }
+        arr.push(n);
     }
+    arr = arr.map(function (e) {
+        return game.getElement(e);
+    });
+    if (arr.some(function (e) {
+        return e.tag != arr[0].tag;
+    })) {
+        return;
+    }
+    god.safeFunction(game.onCollect).execute(center, arr);
+    arr.forEach(function (e) {
+        center.count += e.count;
+        e.count = 1;
+        game.changeTag(e);
+    }); 
 };
-game.getElement = function (h, r, l) {
+game.getElement = function (hrl) {
     return game.all.filter(function (e) {
-        return e[2] == l && e[1] == r && e[0] == h;
+        return e[0] == hrl[0] && e[1] == hrl[1] && e[2] == hrl[2];
     })[0];
 };
 if (location.href.length == 11) {
     game.load(5, 3);
-    game.piece(game.rRows[0]);
+    game.collect(game.rRows[0]);
 }

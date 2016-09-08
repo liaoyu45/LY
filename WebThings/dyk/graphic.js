@@ -20,8 +20,8 @@ graphic.height = 0;
 game.onTagChanged = function (hrl, tag) {
     var p = graphic.getTri(hrl);
     var newT = graphic.fillArr[tag];
-    if (p.tri.style.fill != newT) {
-        p.tri.style.fill = newT;
+    if (p.style.fill != newT) {
+        p.style.fill = newT;
     }
 };
 graphic.hrl2tri = function (e) {
@@ -89,12 +89,18 @@ graphic.load = function (w, s) {
     cover.style.strokeWidth = 5;
     graphic.cover = cover;
     arena.appendChild(cover);
+    game.all.forEach(game.collect);
     return arena;
 }
 graphic.getTri = function (hrl) {
     return graphic.allTris.filter(function (e) {
         return e.hrl[0] == hrl[0] && e.hrl[1] == hrl[1] && e.hrl[2] == hrl[2];
-    })[0];
+    })[0].tri;
+};
+graphic.getHRL = function (tri) {
+    return graphic.allTris.filter(function (e) {
+        return e.tri == tri;
+    })[0].hrl;
 };
 graphic.getRow = function (t, i) {
 
