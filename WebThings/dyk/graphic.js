@@ -2,10 +2,6 @@
 /// <reference path="base.js" />
 var graphic = {};
 Object.defineProperties(graphic, {
-    "namespaceURI": {
-        value: "http://www.w3.org/2000/svg",
-        writable: false
-    },
     angle: {
         value: Math.sqrt(3),
         writable: false
@@ -17,12 +13,9 @@ Object.defineProperties(graphic, {
 });
 graphic.width = 0;
 graphic.height = 0;
-game.onTagChanged = function (hrl, tag) {
-    var p = graphic.getTri(hrl);
-    var newT = graphic.fillArr[tag];
-    if (p.style.fill != newT) {
-        p.style.fill = newT;
-    }
+game.onNotice = function (hrl) {
+    var tri = graphic.getTri(hrl);
+    graphic.paint(tri, hrl);
 };
 graphic.hrl2tri = function (e) {
     var x0 = (game.count - 1 - (e[1] - e[2])) * graphic.width / 2;
@@ -44,24 +37,34 @@ graphic.hrl2tri = function (e) {
     points[0].x = x0;
     points[1].x = x1;
     points[2].x = x2;
-    var tri = document.createElementNS(graphic.namespaceURI, "polygon");
+    var tri = graphic.createElement("polygon");
     points.forEach(function (e) { tri.points.appendItem(e); });
-    tri.style.fill = graphic.fillArr[e.tag];
+    graphic.paint(tri, e, "tag");
     return tri;
 };
+graphic.createElement = function (name) {
+    return document.createElementNS("http://www.w3.org/2000/svg", name);
+};
+graphic.onPainting = function (tri, hrl, p) {
+    if (p == "tag") {
+        if (!graphic.onPainting.arr) {
+            graphic.onPainting.arr = [];
+            for (var i = 0; i < game.tagsMax; i++) {
+                graphic.onPainting.arr.push(god.random().color());
+            }
+        }
+        tri.style.fill = graphic.onPainting.arr[hrl.tag];
+    }
+};
+graphic.paint = function (tri, hrl, p) {
+    god.safeFunction(graphic.onPainting).execute(tri, hrl, p);
+};
 graphic.load = function (w, s) {
-    //var getRandomColor = function () {
-    //    return "#" + ("00000" + ((Math.random() * 16777215 + 0.5) >> 0).toString(16)).slice(-6);
-    //}
-    //for (var i = 0; i < game.tagsMax; i++) {
-    //    graphic.fillArr.push(getRandomColor());
-    //}
-    graphic.fillArr = ["#000", "#888", "#fff", "#f00", "#00f"];
-    var h = w * Math.sqrt(3) / 2 * s;
+    var h = w * graphic.angle / 2 * s;
     graphic.width = w;
     graphic.height = h;
     graphic.stretch = s;
-    var arena = document.createElementNS(graphic.namespaceURI, "svg");
+    var arena = graphic.createElement("svg");
     graphic.arena = arena;
     var maxW = w * game.count;
     var maxH = h * game.count;
@@ -76,7 +79,7 @@ graphic.load = function (w, s) {
         arena.appendChild(e.tri);
     });
     graphic.arena = arena;
-    var cover = document.createElementNS(graphic.namespaceURI, "polygon");
+    var cover = graphic.createElement("polygon");
     var points = [[0, maxH], [0, 0], [maxW / 2, 0], [0, maxH], [maxW, maxH], [maxW / 2, 0], [maxW, 0], [maxW, maxH], [0, maxH]];
     points.forEach(function (e) {
         var p = arena.createSVGPoint();

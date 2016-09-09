@@ -378,6 +378,9 @@
                 this.number = function (len) {
                     return parseInt("0x" + randomString(1, "01234566789ABCDEF"));
                 };
+                this.color = function () {
+                    return "#" + ("00000" + ((Math.random() * 16777215 + 0.5) >> 0).toString(16)).slice(-6);
+                }
             };
             return new innerClass();
         };
@@ -425,12 +428,12 @@
                     if (distance > 0) {
                         for (var i = 0; i < d - end; i++) {
                             arr.push(instance(arr[arr.length - 1], false));
-                            endAdded += d;
+                            endAdded += 1;
                         }
                     } else {
                         for (var i = 0; i < d - front; i++) {
                             arr.unshift(instance(arr[0], true));
-                            frontAdded += d;
+                            frontAdded += 1;
                         }
                     }
                     front += distance;

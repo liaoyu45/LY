@@ -15,11 +15,13 @@
     <script src="game.js"></script>
     <script src="graphic.js"></script>
     <script src="movement.js"></script>
+    <script src="effect.js"></script>
     <script type="text/javascript">
         game.load(4, 5);
-        var arena = graphic.load(62, 1);
+        var arena = graphic.load(82, 1);
         document.body.appendChild(arena);
         movement.load();
+        effect.load();
         movement.start();
         game.rRows[0].children.forEach(function (e) {
             //graphic.getTri(e[0],e[1],e[2]).tri.style.fill = "red";

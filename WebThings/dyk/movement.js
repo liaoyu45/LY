@@ -181,11 +181,16 @@ movement.startMoving = function (ev) {
 };
 movement.pick = function (e) {
     var hrl = graphic.getHRL(e.target);
-    hrl.count = 1;
-    game.changeTag(hrl);
+    hrl.sum = 1;
+    hrl.tag = game.createTag();
+    game.notice(hrl);
     game.collect(hrl);
     for (var i = 0; i < 3; i++) {
-        game.collect(game.getElement(game.nextHRL(hrl, i)));
+        var next = game.nextHRL(hrl, i);
+        if (!next.inside) {
+            continue;
+        }
+        game.collect(game.getElement(next));
     }
 };
 movement.start = function () {
