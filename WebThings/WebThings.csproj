@@ -55,6 +55,7 @@
     <Content Include="f12\f12js.js" />
     <Content Include="f12\f12jstest.html" />
     <Content Include="god.js" />
+    <Content Include="test\HtmlPage1.html" />
     <Content Include="test\test.js" />
     <Content Include="Web.config" />
   </ItemGroup>
