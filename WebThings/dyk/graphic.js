@@ -2,97 +2,90 @@
 /// <reference path="base.js" />
 var graphic = {};
 Object.defineProperties(graphic, {
-    angle: {
-        value: Math.sqrt(3),
+    ANGLE: {
+        value: Math.PI / 3,
         writable: false
     },
     allTris: {
         value: [],
         writable: false
+    },
+    upPoints: {
+        get: function () {
+            return [[0, this.height], [this.width / 2, 0], [this.width, this.height]];
+        }
+    },
+    downPoints: {
+        get: function () {
+            return [[0, 0], [this.width / 2, this.height], [this.width, 0]];
+        }
     }
 });
-graphic.width = 0;
-graphic.height = 0;
-game.onNotice = function (hrl) {
-    var tri = graphic.getTri(hrl);
-    graphic.paint(tri, hrl);
-};
 graphic.hrl2tri = function (e) {
-    var x0 = (game.count - 1 - (e[1] - e[2])) * graphic.width / 2;
-    var x1 = x0 + graphic.width / 2;
-    var x2 = x0 + graphic.width;
-    var y0 = (game.count - e[0]) * graphic.height;
-    var y1 = y0 - graphic.height;
-    var points = [];
-    for (var i = 0; i < 3; i++) {
-        points.push(graphic.arena.createSVGPoint());
-    }
-    if (e.direction) {
-        points[0].y = points[2].y = y0;
-        points[1].y = y1;
-    } else {
-        points[0].y = points[2].y = y1;
-        points[1].y = y0;
-    }
-    points[0].x = x0;
-    points[1].x = x1;
-    points[2].x = x2;
-    var tri = graphic.createElement("polygon");
-    points.forEach(function (e) { tri.points.appendItem(e); });
-    graphic.paint(tri, e, "tag");
+    var tri = graphic.createBasicTri(e.direction, e.x, e.y);
+    god.safe(graphic.onPainting)(tri, e);
     return tri;
 };
 graphic.createElement = function (name) {
     return document.createElementNS("http://www.w3.org/2000/svg", name);
 };
-graphic.onPainting = function (tri, hrl, p) {
-    if (p == "tag") {
-        if (!graphic.onPainting.arr) {
-            graphic.onPainting.arr = [];
-            for (var i = 0; i < game.tagsMax; i++) {
-                graphic.onPainting.arr.push(god.random().color());
-            }
-        }
-        tri.style.fill = graphic.onPainting.arr[hrl.tag];
+graphic.getElement = function (name) {
+    return graphic.arena.getElementsByTagName("http://www.w3.org/2000/svg", name)[0];
+};
+graphic.createBasicTri = function (d, x, y, s) {
+    if (typeof s == "undefined") {
+        s = 1;
     }
+    x *= graphic.width;
+    y *= graphic.height;
+    var points = d ? graphic.upPoints : graphic.downPoints;
+    for (var i = 0; i < points.length; i++) {
+        points[i][0] *= s;
+        points[i][1] *= s;
+        points[i][0] += x;
+        points[i][1] += y;
+    }
+    return graphic.createPolygon(points);
 };
-graphic.paint = function (tri, hrl, p) {
-    god.safeFunction(graphic.onPainting).execute(tri, hrl, p);
-};
-graphic.load = function (w, s) {
-    var h = w * graphic.angle / 2 * s;
-    graphic.width = w;
-    graphic.height = h;
-    graphic.stretch = s;
-    var arena = graphic.createElement("svg");
-    graphic.arena = arena;
+graphic.onPainting = null;
+graphic.load = function (w, parent) {
+    var h = w * Math.sin(graphic.ANGLE);
     var maxW = w * game.count;
     var maxH = h * game.count;
+    var arena = graphic.createElement("svg");
+    Object.defineProperty(graphic, "arena", { get: function () { return arena; } });
     arena.setAttribute("width", maxW);
     arena.setAttribute("height", maxH);
     arena.style.overflow = "hidden";
-    var allTris = game.all.map(function (e) {
-        return { tri: graphic.hrl2tri(e), hrl: e };
-    });
-    allTris.forEach(function (e) {
-        graphic.allTris.push(e);
-        arena.appendChild(e.tri);
-    });
-    graphic.arena = arena;
-    var cover = graphic.createElement("polygon");
-    var points = [[0, maxH], [0, 0], [maxW / 2, 0], [0, maxH], [maxW, maxH], [maxW / 2, 0], [maxW, 0], [maxW, maxH], [0, maxH]];
-    points.forEach(function (e) {
-        var p = arena.createSVGPoint();
-        p.x = e[0];
-        p.y = e[1];
-        cover.points.appendItem(p);
-    });
+    graphic.createPolygon = function (points) {
+        var polygon = graphic.createElement("polygon");
+        for (var i = 0; i < points.length; i++) {
+            var p = arena.createSVGPoint();
+            p.x = points[i][0];
+            p.y = points[i][1];
+            polygon.points.appendItem(p);
+        }
+        return polygon;
+    };
+    var cover = graphic.createPolygon([[0, maxH], [0, 0], [maxW / 2, 0], [0, maxH], [maxW, maxH], [maxW / 2, 0], [maxW, 0], [maxW, maxH], [0, maxH]]);
     cover.style.stroke = "#433";
     cover.style.fill = "#433";
-    cover.style.strokeWidth = 5;
-    graphic.cover = cover;
+    cover.style.strokeWidth = 0;
+    Object.defineProperties(graphic, {
+        height: { get: function () { return h; } },
+        width: { get: function () { return w; } },
+        cover: { get: function () { return cover; } }
+    });
     arena.appendChild(cover);
-    game.all.forEach(game.collect);
+    if (parent) {
+        parent.appendChild(arena);
+    }
+    var allTris = game.all.forEach(function (e) {
+        var tri = graphic.hrl2tri(e);
+        var ele = { tri: tri, hrl: e };
+        graphic.allTris.push(ele);
+        arena.appendChild(tri);
+    });
     return arena;
 }
 graphic.getTri = function (hrl) {

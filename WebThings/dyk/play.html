@@ -7,108 +7,27 @@
     <meta charset="utf-8" />
 </head>
 <body style="background-color:#433">
-    <input type="button" id="sssssssssss" name="name" value="start" />
-    <input type="button" id="mmmmmmm" name="name" value="move" />
-    <input type="button" id="dddddd" name="name" value="move" />
-    <div id="tt"></div>
     <script src="../god.js"></script>
     <script src="game.js"></script>
     <script src="graphic.js"></script>
     <script src="movement.js"></script>
     <script src="effect.js"></script>
     <script type="text/javascript">
-        game.load(4, 5);
-        var arena = graphic.load(82, 1);
-        document.body.appendChild(arena);
+        game.load(5, 2, 7);
+        graphic.load(51, document.body);
         movement.load();
         effect.load();
         movement.start();
-        game.rRows[0].children.forEach(function (e) {
-            //graphic.getTri(e[0],e[1],e[2]).tri.style.fill = "red";
-        })
-        sssssssssss.onclick = function () {
-            game.startMoving(game.hRows[3]);
-            test();
+        window.onkeydown = function (e) {
+            var i = e.keyCode == 32 ? 4 : 5;
+            var c = game.rRows[1].children[i];
+            graphic.getTri(c).style.fill = "#000";
+            graphic.getTri(c.siblings[0]).style.fill = "#f00";
+            graphic.getTri(c.siblings[2]).style.fill = "#0f0";
         };
-        mmmmmmm.onclick = function () {
-            game.moving(1);
-            test();
-        };
-        dddddd.onclick = function () {
-            game.moving(-1);
-            test();
-        }
-        window.onkeydown = function () {
-            graphic.debugging = !graphic.debugging;
-            god.window.toast(graphic.debugging);
-        }
-        function test() {
-            var id = "wlkerjwlekrj";
-            if (document.getElementById(id)) {
-                document.body.removeChild(document.getElementById(id));
-            }
-            var tt = document.createElement("div");
-            tt.id = id;
-            var rrrr = [];
-            function addLine() {
-                var lllll = document.createElement("div");
-                lllll.style.borderTop = "1px solid #432";
-                lllll.style.textAlign = "center";
-                for (var j = 0; j < rrrr.length; j++) {
-                    lllll.appendChild(rrrr[j]);
-                }
-                tt.appendChild(lllll);
-                rrrr = [];
-            }
-            for (var i = 0; i < game.all.length; i++) {
-                var p = game.all[i];
-                if (i > 0) {
-                    if (p[0] != game.all[i - 1][0]) {
-                        addLine();
-                    }
-                }
-                var sp = document.createElement("span");
-                sp.style.backgroundColor = graphic.fillArr[p.tag];
-                sp.style.display = "inline-block";
-                sp.style.width = "77px";
-                sp.style.height = "55px";
-                sp.innerHTML = '[' + p[0] + '-' + p[1] + '-' + p[2] + ']' + p.tag + "<br />" +
-                game.hRows[p[0]].children.indexOf(p) + '-' +
-                game.rRows[p[1]].children.indexOf(p) + '-' +
-                game.lRows[p[2]].children.indexOf(p)
-                rrrr.push(sp);
-                if (i == game.all.length - 1) {
-                    addLine();
-                }
-            }
-            //document.title = tt.children.length;
-            var aaaa = [];
-            for (var i = 0; i < tt.children.length; i++) {
-                aaaa.push(tt.children[i]);
-            }
-            for (var i = aaaa.length - 1; i >= 0; i--) {
-                tt.appendChild(aaaa[i]);
-            }
-            document.body.appendChild(tt);
-        }
-        function RRRRRRR(shaker) {
-            iii.innerHTML = "";
-            var line = iii.appendChild(document.createElement("div"));
-            for (var i = 0; i < shaker.arr.length; i++) {
-                var ele = line.appendChild(document.createElement("span"));
-                ele.innerHTML = shaker.arr[i];
-                ele.style.display = "inline-block";
-                if (i >= shaker.front && i <= shaker.arr.length - 1 - shaker.end) {
-                    ele.style.backgroundColor = "#902"
-                } else {
-                    ele.style.backgroundColor = "#ff2"
-                }
-                if (i >= shaker.added1 && i <= shaker.arr.length - 1 - shaker.added0) {
-                    ele.style.border = "2px solid #000";
-                    ele.style.padding = "2px"
-                }
-            }
-            line.scrollIntoView();
+        function Dooo() {
+            var arr = [[0,0]];
+            arr.map(function () {return  });
         }
     </script>
     <div id="iii"></div>
