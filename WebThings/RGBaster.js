@@ -1,4 +1,6 @@
-﻿; (function (window, undefined) {
+﻿//https://github.com/briangonzalez/rgbaster.js
+//https://raw.githubusercontent.com/briangonzalez/rgbaster.js/master/rgbaster.js
+; (function (window, undefined) {
 
     "use strict";
 
