@@ -1,4 +1,5 @@
-﻿/// <reference path="game.js" />
+﻿/// <reference path="/physics.js"/>
+/// <reference path="game.js" />
 /// <reference path="graphic.js" />
 /// <reference path="movement.js" />
 var effect = {};
@@ -114,7 +115,7 @@ game.onCollecting = function (e) {
         var arr = [];
         var dur = 44;
         for (var i = 0; i < dur; i++) {
-            arr.push(god.math.tween.cubic.easeOut(i, c, -c, dur));
+            arr.push(laws.tween.cubic.easeInOut(i, c, -c, dur));
         }
         arr = arr.slice(1);
         arr.push(c);
@@ -139,8 +140,7 @@ game.onCollecting = function (e) {
             arr[1].push(a);
         }
         for (var i = 0; i < dur; i++) {
-            var s = god.math.tween.cubic.easeIn(i, 0, graphic.ANGLE, dur);
-            addToArr(s);
+            addToArr(i / dur * graphic.ANGLE);
         }
         arr[0] = arr[0].slice(1);
         arr[1] = arr[1].slice(1);
