@@ -428,33 +428,42 @@
             function combination(n, m) {
                 var r = [];
                 var arr = [];
-                for (var i = 0; i < m; i++) {
+                for (var i = 0; i < n; i++) {
                     arr.push(i);
                 }
-                r.push([].concat(arr));
-                function getIndex() {
-                    var i = arguments.length ? arguments[0] : m - 1;
-                    if (arr[i] == n - m + i) {
-                        return getIndex(i - 1);
-                    }
-                    return i;
-                }
-                while (true) {
-                    var g = getIndex();
-                    if (g > -1) {
-                        arr[g]++;
-                        for (var i = g + 1; i < m; i++) {
-                            arr[i] = arr[i - 1] + 1;
+                (function f(t, a, n) {
+                    for (var i = 0, l = a.length; i <= l - n; i++) {
+                        var _t = t.concat(a[i]);
+                        if (_t.length == m) {
+                            r.push(_t);
+                        } else {
+                            f(_t, a.slice(i + 1), n - 1);
                         }
-                        r.push([].concat(arr));
-                    } else {
-                        break;
                     }
+                })([], arr, m);
+                return r;
+            }
+            function permutation(n, m) {
+                var arr = [];
+                for (var i = 0; i < n; i++) {
+                    arr.push(i);
                 }
+                var r = [];
+                (function c(t, a) {
+                    for (var i = 0; i < a.length; i++) {
+                        var arri = a[i];
+                        var _t = t.concat(arri);
+                        if (_t.length == m) {
+                            r.push(_t);
+                        } else {
+                            c(_t, a.filter(function (ii) { return ii != arri; }));
+                        }
+                    }
+                })([], arr, m);
                 return r;
             }
 
-            return { combination: combination };
+            return { combination: combination, permutation: permutation };
         })(),
         this.arr = (function () {
             function moveArray(distance, arr, instance) {
