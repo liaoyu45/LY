@@ -36,10 +36,6 @@ effect.load = function (s) {
             text.textContent = content;
         }
     }
-
-    effect.rotate = function (x, y, d) {
-
-    };
     game.all.forEach(function (e) {
         effect.paint(graphic.getTri(e), e);
     });
@@ -83,7 +79,7 @@ game.onCollecting = function (e) {
     if (d) {
         arr = [[0, 0, 0], [0, 0.5, 1], [0, 1, 0], [1, 0.5, 0]];
     } else {
-        arr = [[1, 0.5, 0], [1, 1, 1], [1, 0, 1], [0, 0.5, 1]];
+        arr = [[1, 0, 1], [1, 1, 1], [1, 0.5, 0], [0, 0.5, 1]];
     }
     while (effect.pattern.firstChild) {
         effect.pattern.removeChild(effect.pattern.firstChild);
@@ -115,7 +111,7 @@ game.onCollecting = function (e) {
         var arr = [];
         var dur = 44;
         for (var i = 0; i < dur; i++) {
-            arr.push(laws.tween.cubic.easeInOut(i, c, -c, dur));
+            arr.push(c - c / dur * i);
         }
         arr = arr.slice(1);
         arr.push(c);
@@ -133,6 +129,7 @@ game.onCollecting = function (e) {
     }
     drawBorder();
     function rotate() {
+        border.style.strokeDashoffset = 0;
         var dur = 44;
         var arr = [[], []];
         function addToArr(a) {
@@ -150,11 +147,14 @@ game.onCollecting = function (e) {
         var ry = graphic.height * (!d ? 4 : 2) / 3;
         function r() {
             if (step > arr[0].length - 1) {
+                while (effect.cover.firstChild) {
+                    effect.cover.removeChild(effect.cover.firstChild);
+                }
                 graphic.arena.removeChild(effect.cover);
                 game.collectAll();
                 return;
             }
-            border.style.opacity = parseFloat(border.style.opacity) - 1 / dur;
+            //border.style.opacity = parseFloat(border.style.opacity) - 1 / dur;
             var s = arr[0][step];
             border.setAttribute("transform", god.formatString(" translate({4} {5}) scale({0}) rotate({1} {2} {3})", s, arr[1][step] * 180 / Math.PI, rx, ry, (1 - s) * rx, (1 - s) * ry));
             step++;
