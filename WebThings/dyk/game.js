@@ -120,7 +120,7 @@ game.startMoving = function (row) {
         } else {
             shaker = god.arr.moveArray(d, tags, game.createTag);
         }
-        return shaker.arr;
+        return shaker;
     };
     game.stopMoving = function () {
         var offset = shaker.front - shaker.frontAdded;

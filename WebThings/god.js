@@ -200,15 +200,15 @@
                     this.nextIndex = function (callback) {
                         this.index++;
                         this.suffixIndex = 0;
-                        god.safeFunction(callback).execute(this);
+                        god.safe(callback)(this);
                     };
                     this.nextSuffix = function (has, hasNot) {
                         var result = this.suffixIndex < this.suffixes.length - 1;
                         if (result) {
                             this.suffixIndex++;
-                            god.safeFunction(has).execute(this);
+                            god.safe(has)(this);
                         } else {
-                            god.safeFunction(hasNot).execute(this);
+                            god.safe(hasNot)(this);
                         }
                         return result;
                     };
@@ -253,13 +253,13 @@
                     var r = create_iiData(arguments);
                     $.ajax(r.getPath(), {
                         success: function () {
-                            god.safeFunction(r.onSuccess).execute(r);
+                            god.safe(r.onSuccess)(r);
                             r.nextIndex(self.loadFiles);
                         },
                         error: function () {
                             r.nextSuffix(self.loadFiles, function () {
                                 self.reset();
-                                god.safeFunction(r.onFail).execute(r);
+                                god.safe(r.onFail)(r);
                             });
                         },
                     });
@@ -282,11 +282,11 @@
                     img.onerror = function () {
                         r.nextSuffix(self.loadImgs, function () {
                             self.reset();
-                            god.safeFunction(r.onFail).execute(r.index);
+                            god.safe(r.onFail)(r.index);
                         });
                     };
                     img.onload = function (e) {
-                        god.safeFunction(r.onSuccess).execute(e.target);
+                        god.safe(r.onSuccess)(e.target);
                         r.nextIndex(self.loadImgs);
                     };
                     img.src = r.getPath();
@@ -383,23 +383,6 @@
                 }
             };
             return new innerClass();
-        };
-        this.safeFunction = function (func, thisArg) {
-            if (!thisArg) {
-                thisArg = window;
-            }
-            function safeFunctionInner() {
-                this.execute = function () {
-                    if (typeof func === "function") {
-                        try {
-                            return func.apply(thisArg, arguments);
-                        } catch (e) {
-                            console.log(e.message);
-                        }
-                    }
-                };
-            }
-            return new safeFunctionInner();
         };
         this.safe = function (func, thisArg) {
             if (!thisArg) {
@@ -511,6 +494,7 @@
                     if (!this.orignal) {
                         this.orignal = arr;
                     }
+                    this.current = arr.slice(front, front + arr.length);
                     this[tag] = true;
                     return this;
                 }

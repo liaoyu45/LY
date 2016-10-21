@@ -52,8 +52,11 @@ graphic.load = function (w, parent) {
     var h = w * Math.sin(graphic.ANGLE);
     var maxW = w * game.count;
     var maxH = h * game.count;
+    Object.defineProperties(graphic, {
+        height: { get: function () { return h; } },
+        width: { get: function () { return w; } },
+    });
     var arena = graphic.createElement("svg");
-    Object.defineProperty(graphic, "arena", { get: function () { return arena; } });
     arena.setAttribute("width", maxW);
     arena.setAttribute("height", maxH);
     arena.style.overflow = "hidden";
@@ -72,9 +75,8 @@ graphic.load = function (w, parent) {
     cover.style.fill = "#433";
     cover.style.strokeWidth = 0;
     Object.defineProperties(graphic, {
-        height: { get: function () { return h; } },
-        width: { get: function () { return w; } },
-        cover: { get: function () { return cover; } }
+        cover: { get: function () { return cover; } },
+        arena: { get: function () { return arena;}}
     });
     arena.appendChild(cover);
     if (parent) {
@@ -86,6 +88,7 @@ graphic.load = function (w, parent) {
         graphic.allTris.push(ele);
         arena.appendChild(tri);
     });
+    god.safe(graphic.arenaCreated)(arena);
     return arena;
 }
 graphic.getTri = function (hrl) {
@@ -98,11 +101,7 @@ graphic.getHRL = function (tri) {
         return e.tri == tri;
     })[0].hrl;
 };
-graphic.getRow = function (t, i) {
-
-};
 if (location.href.length == 11) {
     game.load(5, 5);
     graphic.load(23, 1);
 }
-graphic.debugging = false;
