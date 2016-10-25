@@ -14,18 +14,22 @@
     <script src="movement.js"></script>
     <script src="effect.js"></script>
     <script type="text/javascript">
-        game.load(5, 2, 7);
-        graphic.load(51, document.body);
+        game.load(5, 52, 7);
+        var settings = {};
+        settings[2] = 3;
+        settings[1] = 2;
+        settings[0] = 2;
+        graphic.load(51, document.body,settings);
         movement.load();
         effect.load();
         movement.start();
-        window.onkeydown = function (e) {
-            var i = e.keyCode == 32 ? 4 : 5;
-            var c = game.rRows[1].children[i];
-            graphic.getTri(c).style.fill = "#000";
-            graphic.getTri(c.siblings[0]).style.fill = "#f00";
-            graphic.getTri(c.siblings[2]).style.fill = "#0f0";
-        };
+        //window.onkeydown = function (e) {
+        //    var i = e.keyCode == 32 ? 4 : 5;
+        //    var c = game.rRows[1].children[i];
+        //    graphic.getTri(c).style.fill = "#000";
+        //    graphic.getTri(c.siblings[0]).style.fill = "#f00";
+        //    graphic.getTri(c.siblings[2]).style.fill = "#0f0";
+        //};
         function Dooo() {
             var arr = [[0,0]];
             arr.map(function () {return  });

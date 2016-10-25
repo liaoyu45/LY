@@ -13,6 +13,11 @@ Object.defineProperties(movement, {
             return this.type > -1;
         }
     },
+    dataRow: {
+        get: function () {
+            return game.allRows[this.type][this.hrl[this.type]];
+        }
+    }
 });
 movement.getEdge = function (w) {
     if (!movement.row.length) {
@@ -29,7 +34,7 @@ movement.stop = function () {
         window.removeEventListener("mouseup", movement.stop);
         window.removeEventListener("mousemove", movement.moving);
     }
-    if (!game.moving) {
+    if (!game.stopMoving) {
         return;
     }
     if (Math.abs(movement.offset % graphic.width) < graphic.width / 2) {
@@ -37,6 +42,7 @@ movement.stop = function () {
     }
     game.stopMoving();
     graphic.arena.removeChild(movement.cover);
+    god.safe(movement.onStopped)();
 };
 movement.moving = function (e) {
     movement.clicking = false;
@@ -83,11 +89,14 @@ movement.moving = function (e) {
         if (Math.abs(offset) < movement.minOffset) {
             return;
         }
+        if (movement.hrl[t] == game.count - 1) {
+            return;
+        }
+        god.safe(movement.onStarted)();
         movement.type = t;
         graphic.arena.appendChild(movement.cover);
-        var dataRow = game.allRows[t][movement.hrl[t]];
-        game.startMoving(dataRow);
-        dataRow.children.forEach(function (e) {
+        game.startMoving(movement.dataRow);
+        movement.dataRow.children.forEach(function (e) {
             var ele = graphic.hrl2tri(e);
             movement.row.push(e);
             movement.cover.appendChild(ele);
@@ -140,12 +149,10 @@ movement.moving = function (e) {
     }
     var sNow = s - movement.moved;
     movement.moved = s;
-    if (!sNow) {
-        return;
-    }
-    var arr = game.moving(sNow);
+    var shaker = game.moving(sNow);
+    var arr = shaker.arr;
+    var inc = s > 0;
     if (movement.row.length < arr.length) {
-        var inc = s > 0;
         var next = (t + 1) % 3;
         for (var i = 0; i < 2; i++) {
             var ti = inc ? arr.length - 2 + i : 1 - i;
@@ -154,10 +161,16 @@ movement.moving = function (e) {
             var cpr = inT[0][next] > inT[1][next];
             var hrl = (inc ^ cpr) ? inT[0] : inT[1];
             hrl.tag = arr[ti];
-            movement.cover.appendChild(graphic.hrl2tri(hrl));
+            var tri = graphic.hrl2tri(hrl);
+            if (inc) {
+                movement.cover.appendChild(tri);
+            } else {
+                movement.cover.insertBefore(tri, movement.cover.firstChild);
+            }
             movement.row[inc ? "push" : "unshift"](hrl);
         }
     }
+    god.safe(movement.onMoving)(shaker.front, shaker.end);
 };
 movement.startMoving = function (ev) {
     ev.preventDefault();
@@ -178,15 +191,18 @@ movement.startMoving = function (ev) {
     movement.cover.setAttribute("x", 0);
     movement.cover.setAttribute("y", 0);
     window.addEventListener("blur", movement.stop);
+    var stop, moving;
     if (god.window.mobile) {
         movement.startXY = [ev.touches[0].clientX, ev.touches[0].clientY];
-        window.addEventListener("touchend", movement.stop);
-        window.addEventListener("touchmove", movement.moving);
+        stop = "touchend";
+        moving = "touchmove"
     } else {
         movement.startXY = [ev.clientX, ev.clientY];
-        window.addEventListener("mouseup", movement.stop);
-        window.addEventListener("mousemove", movement.moving);
+        stop = "mouseup";
+        moving = "mousemove"
     }
+    window.addEventListener(stop, movement.stop);
+    window.addEventListener(moving, movement.moving);
 };
 movement.pick = function (e) {
     if (!movement.clicking) {
@@ -226,4 +242,5 @@ movement.load = function () {
 if (location.href.length == 11) {
     movement.load();
     movement.start();
+    movement.moving();
 }

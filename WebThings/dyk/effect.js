@@ -80,31 +80,41 @@ movement.onStopped = function () {
     while (effect.midLayer.firstChild) {
         effect.midLayer.removeChild(effect.midLayer.firstChild);
     }
+    effect.edges = [];
+    effect.front = 0;
+    effect.end = 0;
 };
 movement.onStarted = function () {
 };
 movement.onMoving = function (front, end) {
-    //var s = 1 - movement.offset % graphic.width / graphic.width;
-    //var xyArr = [];
-    //for (var i = 0; i < 4; i++) {
-    //    var t = effect.midLayer.childNodes[i];
-    //    var y0 = t.points.getItem(0).y;
-    //    var y1 = t.points.getItem(1).y;
-    //    var y = y0 + graphic.width / 2 / Math.sqrt(3) * (y0 > y1 ? 1 : -1);
-    //    xyArr.push([t.points.getItem(0).x + graphic.width / 2, y]);
-    //}
-    //for (var i = 0; i < 4; i++) {
-    //    var t = effect.midLayer.childNodes[i]; 
-    //    t.setAttribute("transform", god.formatString("translate({1} {2}) scale({0})", s, xyArr[i][0], xyArr[i][1]));
-    //    document.title = t.getAttribute("transform");
-    //}
+    if (!movement.offset) {
+        return;
+    }
+    var w = graphic.width;
+    if (effect.edges && effect.edges.length) {
+        var os = movement.offset;
+        while (os < 0) {
+            os += w;
+        }
+        while (os > w) {
+            os -= w;
+        }
+        var s = os / w;
+        var m = 3 / 4;
+        for (var i = 0; i < effect.edges.length; i++) {
+            var t = effect.edges[i];
+            var ss = i > 1 ? m + (1 - m) * s : 1 + (m - 1) * s;
+            t.e.setAttribute("transform", god.formatString("translate({1} {2}) scale({0})", ss, (1 - ss) * w / 2, (1 - ss) * (t.d ? 1 : 1 / 2) * w / Math.sqrt(3)));
+            t.e.style.opacity = i > 1 ? s : 1 - s;
+        }
+    }
     if (effect.front == front && effect.end == end || movement.offset == 0) {
         return;
     }
     effect.front = front;
     effect.end = end;
     if (effect.hidden) {
-        for (var i = 0; i < 4; i++) {
+        for (var i = 0; i < effect.hidden.length; i++) {
             effect.hidden[i].style.display = "block";
         }
     }
@@ -112,9 +122,12 @@ movement.onMoving = function (front, end) {
     var hidden = f > 2 ? [f - 2, f - 1] : [0, 1];
     hidden = [hidden[0], hidden[1], hidden[0] + movement.dataRow.children.length, hidden[1] + movement.dataRow.children.length];
     effect.hidden = [];
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < hidden.length; i++) {
         var edge = hidden[i];
         var n = movement.cover.childNodes[edge];
+        if (!n) {
+            continue;
+        }
         n.style.display = "none";
         effect.hidden.push(n);
     }
@@ -122,11 +135,26 @@ movement.onMoving = function (front, end) {
     while (effect.midLayer.firstChild) {
         effect.midLayer.removeChild(effect.midLayer.firstChild);
     }
-    for (var i = 0; i < 4; i++) {
+    effect.edges = [];
+    for (var i = 0; i < edges.length; i++) {
         var hrl = movement.dataRow.children[edges[i]];
+        if (!hrl) {
+            continue;
+        }
         var tri = graphic.getTri(hrl).cloneNode();
-        effect.paint(tri, movement.row[hidden[i]]);
-        effect.midLayer.appendChild(tri);
+        var i0 = tri.points.getItem(0);
+        var i1 = tri.points.getItem(1);
+        var svg = effect.midLayer.appendChild(graphic.createElement("svg"));
+        svg.style.overflow = "visible";
+        svg.setAttribute("width", w);
+        svg.setAttribute("height", graphic.height);
+        svg.setAttribute("x", i0.x);
+        svg.setAttribute("y", Math.min(i0.y, i1.y));
+        var bg = svg.appendChild(graphic.createBasicTri(hrl.direction));
+        bg.style.backgroundColor = graphic.baseColor;
+        var t = svg.appendChild(bg.cloneNode());
+        effect.paint(t, movement.row[hidden[i]]);
+        effect.edges.push({ e: t, d: hrl.direction });
     }
 };
 game.onCollecting = function (e) {

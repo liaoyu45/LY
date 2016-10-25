@@ -70,7 +70,9 @@ game.createHRL = function (h, r, l) {
                     newHRL[(i + 2) % 3] += this.direction ? -1 : 0;
                     if (newHRL.inside) {
                         var e = game.getElement(newHRL);
-                        arr.push(e);
+                        if (e) {
+                            arr.push(e);
+                        }
                     }
                 }
                 return arr;
@@ -124,6 +126,11 @@ game.startMoving = function (row) {
     };
     game.stopMoving = function () {
         var offset = shaker.front - shaker.frontAdded;
+        if (!offset) {
+            delete game.moving;
+            delete game.stopMoving;
+            return;
+        }
         var len = row.children.length;
         for (var i = 0; i < len; i++) {
             var c = offset > 0 ? row.children[i] : row.children[len - 1 - i];
@@ -191,33 +198,36 @@ game.load = function (count, tagsMax, sumMax) {
             });
         }
     }
-    game.all.sort(function (e0, e1) {
-        var h = e0[0] - e1[0];
-        if (!h) {
-            var r = e1[1] - e0[1];
-            if (!r) {
-                return e0[2] - e1[2];
-            }
-            return r;
-        }
-        return h;
-    });
-    game.allRows.forEach(function (e, i) {
-        game.all.forEach(function (hrl) {
-            e[hrl[i]].children.push(hrl);
-        });
-        var c0 = (i + 2) % 3;
-        var c1 = (i + 1) % 3;
-        e.forEach(function (r) {
-            r.children.sort(function (e0, e1) {
-                var h = e0[c0] - e1[c0];
-                if (h == 0) {
-                    return e1[c1] - e0[c1];
+    game.resort = function () {
+        game.all.sort(function (e0, e1) {
+            var h = e0[0] - e1[0];
+            if (!h) {
+                var r = e1[1] - e0[1];
+                if (!r) {
+                    return e0[2] - e1[2];
                 }
-                return h;
-            })
+                return r;
+            }
+            return h;
         });
-    });
+        game.allRows.forEach(function (e, i) {
+            game.all.forEach(function (hrl) {
+                e[hrl[i]].children.push(hrl);
+            });
+            var c0 = (i + 2) % 3;
+            var c1 = (i + 1) % 3;
+            e.forEach(function (r) {
+                r.children.sort(function (e0, e1) {
+                    var h = e0[c0] - e1[c0];
+                    if (h == 0) {
+                        return e1[c1] - e0[c1];
+                    }
+                    return h;
+                })
+            });
+        });
+    }
+    game.resort();
     function loaded() {
         var ed;
         for (var i = 0; i < game.all.length; i++) {
@@ -233,6 +243,7 @@ game.load = function (count, tagsMax, sumMax) {
     delete game.load;
 };
 game.changeOne = function (c) {
+    game.moving = true;
     c.tag = game.createTag();
     c.reset();
     god.safe(game.onNotice)(c);

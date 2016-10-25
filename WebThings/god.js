@@ -13,6 +13,12 @@
                 };
             }
         });
+        this.toDefault = function (v, dv) {
+            if (typeof v === "undefined" || v == null) {
+                return dv;
+            }
+            return v;
+        };
         this.window = (function () {
             return {
                 queryString: function (item) {

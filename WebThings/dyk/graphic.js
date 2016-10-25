@@ -19,6 +19,10 @@ Object.defineProperties(graphic, {
         get: function () {
             return [[0, 0], [this.width / 2, this.height], [this.width, 0]];
         }
+    },
+    baseColor: {
+        writable: true,
+        value: "#433"
     }
 });
 graphic.hrl2tri = function (e) {
@@ -33,9 +37,9 @@ graphic.getElement = function (name) {
     return graphic.arena.getElementsByTagName("http://www.w3.org/2000/svg", name)[0];
 };
 graphic.createBasicTri = function (d, x, y, s) {
-    if (typeof s == "undefined") {
-        s = 1;
-    }
+    x = god.toDefault(x, 0);
+    y = god.toDefault(y, 0);
+    s = god.toDefault(s, 1);
     x *= graphic.width;
     y *= graphic.height;
     var points = d ? graphic.upPoints : graphic.downPoints;
@@ -48,7 +52,27 @@ graphic.createBasicTri = function (d, x, y, s) {
     return graphic.createPolygon(points);
 };
 graphic.onPainting = null;
-graphic.load = function (w, parent) {
+graphic.load = function (w, parent, settings) {
+    if (settings) {
+        var arr = [];
+        for (var i = 0; i < 3; i++) {
+            var s = settings[i];
+            if (!s) {
+                continue;
+            }
+            for (var j = game.all.length - 1; j >= 0; j--) {
+                if (game.all[j][i] > s) {
+                    arr = arr.concat(game.all.splice(j, 1))
+                }
+            }
+        }
+        for (var i = 0; i < 3; i++) {
+            for (var j = 0; j < arr.length; j++) {
+                var c = game.allRows[i][arr[j][i]].children;
+                game.allRows[i][arr[j][i]].children.splice(c.indexOf(arr[j]), 1);
+            }
+        }
+    }
     var h = w * Math.sin(graphic.ANGLE);
     var maxW = w * game.count;
     var maxH = h * game.count;
@@ -56,6 +80,9 @@ graphic.load = function (w, parent) {
         height: { get: function () { return h; } },
         width: { get: function () { return w; } },
     });
+    if (settings && settings.baseColor) {
+        graphic.baseColor = settings.baseColor;
+    }
     var arena = graphic.createElement("svg");
     arena.setAttribute("width", maxW);
     arena.setAttribute("height", maxH);
@@ -71,12 +98,12 @@ graphic.load = function (w, parent) {
         return polygon;
     };
     var cover = graphic.createPolygon([[0, maxH], [0, 0], [maxW / 2, 0], [0, maxH], [maxW, maxH], [maxW / 2, 0], [maxW, 0], [maxW, maxH], [0, maxH]]);
-    cover.style.stroke = "#433";
-    cover.style.fill = "#433";
+    cover.style.stroke = graphic.baseColor;
+    cover.style.fill = graphic.baseColor;
     cover.style.strokeWidth = 0;
     Object.defineProperties(graphic, {
         cover: { get: function () { return cover; } },
-        arena: { get: function () { return arena;}}
+        arena: { get: function () { return arena; } }
     });
     arena.appendChild(cover);
     if (parent) {
@@ -90,7 +117,7 @@ graphic.load = function (w, parent) {
     });
     god.safe(graphic.arenaCreated)(arena);
     return arena;
-}
+};
 graphic.getTri = function (hrl) {
     return graphic.allTris.filter(function (e) {
         return e.hrl[0] == hrl[0] && e.hrl[1] == hrl[1] && e.hrl[2] == hrl[2];
