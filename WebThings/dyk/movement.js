@@ -17,6 +17,11 @@ Object.defineProperties(movement, {
         get: function () {
             return game.allRows[this.type][this.hrl[this.type]];
         }
+    },
+    direction: {
+        get: function () {
+            return this.offset > 0;
+        }
     }
 });
 movement.getEdge = function (w) {
@@ -41,6 +46,7 @@ movement.stop = function () {
         movement.record = game.moving(movement.moved / -Math.abs(movement.moved));
     }
     game.stopMoving();
+    movement.offset = 0;
     graphic.arena.removeChild(movement.cover);
     god.safe(movement.onStopped)();
 };

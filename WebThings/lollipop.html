@@ -60,7 +60,7 @@
                 var use = svg.appendChild(document.createElementNS(svg.namespaceURI, "g"));
                 var child = use.appendChild(path.cloneNode());
                 use.setAttribute("transform", god.formatString("rotate({0} {1} {1})", i / p * 360, r));
-                child.style.fill = god.formatString("rgb({0})", god.color.hslToRgb(i / p, 1, 0.5).join());
+                child.style.fill = god.formatString("rgb({0})", god.color.hsl2rgb(i / p, 1, 0.5).join());
             }
             var cir = svg.appendChild(document.createElementNS(svg.namespaceURI, "circle"));
             cir.cx.baseVal.value = cir.cy.baseVal.value = r;

@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="dyk\effect.js" />
+    <Content Include="dyk\player.js" />
+    <Content Include="lollipop.html" />
     <Content Include="dyk\play.html" />
     <Content Include="dyk\game.js" />
     <Content Include="dyk\graphic.js" />

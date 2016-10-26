@@ -100,7 +100,7 @@ movement.onMoving = function (front, end) {
             os -= w;
         }
         var s = os / w;
-        var m = 3 / 4;
+        var m = 4 / 7;
         for (var i = 0; i < effect.edges.length; i++) {
             var t = effect.edges[i];
             var ss = i > 1 ? m + (1 - m) * s : 1 + (m - 1) * s;
@@ -119,18 +119,17 @@ movement.onMoving = function (front, end) {
         }
     }
     var f = front + (movement.offset > 0 ? 0 : 2);
+    for (var i = 0; i < f; i++) {
+        movement.cover.childNodes[i].style.display = "none";
+    }
+    for (var i = f; i < f - 2 + movement.dataRow.children.length; i++) {
+        movement.cover.childNodes[i].style.display = "block";
+    }
+    for (var i = f - 2 + movement.dataRow.children.length; i < movement.cover.childNodes.length; i++) {
+        movement.cover.childNodes[i].style.display = "none";
+    }
     var hidden = f > 2 ? [f - 2, f - 1] : [0, 1];
     hidden = [hidden[0], hidden[1], hidden[0] + movement.dataRow.children.length, hidden[1] + movement.dataRow.children.length];
-    effect.hidden = [];
-    for (var i = 0; i < hidden.length; i++) {
-        var edge = hidden[i];
-        var n = movement.cover.childNodes[edge];
-        if (!n) {
-            continue;
-        }
-        n.style.display = "none";
-        effect.hidden.push(n);
-    }
     var edges = [0, 1, movement.dataRow.children.length - 2, movement.dataRow.children.length - 1];
     while (effect.midLayer.firstChild) {
         effect.midLayer.removeChild(effect.midLayer.firstChild);
