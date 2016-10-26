@@ -215,6 +215,7 @@ movement.pick = function (e) {
         return;
     }
     var hrl = graphic.getHRL(e.target);
+    god.safe(movement.onPicking)(hrl);
     game.changeOne(hrl);
     game.collectAll();
 };
