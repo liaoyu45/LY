@@ -76,10 +76,13 @@ graphic.arenaCreated = function (arena) {
     arena.insertBefore(midLayer, arena.cover);
     effect.midLayer = midLayer;
 };
-movement.onStopped = function () {
+effect.clearMidLayer = function () {
     while (effect.midLayer.firstChild) {
         effect.midLayer.removeChild(effect.midLayer.firstChild);
     }
+};
+movement.onStopped = function () {
+    effect.clearMidLayer();
     effect.edges = [];
     effect.front = 0;
     effect.end = 0;
@@ -131,30 +134,51 @@ movement.onMoving = function (front, end) {
     var hidden = f > 2 ? [f - 2, f - 1] : [0, 1];
     hidden = [hidden[0], hidden[1], hidden[0] + movement.dataRow.children.length, hidden[1] + movement.dataRow.children.length];
     var edges = [0, 1, movement.dataRow.children.length - 2, movement.dataRow.children.length - 1];
-    while (effect.midLayer.firstChild) {
-        effect.midLayer.removeChild(effect.midLayer.firstChild);
-    }
+    effect.clearMidLayer();
     effect.edges = [];
     for (var i = 0; i < edges.length; i++) {
         var hrl = movement.dataRow.children[edges[i]];
         if (!hrl) {
             continue;
         }
-        var tri = graphic.getTri(hrl).cloneNode();
-        var i0 = tri.points.getItem(0);
-        var i1 = tri.points.getItem(1);
-        var svg = effect.midLayer.appendChild(graphic.createElement("svg"));
-        svg.style.overflow = "visible";
-        svg.setAttribute("width", w);
-        svg.setAttribute("height", graphic.height);
-        svg.setAttribute("x", i0.x);
-        svg.setAttribute("y", Math.min(i0.y, i1.y));
+        var svg = effect.hrlArena(hrl);
         var bg = svg.appendChild(graphic.createBasicTri(hrl.direction));
         bg.style.backgroundColor = graphic.baseColor;
         var t = svg.appendChild(bg.cloneNode());
         effect.paint(t, movement.row[hidden[i]]);
         effect.edges.push({ e: t, d: hrl.direction });
     }
+};
+effect.hrlArena = function (hrl) {
+    var tri = graphic.getTri(hrl);
+    var i0 = tri.points.getItem(0);
+    var i1 = tri.points.getItem(1);
+    var svg = effect.midLayer.appendChild(graphic.createElement("svg"));
+    svg.style.overflow = "visible";
+    svg.setAttribute("width", graphic.width);
+    svg.setAttribute("height", graphic.height);
+    svg.setAttribute("x", i0.x);
+    svg.setAttribute("y", Math.min(i0.y, i1.y));
+    return svg;
+};
+movement.onPicking = function (hrl) {
+    var svg = effect.hrlArena(hrl);
+    var tri = graphic.createBasicTri(hrl.direction);
+    svg.appendChild(tri);
+    effect.paint(tri, hrl.tag, hrl.direction, hrl.sum);
+    var x = graphic.width / 2;
+    var y = (hrl.direction ? 2 : 1) * graphic.height / 3;
+    var i = 0, a = 0;
+    function r() {
+        if (i >= 120) {
+            effect.clearMidLayer();
+            return;
+        }
+        i += (a += 0.5);
+        tri.setAttribute("transform", god.formatString("rotate({0} {1} {2})", i, x, y));
+        requestAnimationFrame(r);
+    }
+    r();
 };
 game.onCollecting = function (e) {
     if (game.load) {

@@ -210,16 +210,27 @@ movement.startMoving = function (ev) {
     window.addEventListener(stop, movement.stop);
     window.addEventListener(moving, movement.moving);
 };
+game.onStopped = function () {
+    movement.start();
+    if (movement.clicking) {
+        god.safe(movement.onPicked)(movement.hrl);
+    }
+};
 movement.pick = function (e) {
     if (!movement.clicking) {
         return;
     }
-    var hrl = graphic.getHRL(e.target);
-    god.safe(movement.onPicking)(hrl);
-    game.changeOne(hrl);
+    movement.pause();
+    god.safe(movement.onPicking)(movement.hrl);
+    game.changeOne(movement.hrl);
     game.collectAll();
 };
+movement.state = false;
 movement.start = function () {
+    if (movement.state) {
+        return;
+    }
+    movement.state = true;
     var start = god.window.mobile ? "touchstart" : "mousedown";
     var end = god.window.mobile ? "touchend" : "mouseup";
     graphic.allTris.forEach(function (e) {
@@ -228,6 +239,10 @@ movement.start = function () {
     });
 };
 movement.pause = function () {
+    if (!movement.state) {
+        return;
+    }
+    movement.state = false;
     var start = god.window.mobile ? "touchstart" : "mousedown";
     var end = god.window.mobile ? "touchend" : "mouseup";
     graphic.allTris.forEach(function (e) {

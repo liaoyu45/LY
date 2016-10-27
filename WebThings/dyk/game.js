@@ -4,12 +4,10 @@ game.all = [];
 game.rRows = [];
 game.lRows = [];
 game.hRows = [];
-game.maxElements = [];
 game.last = -1;
 game.onTagsAdded = null;
 game.onNotice = null;
 game.onStartMoving = null;
-game.onMaxAchieved = null;
 game.createHRL = function (h, r, l) {
     if (h + r + l > game.count - 1) {
         throw "";
@@ -89,9 +87,6 @@ game.createHRL = function (h, r, l) {
             }
         }
     });
-    hrl.reset = function () {
-        this.sum = 0;
-    };
     hrl.getData = function () {
         var r = {};
         r.direction = this.direction
@@ -142,17 +137,17 @@ game.startMoving = function (row) {
                         if (pre > -1) {
                             c.sum = row.children[pre].sum;
                         } else {
-                            c.reset();;
+                            c.sum = 0;
                         }
                     } else {
                         if (i + offset < len) {
                             c.sum = row.children[i + offset].sum;
                         } else {
-                            c.reset();
+                            c.sum = 0;
                         }
                     }
                 } else {
-                    c.reset();
+                    c.sum = 0;
                 }
             }
             god.safe(game.onNotice)(c);
@@ -166,9 +161,6 @@ game.load = function (count, tagsMax, sumMax) {
     this.sumMax = sumMax;
     this.createTag = function () {
         return Math.floor(Math.random() * tagsMax);
-    }
-    for (var i = 0; i < tagsMax; i++) {
-        this.maxElements.push(0);
     }
     for (var i = 0; i < count; i++) {
         for (var j = 0; j < 3; j++) {
@@ -243,10 +235,11 @@ game.load = function (count, tagsMax, sumMax) {
     delete game.load;
 };
 game.changeOne = function (c) {
-    game.moving = true;
+    var ot = c.tag;
+    var os = c.sum;
     c.tag = game.createTag();
-    c.reset();
-    god.safe(game.onNotice)(c);
+    c.sum = 0;
+    god.safe(game.onNotice)(c, ot, os);
 }
 game.collectOne = function (c) {
     if (c.active) {
@@ -261,9 +254,7 @@ game.collectOne = function (c) {
         }
         c.sum++;
         if (c.sum > game.sumMax - 1) {
-            c.reset();
-            game.maxElements[c.tag]++;
-            god.safe(game.onMaxAchieved)(c);
+            game.changeOne(c);
         }
         god.safe(game.onNotice)(c);
         return true;
@@ -284,6 +275,7 @@ game.collectAll = function () {
         game.last = -1;
         return game.collectAll();
     } else {
+        god.safe(game.onStopped)();
         delete game.moving;
         delete game.stopMoving;
         return -1;
