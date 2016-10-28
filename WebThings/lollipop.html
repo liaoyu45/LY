@@ -18,6 +18,18 @@
     </svg>
 
     <script type="text/javascript">
+        var ooo = {};
+        god.addEventListener(ooo, "click");
+        ooo.onclick = function () {
+            alert(1);
+        };
+        var e = function e() {
+            alert(999);
+        };
+        ooo.onclick = e;
+        god.removeEventListener(ooo, "click", e);
+        ooo.onclick = 123;
+        ooo.noticeclick();
         function haha(p, s, a) {
             var r = a * s * s * 0.5;
             if (r > 100) {

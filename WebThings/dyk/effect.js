@@ -40,10 +40,10 @@ effect.load = function (s) {
         effect.paint(graphic.getTri(e), e);
     });
 };
-graphic.onPainting = function (tri, hrl) {
+graphic.onpainting = function (tri, hrl) {
     effect.paint(tri, hrl);
 };
-game.onNotice = function (hrl) {
+game.onnotice = function (hrl) {
     if (game.load) {
         return;
     }
@@ -81,15 +81,15 @@ effect.clearMidLayer = function () {
         effect.midLayer.removeChild(effect.midLayer.firstChild);
     }
 };
-movement.onStopped = function () {
+movement.onstopped = function () {
     effect.clearMidLayer();
     effect.edges = [];
     effect.front = 0;
     effect.end = 0;
 };
-movement.onStarted = function () {
+movement.onstarted = function () {
 };
-movement.onMoving = function (front, end) {
+movement.onmoving = function (front, end) {
     if (!movement.offset) {
         return;
     }
@@ -161,7 +161,7 @@ effect.hrlArena = function (hrl) {
     svg.setAttribute("y", Math.min(i0.y, i1.y));
     return svg;
 };
-movement.onPicking = function (hrl) {
+movement.onpicking = function (hrl) {
     var svg = effect.hrlArena(hrl);
     var tri = graphic.createBasicTri(hrl.direction);
     svg.appendChild(tri);
@@ -174,13 +174,14 @@ movement.onPicking = function (hrl) {
             effect.clearMidLayer();
             return;
         }
-        i += (a += 0.5);
+        i += (a += 0.1);
         tri.setAttribute("transform", god.formatString("rotate({0} {1} {2})", i, x, y));
+        tri.style.opacity = (120 - i) / 120;
         requestAnimationFrame(r);
     }
     r();
 };
-game.onCollecting = function (e) {
+game.oncollecting = function (e) {
     if (game.load) {
         return;
     }
@@ -229,6 +230,7 @@ game.onCollecting = function (e) {
         var step = 0;
         function r() {
             if (step > arr.length - 1) {
+                border.style.strokeDashoffset = 0;
                 rotate();
                 return;
             }
@@ -238,9 +240,7 @@ game.onCollecting = function (e) {
         }
         r();
     }
-    drawBorder();
     function rotate() {
-        border.style.strokeDashoffset = 0;
         var dur = 44;
         var arr = [[], []];
         function addToArr(a) {
@@ -265,7 +265,7 @@ game.onCollecting = function (e) {
                 game.collectAll();
                 return;
             }
-            //border.style.opacity = parseFloat(border.style.opacity) - 1 / dur;
+            border.style.opacity = parseFloat(border.style.opacity) - 1 / dur;
             var s = arr[0][step];
             border.setAttribute("transform", god.formatString(" translate({4} {5}) scale({0}) rotate({1} {2} {3})", s, arr[1][step] * 180 / Math.PI, rx, ry, (1 - s) * rx, (1 - s) * ry));
             step++;
@@ -273,6 +273,7 @@ game.onCollecting = function (e) {
         }
         r();
     }
+    rotate();
 };
 if (god.modes.coding) {
     effect.load();

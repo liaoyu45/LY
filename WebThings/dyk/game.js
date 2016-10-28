@@ -5,9 +5,7 @@ game.rRows = [];
 game.lRows = [];
 game.hRows = [];
 game.last = -1;
-game.onTagsAdded = null;
-game.onNotice = null;
-game.onStartMoving = null;
+god.addEventListener(game, "notice", "startmoving", "stopped", "collecting");
 game.createHRL = function (h, r, l) {
     if (h + r + l > game.count - 1) {
         throw "";
@@ -105,7 +103,7 @@ game.startMoving = function (row) {
     if (game.moving) {
         return;
     }
-    god.safe(game.onStartMoving)();
+    game.noticestartmoving();
     var tags = row.children.map(function (e) {
         return e.tag;
     });
@@ -129,28 +127,27 @@ game.startMoving = function (row) {
         var len = row.children.length;
         for (var i = 0; i < len; i++) {
             var c = offset > 0 ? row.children[i] : row.children[len - 1 - i];
+            var ot = c.tag, os = c.sum;
             c.tag = offset > 0 ? shaker.arr[i + shaker.front] : shaker.arr[shaker.arr.length - 1 - i - shaker.end];
-            if (offset) {
-                if (Math.abs(offset) < len) {
-                    if (offset < 0) {
-                        var pre = len - 1 - i + offset;
-                        if (pre > -1) {
-                            c.sum = row.children[pre].sum;
-                        } else {
-                            c.sum = 0;
-                        }
+            if (Math.abs(offset) < len) {
+                if (offset < 0) {
+                    var pre = len - 1 - i + offset;
+                    if (pre > -1) {
+                        c.sum = row.children[pre].sum;
                     } else {
-                        if (i + offset < len) {
-                            c.sum = row.children[i + offset].sum;
-                        } else {
-                            c.sum = 0;
-                        }
+                        c.sum = 0;
                     }
                 } else {
-                    c.sum = 0;
+                    if (i + offset < len) {
+                        c.sum = row.children[i + offset].sum;
+                    } else {
+                        c.sum = 0;
+                    }
                 }
+            } else {
+                c.sum = 0;
             }
-            god.safe(game.onNotice)(c);
+            game.notice(c, ot, os);
         }
         game.collectAll();
     };
@@ -239,14 +236,13 @@ game.changeOne = function (c) {
     var os = c.sum;
     c.tag = game.createTag();
     c.sum = 0;
-    god.safe(game.onNotice)(c, ot, os);
+    game.notice(c, ot, os);
 }
 game.collectOne = function (c) {
     if (c.active) {
         ed = true;
         var s = c.siblings;
-        var oTag = c.tag;
-        var oSum = c.sum;
+        var ot = c.tag, os = c.sum;
         for (var i = 0; i < 3; i++) {
             var si = s[i];
             c.sum += si.sum;
@@ -256,7 +252,7 @@ game.collectOne = function (c) {
         if (c.sum > game.sumMax - 1) {
             game.changeOne(c);
         }
-        god.safe(game.onNotice)(c);
+        game.notice(c, ot, os);
         return true;
     }
     return false;
@@ -265,7 +261,7 @@ game.collectAll = function () {
     for (var i = game.last + 1; i < game.all.length; i++) {
         var c = game.all[i];
         if (c.active) {
-            god.safe(game.onCollecting)(c, c.siblings.map(function (e) { return e.getData(); }));
+            game.noticecollecting(c, c.siblings.map(function (e) { return e.getData(); }));
             game.last = i;
             game.collectOne(c);
             return i;
@@ -275,7 +271,7 @@ game.collectAll = function () {
         game.last = -1;
         return game.collectAll();
     } else {
-        god.safe(game.onStopped)();
+        game.noticestopped();
         delete game.moving;
         delete game.stopMoving;
         return -1;

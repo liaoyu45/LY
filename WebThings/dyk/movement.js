@@ -2,6 +2,7 @@
 /// <reference path="graphic.js" />
 /// <reference path="../god.js" />
 var movement = { startXY: [0, 0], moved: 0, row: [] };
+god.addEventListener(movement, "picking", "picked");
 Object.defineProperties(movement, {
     minOffset: {
         get: function () {
@@ -48,7 +49,7 @@ movement.stop = function () {
     game.stopMoving();
     movement.offset = 0;
     graphic.arena.removeChild(movement.cover);
-    god.safe(movement.onStopped)();
+    god.safe(movement.onstopped)();
 };
 movement.moving = function (e) {
     movement.clicking = false;
@@ -98,7 +99,7 @@ movement.moving = function (e) {
         if (movement.hrl[t] == game.count - 1) {
             return;
         }
-        god.safe(movement.onStarted)();
+        god.safe(movement.onstarted)();
         movement.type = t;
         graphic.arena.appendChild(movement.cover);
         game.startMoving(movement.dataRow);
@@ -176,7 +177,7 @@ movement.moving = function (e) {
             movement.row[inc ? "push" : "unshift"](hrl);
         }
     }
-    god.safe(movement.onMoving)(shaker.front, shaker.end);
+    god.safe(movement.onmoving)(shaker.front, shaker.end);
 };
 movement.startMoving = function (ev) {
     ev.preventDefault();
@@ -210,10 +211,10 @@ movement.startMoving = function (ev) {
     window.addEventListener(stop, movement.stop);
     window.addEventListener(moving, movement.moving);
 };
-game.onStopped = function () {
+game.onstopped = function () {
     movement.start();
     if (movement.clicking) {
-        god.safe(movement.onPicked)(movement.hrl);
+        movement.noticepicked(movement.hrl);
     }
 };
 movement.pick = function (e) {
@@ -221,7 +222,7 @@ movement.pick = function (e) {
         return;
     }
     movement.pause();
-    god.safe(movement.onPicking)(movement.hrl);
+    movement.noticepicking(movement.hrl);
     game.changeOne(movement.hrl);
     game.collectAll();
 };

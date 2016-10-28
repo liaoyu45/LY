@@ -1,6 +1,7 @@
 ﻿/// <reference path="game.js" />
 /// <reference path="base.js" />
 var graphic = {};
+god.addEventListener(graphic, "painting");
 Object.defineProperties(graphic, {
     ANGLE: {
         value: Math.PI / 3,
@@ -27,7 +28,7 @@ Object.defineProperties(graphic, {
 });
 graphic.hrl2tri = function (e) {
     var tri = graphic.createBasicTri(e.direction, e.x, e.y);
-    god.safe(graphic.onPainting)(tri, e);
+    graphic.noticepainting(tri, e);
     return tri;
 };
 graphic.createElement = function (name) {
@@ -51,7 +52,6 @@ graphic.createBasicTri = function (d, x, y, s) {
     }
     return graphic.createPolygon(points);
 };
-graphic.onPainting = null;
 graphic.load = function (w, parent, settings) {
     if (settings) {
         var arr = [];

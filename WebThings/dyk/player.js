@@ -3,8 +3,25 @@
 /// <reference path="graphic.js" />
 var player = (function () {
     var player = function () {
+        var elements = [];
         this.load = function () {
-            game.
+            for (var i = 0; i < game.tagsMax; i++) {
+                var arr = [];
+                for (var j = 0; j < game.sumMax; j++) {
+                    arr.push(j);
+                }
+                elements.push(arr);
+            }
+        };
+        game.onnotice = function (hrl, ot, os) {
+            if (!os) {
+                return;
+            }
+            if (game.moving) {
+                return;
+            }
+            elements[ot][os]++;
+            god.window.toast(os);
         };
     };
 

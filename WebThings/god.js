@@ -13,6 +13,57 @@
                 };
             }
         });
+        this.removeEventListener = function (obj, ename, func) {
+            var store = obj[this.addEventListener.pre + ename];
+            if (!store) {
+                return;
+            }
+            var i = store.indexOf(func);
+            if (i < 0) {
+                return;
+            }
+            obj[this.addEventListener.pre + ename].splice(i, 1);
+        };
+        this.addEventListener = function (obj, enames) {
+            if (arguments.length < 2) {
+                return;
+            }
+            if (!this.addEventListener.pre) {
+                this.addEventListener.pre = "god_" + Math.random() * Number.MAX_VALUE;
+            }
+            if (typeof arguments[1] == "string") {
+                var ename = arguments[1];
+                var fullname = "on" + ename;
+                if (!(fullname in obj)) {
+                    var store = this.addEventListener.pre + ename;
+                    if (!obj[store]) {
+                        obj[store] = [];
+                    }
+                    Object.defineProperty(obj, fullname, {
+                        set: function (v) {
+                            obj[store].push(v);
+                        }
+                    });
+                    var notice = ename === "notice" ? "notice" : "notice" + ename;
+                    obj[notice] = function () {
+                        for (var i = 0; i < obj[store].length; i++) {
+                            try {
+                                obj[store][i].apply(obj, arguments);
+                            } catch (e) {
+                                console.log(e.message);
+                            }
+                        }
+                    };
+                }
+            }
+            if (typeof arguments[2] === "string") {
+                var narguments = [obj];
+                for (var i = 2; i < arguments.length; i++) {
+                    narguments.push(arguments[i]);
+                }
+                this.addEventListener.apply(this, narguments);
+            }
+        };
         this.toDefault = function (v, dv) {
             if (typeof v === "undefined" || v == null) {
                 return dv;
@@ -395,6 +446,7 @@
                 thisArg = window;
             }
             if (typeof func !== "function") {
+                console.log("not a function");
                 return this.emptyFunction;
             }
             return function () {
