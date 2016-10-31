@@ -13,15 +13,22 @@ var player = (function () {
                 elements.push(arr);
             }
         };
+        function addScore(t, s) {
+            elements[t][s]++;
+        }
+        game.onlost = function (c) {
+            addScore(c.tag, c.sum);
+            god.window.toast(c.sum);
+        };
         game.onnotice = function (hrl, ot, os) {
             if (!os) {
                 return;
             }
-            if (game.moving) {
+            if (game.move) {
                 return;
             }
-            elements[ot][os]++;
             god.window.toast(os);
+            addScore(ot, os);
         };
     };
 

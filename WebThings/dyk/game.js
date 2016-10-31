@@ -5,7 +5,12 @@ game.rRows = [];
 game.lRows = [];
 game.hRows = [];
 game.last = -1;
-god.addEventListener(game, "notice", "startmoving", "stopped", "collecting");
+god.addEventListener(game, "notice", "startmoving", "ready", "collecting", "lost");
+Object.defineProperty(game, "locked", {
+    get: function () {
+        return this.last > -1 || this.moving;
+    }
+});
 game.createHRL = function (h, r, l) {
     if (h + r + l > game.count - 1) {
         throw "";
@@ -42,7 +47,7 @@ game.createHRL = function (h, r, l) {
         },
         text: {
             get: function () {
-                return this[0] + "," + this[1] + "," + this[2];
+                return JSON.stringify({ hrl: this[0] + "," + this[1] + "," + this[2], tag: this.tag, sum: this.sum });
             }
         },
         fullSiblings: {
@@ -87,7 +92,7 @@ game.createHRL = function (h, r, l) {
     });
     hrl.getData = function () {
         var r = {};
-        r.direction = this.direction
+        r.direction = this.direction;
         r[0] = this[0];
         r[1] = this[1];
         r[2] = this[2];
@@ -99,8 +104,8 @@ game.createHRL = function (h, r, l) {
     return hrl;
 };
 game.allRows = [game.hRows, game.rRows, game.lRows];
-game.startMoving = function (row) {
-    if (game.moving) {
+game.start2move = function (row) {
+    if (game.move) {
         return;
     }
     game.noticestartmoving();
@@ -108,7 +113,7 @@ game.startMoving = function (row) {
         return e.tag;
     });
     var shaker;
-    game.moving = function (d) {
+    game.move = function (d) {
         d = d * 2;
         if (shaker) {
             shaker.moveArray(d);
@@ -120,15 +125,18 @@ game.startMoving = function (row) {
     game.stopMoving = function () {
         var offset = shaker.front - shaker.frontAdded;
         if (!offset) {
-            delete game.moving;
+            game.noticeready();
+            delete game.move;
             delete game.stopMoving;
             return;
         }
         var len = row.children.length;
+        var oldData = row.children.map(function (e) {
+            return e.getData();
+        });
         for (var i = 0; i < len; i++) {
             var c = offset > 0 ? row.children[i] : row.children[len - 1 - i];
             var ot = c.tag, os = c.sum;
-            c.tag = offset > 0 ? shaker.arr[i + shaker.front] : shaker.arr[shaker.arr.length - 1 - i - shaker.end];
             if (Math.abs(offset) < len) {
                 if (offset < 0) {
                     var pre = len - 1 - i + offset;
@@ -147,7 +155,15 @@ game.startMoving = function (row) {
             } else {
                 c.sum = 0;
             }
+            c.tag = offset > 0 ? shaker.arr[i + shaker.front] : shaker.arr[shaker.arr.length - 1 - i - shaker.end];
             game.notice(c, ot, os);
+        }
+        for (var i = 0; i < Math.abs(offset); i++) {
+            var ci = offset > 0 ? i : len - 1 - i;
+            var c = oldData[ci];
+            if (c && c.sum) {
+                game.noticelost(c);
+            }
         }
         game.collectAll();
     };
@@ -229,6 +245,9 @@ game.load = function (count, tagsMax, sumMax) {
         }
     }
     loaded();
+    game.all.forEach(function () {
+        arguments[0].sum = 0;
+    });
     delete game.load;
 };
 game.changeOne = function (c) {
@@ -236,7 +255,9 @@ game.changeOne = function (c) {
     var os = c.sum;
     c.tag = game.createTag();
     c.sum = 0;
-    game.notice(c, ot, os);
+    if (!game.load) {
+        game.notice(c, ot, os);
+    }
 }
 game.collectOne = function (c) {
     if (c.active) {
@@ -252,7 +273,9 @@ game.collectOne = function (c) {
         if (c.sum > game.sumMax - 1) {
             game.changeOne(c);
         }
-        game.notice(c, ot, os);
+        if (!game.load) {
+            game.notice(c, ot, os);
+        }
         return true;
     }
     return false;
@@ -271,8 +294,8 @@ game.collectAll = function () {
         game.last = -1;
         return game.collectAll();
     } else {
-        game.noticestopped();
-        delete game.moving;
+        game.noticeready();
+        delete game.move;
         delete game.stopMoving;
         return -1;
     }
@@ -285,7 +308,7 @@ game.getElement = function (hrl) {
 if (location.href.length == 11) {
     game.load(5, 3);
     game.collectAll(game.rRows[0]);
-    game.startMoving(game.rRows[0]);
+    game.start2move(game.rRows[0]);
     game.collectOne(game.rRows[0].children[0]);
     game.changeOne(game.rRows[0].children[0]);
 }

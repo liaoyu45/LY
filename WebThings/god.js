@@ -1,16 +1,15 @@
 ﻿(function () {
+    "use strict"
     function GodThere() {
         var self = this;
         this.initiatedTime = new Date();
         this.modes = {
-            coding: location.href.length == 11,
+            coding: location.href.length === 11,
             debugging: location.href.indexOf("localhost") > 0,
         };
         Object.defineProperty(this, "emptyFunction", {
             get: function () {
-                return function () {
-
-                };
+                return function () { };
             }
         });
         this.removeEventListener = function (obj, ename, func) {
@@ -31,7 +30,7 @@
             if (!this.addEventListener.pre) {
                 this.addEventListener.pre = "god_" + Math.random() * Number.MAX_VALUE;
             }
-            if (typeof arguments[1] == "string") {
+            if (typeof arguments[1] === "string") {
                 var ename = arguments[1];
                 var fullname = "on" + ename;
                 if (!(fullname in obj)) {
@@ -65,7 +64,7 @@
             }
         };
         this.toDefault = function (v, dv) {
-            if (typeof v === "undefined" || v == null) {
+            if (typeof v === "undefined" || v === null) {
                 return dv;
             }
             return v;
@@ -105,12 +104,12 @@
                             trident: u.indexOf('Trident') > -1, //IE内核
                             presto: u.indexOf('Presto') > -1, //opera内核
                             webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
-                            gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+                            gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') === -1, //火狐内核
                             ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
                             android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
                             iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQHD浏览器
                             iPad: u.indexOf('iPad') > -1, //是否iPad
-                            webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+                            webApp: u.indexOf('Safari') === -1 //是否web应该程序，没有头部与底部
                         };
                     })(),
                     language: (navigator.browserLanguage || navigator.language).toLowerCase()
@@ -157,7 +156,7 @@
                         moving = false;
                     }
                 },
-                toast: function (message, duration) {
+                toast: function (message, duration, later) {
                     if (!new String(message).length) return;
                     var Toast = function () {
                         this.p = document.createElement("p");
@@ -173,6 +172,7 @@
                             document.body.appendChild(this.p);
                             setTimeout(function (e) {
                                 document.body.removeChild(e.p);
+                                god.safe(later)();
                             }, duration, this);
                         }
                     }
@@ -182,7 +182,7 @@
             return a;
         })();
         this.formatString = function () {
-            if (arguments.length == 0)
+            if (arguments.length === 0)
                 return null;
             var str = arguments[0];
             for (var i = 1; i < arguments.length; i++) {
@@ -208,7 +208,7 @@
             return god.trim(str, true, side) + god.trim(str, false, side);
         };
         this.getTypeName = function (obj) {
-            if (typeof obj == "undefined") return undefined;
+            if (typeof obj === "undefined") return undefined;
             var name = obj.constructor.toString().trim();
             var match = name.match(/[^\s]+?(?=\s*\()/);
             return match.length ? match[0] : "";
@@ -412,7 +412,7 @@
         this.random = function (exclude) {
             function innerClass() {
                 function randomString(len, chars) {
-                    if (typeof exclude == "string") {
+                    if (typeof exclude === "string") {
                         for (var i = 0; i < exclude.length; i++) {
                             chars = chars.replace(exclude[i], "");
                         }
@@ -518,7 +518,7 @@
                 };
                 this.hsl2rgb = function (h, s, l) {//http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion/
                     var r, g, b;
-                    if (s == 0) {
+                    if (s === 0) {
                         r = g = b = l;
                     } else {
                         var hue2rgb = function hue2rgb(p, q, t) {
@@ -542,7 +542,7 @@
                     r /= 255, g /= 255, b /= 255;
                     var max = Math.max(r, g, b), min = Math.min(r, g, b);
                     var h, s, l = (max + min) / 2;
-                    if (max == min) {
+                    if (max === min) {
                         h = s = 0;
                     } else {
                         var d = max - min;
@@ -570,7 +570,7 @@
                 (function f(t, a, n) {
                     for (var i = 0, l = a.length; i <= l - n; i++) {
                         var _t = t.concat(a[i]);
-                        if (_t.length == m) {
+                        if (_t.length === m) {
                             r.push(_t);
                         } else {
                             f(_t, a.slice(i + 1), n - 1);
@@ -589,7 +589,7 @@
                     for (var i = 0; i < a.length; i++) {
                         var arri = a[i];
                         var _t = t.concat(arri);
-                        if (_t.length == m) {
+                        if (_t.length === m) {
                             r.push(_t);
                         } else {
                             c(_t, a.filter(function (ii) { return ii != arri; }));
@@ -664,5 +664,5 @@
         })();
     };
     this.god = new GodThere();
-})();
+}).call(this);
 document.head.innerHTML += '<style type="text/css">@keyframes slide2topPosition{to{bottom:256px;display:none;}}@keyframes slide2topColor{to{color:rgba(0,0,0,0);background-color:rgba(0,0,0,0);border-color:rgba(0,0,0,0);}}.toast,.toast_slide2top{bottom:0;position:fixed;width:100%;text-align:center;z-index:1111;animation:slide2topPosition 2s cubic-bezier(0,1,0.5,1) 1 normal;}.toast .toastInner,.toast_slide2top .toastInner{padding:5px;display:inline-block;background-color:#393939;color:#a4a4a4;border-radius:5px;animation:slide2topColor 2s ease 1 normal;}</style>';

@@ -4,6 +4,7 @@
 /// <reference path="movement.js" />
 var effect = {};
 effect.fillArr = [];
+effect.dur = god.window.mobile ? 22 : 44;
 effect.load = function (s) {
     effect.defs = graphic.arena.appendChild(graphic.createElement("defs"));
     effect.pattern = effect.defs.appendChild(graphic.createElement("pattern"));
@@ -89,13 +90,13 @@ movement.onstopped = function () {
 };
 movement.onstarted = function () {
 };
-movement.onmoving = function (front, end) {
-    if (!movement.offset) {
+movement.onmoving = function (front, end, offset) {
+    if (!offset) {
         return;
     }
     var w = graphic.width;
     if (effect.edges && effect.edges.length) {
-        var os = movement.offset;
+        var os = offset;
         while (os < 0) {
             os += w;
         }
@@ -111,7 +112,7 @@ movement.onmoving = function (front, end) {
             t.e.style.opacity = i > 1 ? s : 1 - s;
         }
     }
-    if (effect.front == front && effect.end == end || movement.offset == 0) {
+    if (effect.front == front && effect.end == end || offset == 0) {
         return;
     }
     effect.front = front;
@@ -121,7 +122,7 @@ movement.onmoving = function (front, end) {
             effect.hidden[i].style.display = "block";
         }
     }
-    var f = front + (movement.offset > 0 ? 0 : 2);
+    var f = front + (offset > 0 ? 0 : 2);
     for (var i = 0; i < f; i++) {
         movement.cover.childNodes[i].style.display = "none";
     }
@@ -170,7 +171,7 @@ movement.onpicking = function (hrl) {
     var y = (hrl.direction ? 2 : 1) * graphic.height / 3;
     var i = 0, a = 0;
     function r() {
-        if (i >= 120) {
+        if (i >= effect.dur) {
             effect.clearMidLayer();
             return;
         }
@@ -221,9 +222,8 @@ game.oncollecting = function (e) {
         border.style.strokeDasharray = c;
         border.style.strokeDashoffset = c;
         var arr = [];
-        var dur = 44;
-        for (var i = 0; i < dur; i++) {
-            arr.push(c - c / dur * i);
+        for (var i = 0; i < effect.dur; i++) {
+            arr.push(c - c / effect.dur * i);
         }
         arr = arr.slice(1);
         arr.push(c);
@@ -241,14 +241,13 @@ game.oncollecting = function (e) {
         r();
     }
     function rotate() {
-        var dur = 44;
         var arr = [[], []];
         function addToArr(a) {
             arr[0].push(Math.sin(graphic.ANGLE) / Math.sin(a) * (1 / (Math.sin(a + graphic.ANGLE) / Math.sin(a) + 1)));
             arr[1].push(a);
         }
-        for (var i = 0; i < dur; i++) {
-            addToArr(i / dur * graphic.ANGLE);
+        for (var i = 0; i < effect.dur; i++) {
+            addToArr(i / effect.dur * graphic.ANGLE);
         }
         arr[0] = arr[0].slice(1);
         arr[1] = arr[1].slice(1);
@@ -265,7 +264,6 @@ game.oncollecting = function (e) {
                 game.collectAll();
                 return;
             }
-            border.style.opacity = parseFloat(border.style.opacity) - 1 / dur;
             var s = arr[0][step];
             border.setAttribute("transform", god.formatString(" translate({4} {5}) scale({0}) rotate({1} {2} {3})", s, arr[1][step] * 180 / Math.PI, rx, ry, (1 - s) * rx, (1 - s) * ry));
             step++;
@@ -273,7 +271,7 @@ game.oncollecting = function (e) {
         }
         r();
     }
-    rotate();
+    drawBorder();
 };
 if (god.modes.coding) {
     effect.load();
