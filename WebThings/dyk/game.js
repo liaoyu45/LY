@@ -5,7 +5,7 @@ game.rRows = [];
 game.lRows = [];
 game.hRows = [];
 game.last = -1;
-god.addEventListener(game, "notice", "startmoving", "ready", "collecting", "lost");
+god.addEventListener(game, "notice", "startmoving", "ready", "collecting", "lost", "movingstopped");
 Object.defineProperty(game, "locked", {
     get: function () {
         return this.last > -1 || this.moving;
@@ -123,6 +123,7 @@ game.start2move = function (row) {
         return shaker;
     };
     game.stopMoving = function () {
+        game.noticemovingstopped();
         var offset = shaker.front - shaker.frontAdded;
         if (!offset) {
             game.noticeready();

@@ -89,8 +89,9 @@ movement.onstopped = function () {
     effect.end = 0;
 };
 movement.onstarted = function () {
+    effect.clearMidLayer();
 };
-movement.onmoving = function (front, end, offset) {
+movement.onmoving = function (front, end, offset, dataRow, movingRow, cover) {
     if (!offset) {
         return;
     }
@@ -124,21 +125,21 @@ movement.onmoving = function (front, end, offset) {
     }
     var f = front + (offset > 0 ? 0 : 2);
     for (var i = 0; i < f; i++) {
-        movement.cover.childNodes[i].style.display = "none";
+        cover.childNodes[i].style.display = "none";
     }
-    for (var i = f; i < f - 2 + movement.dataRow.children.length; i++) {
-        movement.cover.childNodes[i].style.display = "block";
+    for (var i = f; i < f - 2 + dataRow.children.length; i++) {
+        cover.childNodes[i].style.display = "block";
     }
-    for (var i = f - 2 + movement.dataRow.children.length; i < movement.cover.childNodes.length; i++) {
-        movement.cover.childNodes[i].style.display = "none";
+    for (var i = f - 2 + dataRow.children.length; i < cover.childNodes.length; i++) {
+        cover.childNodes[i].style.display = "none";
     }
     var hidden = f > 2 ? [f - 2, f - 1] : [0, 1];
-    hidden = [hidden[0], hidden[1], hidden[0] + movement.dataRow.children.length, hidden[1] + movement.dataRow.children.length];
-    var edges = [0, 1, movement.dataRow.children.length - 2, movement.dataRow.children.length - 1];
+    hidden = [hidden[0], hidden[1], hidden[0] + dataRow.children.length, hidden[1] + dataRow.children.length];
+    var edges = [0, 1, dataRow.children.length - 2, dataRow.children.length - 1];
     effect.clearMidLayer();
     effect.edges = [];
     for (var i = 0; i < edges.length; i++) {
-        var hrl = movement.dataRow.children[edges[i]];
+        var hrl = dataRow.children[edges[i]];
         if (!hrl) {
             continue;
         }
@@ -146,7 +147,7 @@ movement.onmoving = function (front, end, offset) {
         var bg = svg.appendChild(graphic.createBasicTri(hrl.direction));
         bg.style.backgroundColor = graphic.baseColor;
         var t = svg.appendChild(bg.cloneNode());
-        effect.paint(t, movement.row[hidden[i]]);
+        effect.paint(t, movingRow[hidden[i]]);
         effect.edges.push({ e: t, d: hrl.direction });
     }
 };
