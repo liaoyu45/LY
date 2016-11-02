@@ -1,4 +1,4 @@
-﻿/// <reference path="base.js" />
+﻿/// <reference path="game.js" />
 /// <reference path="graphic.js" />
 /// <reference path="../god.js" />
 (function () {
