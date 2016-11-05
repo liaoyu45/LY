@@ -1,100 +1,123 @@
 ﻿/// <reference path="game.js" />
 /// <reference path="base.js" />
 var graphic = {};
+god.addEventListener(graphic, "painting");
 Object.defineProperties(graphic, {
-    angle: {
-        value: Math.sqrt(3),
+    ANGLE: {
+        value: Math.PI / 3,
         writable: false
     },
     allTris: {
         value: [],
         writable: false
+    },
+    upPoints: {
+        get: function () {
+            return [[0, this.height], [this.width / 2, 0], [this.width, this.height]];
+        }
+    },
+    downPoints: {
+        get: function () {
+            return [[0, 0], [this.width / 2, this.height], [this.width, 0]];
+        }
+    },
+    baseColor: {
+        writable: true,
+        value: "#433"
     }
 });
-graphic.width = 0;
-graphic.height = 0;
-game.onNotice = function (hrl) {
-    var tri = graphic.getTri(hrl);
-    graphic.paint(tri, hrl);
-};
 graphic.hrl2tri = function (e) {
-    var x0 = (game.count - 1 - (e[1] - e[2])) * graphic.width / 2;
-    var x1 = x0 + graphic.width / 2;
-    var x2 = x0 + graphic.width;
-    var y0 = (game.count - e[0]) * graphic.height;
-    var y1 = y0 - graphic.height;
-    var points = [];
-    for (var i = 0; i < 3; i++) {
-        points.push(graphic.arena.createSVGPoint());
-    }
-    if (e.direction) {
-        points[0].y = points[2].y = y0;
-        points[1].y = y1;
-    } else {
-        points[0].y = points[2].y = y1;
-        points[1].y = y0;
-    }
-    points[0].x = x0;
-    points[1].x = x1;
-    points[2].x = x2;
-    var tri = graphic.createElement("polygon");
-    points.forEach(function (e) { tri.points.appendItem(e); });
-    graphic.paint(tri, e, "tag");
+    var tri = graphic.createBasicTri(e.direction, e.x, e.y);
+    graphic.noticepainting(tri, e);
     return tri;
 };
 graphic.createElement = function (name) {
     return document.createElementNS("http://www.w3.org/2000/svg", name);
 };
-graphic.onPainting = function (tri, hrl, p) {
-    if (p == "tag") {
-        if (!graphic.onPainting.arr) {
-            graphic.onPainting.arr = [];
-            for (var i = 0; i < game.tagsMax; i++) {
-                graphic.onPainting.arr.push(god.random().color());
+graphic.getElement = function (name) {
+    return graphic.arena.getElementsByTagName("http://www.w3.org/2000/svg", name)[0];
+};
+graphic.createBasicTri = function (d, x, y, s) {
+    x = god.toDefault(x, 0);
+    y = god.toDefault(y, 0);
+    s = god.toDefault(s, 1);
+    x *= graphic.width;
+    y *= graphic.height;
+    var points = d ? graphic.upPoints : graphic.downPoints;
+    for (var i = 0; i < points.length; i++) {
+        points[i][0] *= s;
+        points[i][1] *= s;
+        points[i][0] += x;
+        points[i][1] += y;
+    }
+    return graphic.createPolygon(points);
+};
+graphic.load = function (w, parent, settings) {
+    if (settings) {
+        var arr = [];
+        for (var i = 0; i < 3; i++) {
+            var s = settings[i];
+            if (!s) {
+                continue;
+            }
+            for (var j = game.all.length - 1; j >= 0; j--) {
+                if (game.all[j][i] > s) {
+                    arr = arr.concat(game.all.splice(j, 1))
+                }
             }
         }
-        tri.style.fill = graphic.onPainting.arr[hrl.tag];
+        for (var i = 0; i < 3; i++) {
+            for (var j = 0; j < arr.length; j++) {
+                var c = game.allRows[i][arr[j][i]].children;
+                game.allRows[i][arr[j][i]].children.splice(c.indexOf(arr[j]), 1);
+            }
+        }
     }
-};
-graphic.paint = function (tri, hrl, p) {
-    god.safeFunction(graphic.onPainting).execute(tri, hrl, p);
-};
-graphic.load = function (w, s) {
-    var h = w * graphic.angle / 2 * s;
-    graphic.width = w;
-    graphic.height = h;
-    graphic.stretch = s;
-    var arena = graphic.createElement("svg");
-    graphic.arena = arena;
+    var h = w * Math.sin(graphic.ANGLE);
     var maxW = w * game.count;
     var maxH = h * game.count;
+    Object.defineProperties(graphic, {
+        height: { get: function () { return h; } },
+        width: { get: function () { return w; } },
+    });
+    if (settings && settings.baseColor) {
+        graphic.baseColor = settings.baseColor;
+    }
+    var arena = graphic.createElement("svg");
     arena.setAttribute("width", maxW);
     arena.setAttribute("height", maxH);
     arena.style.overflow = "hidden";
-    var allTris = game.all.map(function (e) {
-        return { tri: graphic.hrl2tri(e), hrl: e };
+    graphic.createPolygon = function (points) {
+        var polygon = graphic.createElement("polygon");
+        for (var i = 0; i < points.length; i++) {
+            var p = arena.createSVGPoint();
+            p.x = points[i][0];
+            p.y = points[i][1];
+            polygon.points.appendItem(p);
+        }
+        return polygon;
+    };
+    var cover = graphic.createPolygon([[0, maxH], [0, 0], [maxW / 2, 0], [0, maxH], [maxW, maxH], [maxW / 2, 0], [maxW, 0], [maxW, maxH], [0, maxH]]);
+    cover.style.stroke = graphic.baseColor;
+    cover.style.fill = graphic.baseColor;
+    cover.style.strokeWidth = 0;
+    Object.defineProperties(graphic, {
+        cover: { get: function () { return cover; } },
+        arena: { get: function () { return arena; } }
     });
-    allTris.forEach(function (e) {
-        graphic.allTris.push(e);
-        arena.appendChild(e.tri);
-    });
-    graphic.arena = arena;
-    var cover = graphic.createElement("polygon");
-    var points = [[0, maxH], [0, 0], [maxW / 2, 0], [0, maxH], [maxW, maxH], [maxW / 2, 0], [maxW, 0], [maxW, maxH], [0, maxH]];
-    points.forEach(function (e) {
-        var p = arena.createSVGPoint();
-        p.x = e[0];
-        p.y = e[1];
-        cover.points.appendItem(p);
-    });
-    cover.style.stroke = "#433";
-    cover.style.fill = "#433";
-    cover.style.strokeWidth = 5;
-    graphic.cover = cover;
     arena.appendChild(cover);
-    game.all.forEach(game.collect);
+    if (parent) {
+        parent.appendChild(arena);
+    }
+    var allTris = game.all.forEach(function (e) {
+        var tri = graphic.hrl2tri(e);
+        var ele = { tri: tri, hrl: e };
+        graphic.allTris.push(ele);
+        arena.appendChild(tri);
+    });
+    god.safe(graphic.arenaCreated)(arena);
     return arena;
-}
+};
 graphic.getTri = function (hrl) {
     return graphic.allTris.filter(function (e) {
         return e.hrl[0] == hrl[0] && e.hrl[1] == hrl[1] && e.hrl[2] == hrl[2];
@@ -105,11 +128,7 @@ graphic.getHRL = function (tri) {
         return e.tri == tri;
     })[0].hrl;
 };
-graphic.getRow = function (t, i) {
-
-};
 if (location.href.length == 11) {
     game.load(5, 5);
     graphic.load(23, 1);
 }
-graphic.debugging = false;

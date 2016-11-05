@@ -1,18 +1,74 @@
 ﻿(function () {
+    "use strict"
     function GodThere() {
         var self = this;
         this.initiatedTime = new Date();
         this.modes = {
-            coding: location.href.length == 11,
+            coding: location.href.length === 11,
             debugging: location.href.indexOf("localhost") > 0,
         };
         Object.defineProperty(this, "emptyFunction", {
             get: function () {
-                return function () {
-
-                };
+                return function () { };
             }
         });
+        this.removeEventListener = function (obj, ename, func) {
+            var store = obj[this.addEventListener.pre + ename];
+            if (!store) {
+                return;
+            }
+            var i = store.indexOf(func);
+            if (i < 0) {
+                return;
+            }
+            obj[this.addEventListener.pre + ename].splice(i, 1);
+        };
+        this.addEventListener = function (obj, enames) {
+            if (arguments.length < 2) {
+                return;
+            }
+            if (!this.addEventListener.pre) {
+                this.addEventListener.pre = "god_" + Math.random() * Number.MAX_VALUE;
+            }
+            if (typeof arguments[1] === "string") {
+                var ename = arguments[1];
+                var fullname = "on" + ename;
+                if (!(fullname in obj)) {
+                    var store = this.addEventListener.pre + ename;
+                    if (!obj[store]) {
+                        obj[store] = [];
+                    }
+                    Object.defineProperty(obj, fullname, {
+                        set: function (v) {
+                            obj[store].push(v);
+                        }
+                    });
+                    var notice = ename === "notice" ? "notice" : "notice" + ename;
+                    obj[notice] = function () {
+                        for (var i = 0; i < obj[store].length; i++) {
+                            try {
+                                obj[store][i].apply(obj, arguments);
+                            } catch (e) {
+                                console.log(e.message);
+                            }
+                        }
+                    };
+                }
+            }
+            if (typeof arguments[2] === "string") {
+                var narguments = [obj];
+                for (var i = 2; i < arguments.length; i++) {
+                    narguments.push(arguments[i]);
+                }
+                this.addEventListener.apply(this, narguments);
+            }
+        };
+        this.toDefault = function (v, dv) {
+            if (typeof v === "undefined" || v === null) {
+                return dv;
+            }
+            return v;
+        };
         this.window = (function () {
             return {
                 queryString: function (item) {
@@ -48,12 +104,12 @@
                             trident: u.indexOf('Trident') > -1, //IE内核
                             presto: u.indexOf('Presto') > -1, //opera内核
                             webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
-                            gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+                            gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') === -1, //火狐内核
                             ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
                             android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
                             iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQHD浏览器
                             iPad: u.indexOf('iPad') > -1, //是否iPad
-                            webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+                            webApp: u.indexOf('Safari') === -1 //是否web应该程序，没有头部与底部
                         };
                     })(),
                     language: (navigator.browserLanguage || navigator.language).toLowerCase()
@@ -100,7 +156,7 @@
                         moving = false;
                     }
                 },
-                toast: function (message, duration) {
+                toast: function (message, duration, later) {
                     if (!new String(message).length) return;
                     var Toast = function () {
                         this.p = document.createElement("p");
@@ -116,6 +172,7 @@
                             document.body.appendChild(this.p);
                             setTimeout(function (e) {
                                 document.body.removeChild(e.p);
+                                god.safe(later)();
                             }, duration, this);
                         }
                     }
@@ -125,7 +182,7 @@
             return a;
         })();
         this.formatString = function () {
-            if (arguments.length == 0)
+            if (arguments.length === 0)
                 return null;
             var str = arguments[0];
             for (var i = 1; i < arguments.length; i++) {
@@ -151,7 +208,7 @@
             return god.trim(str, true, side) + god.trim(str, false, side);
         };
         this.getTypeName = function (obj) {
-            if (typeof obj == "undefined") return undefined;
+            if (typeof obj === "undefined") return undefined;
             var name = obj.constructor.toString().trim();
             var match = name.match(/[^\s]+?(?=\s*\()/);
             return match.length ? match[0] : "";
@@ -200,15 +257,15 @@
                     this.nextIndex = function (callback) {
                         this.index++;
                         this.suffixIndex = 0;
-                        god.safeFunction(callback).execute(this);
+                        god.safe(callback)(this);
                     };
                     this.nextSuffix = function (has, hasNot) {
                         var result = this.suffixIndex < this.suffixes.length - 1;
                         if (result) {
                             this.suffixIndex++;
-                            god.safeFunction(has).execute(this);
+                            god.safe(has)(this);
                         } else {
-                            god.safeFunction(hasNot).execute(this);
+                            god.safe(hasNot)(this);
                         }
                         return result;
                     };
@@ -253,13 +310,13 @@
                     var r = create_iiData(arguments);
                     $.ajax(r.getPath(), {
                         success: function () {
-                            god.safeFunction(r.onSuccess).execute(r);
+                            god.safe(r.onSuccess)(r);
                             r.nextIndex(self.loadFiles);
                         },
                         error: function () {
                             r.nextSuffix(self.loadFiles, function () {
                                 self.reset();
-                                god.safeFunction(r.onFail).execute(r);
+                                god.safe(r.onFail)(r);
                             });
                         },
                     });
@@ -282,11 +339,11 @@
                     img.onerror = function () {
                         r.nextSuffix(self.loadImgs, function () {
                             self.reset();
-                            god.safeFunction(r.onFail).execute(r.index);
+                            god.safe(r.onFail)(r.index);
                         });
                     };
                     img.onload = function (e) {
-                        god.safeFunction(r.onSuccess).execute(e.target);
+                        god.safe(r.onSuccess)(e.target);
                         r.nextIndex(self.loadImgs);
                     };
                     img.src = r.getPath();
@@ -355,7 +412,7 @@
         this.random = function (exclude) {
             function innerClass() {
                 function randomString(len, chars) {
-                    if (typeof exclude == "string") {
+                    if (typeof exclude === "string") {
                         for (var i = 0; i < exclude.length; i++) {
                             chars = chars.replace(exclude[i], "");
                         }
@@ -384,22 +441,21 @@
             };
             return new innerClass();
         };
-        this.safeFunction = function (func, thisArg) {
+        this.safe = function (func, thisArg) {
             if (!thisArg) {
                 thisArg = window;
             }
-            function safeFunctionInner() {
-                this.execute = function () {
-                    if (typeof func === "function") {
-                        try {
-                            return func.apply(thisArg, arguments);
-                        } catch (e) {
-                            console.log(e.message);
-                        }
-                    }
-                };
+            if (typeof func !== "function") {
+                console.log("not a function");
+                return this.emptyFunction;
             }
-            return new safeFunctionInner();
+            return function () {
+                try {
+                    return func.apply(thisArg, arguments);
+                } catch (e) {
+                    console.log(e.message);
+                }
+            };
         };
         this.removeItem = function (arr, filter) {
             for (var i = arr.length - 1; i >= 0; i--) {
@@ -408,9 +464,142 @@
                 }
             }
         };
+        this.color = (function () {
+            var innerClass = function () {
+                var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;//http://www.zhangxinxu.com/wordpress/2010/03/javascript-hex-rgb-hsl-color-convert/
+                this.rgb2hex = function (rgb) {
+                    if (/^(rgb|RGB)/.test(rgb)) {
+                        var aColor = rgb.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
+                        var strHex = "#";
+                        for (var i = 0; i < aColor.length; i++) {
+                            var hex = Number(aColor[i]).toString(16);
+                            if (hex === "0") {
+                                hex += hex;
+                            }
+                            strHex += hex;
+                        }
+                        if (strHex.length !== 7) {
+                            strHex = rgb;
+                        }
+                        return strHex;
+                    } else if (reg.test(rgb)) {
+                        var aNum = rgb.replace(/#/, "").split("");
+                        if (aNum.length === 6) {
+                            return rgb;
+                        } else if (aNum.length === 3) {
+                            var numHex = "#";
+                            for (var i = 0; i < aNum.length; i += 1) {
+                                numHex += (aNum[i] + aNum[i]);
+                            }
+                            return numHex;
+                        }
+                    } else {
+                        return rgb;
+                    }
+                };
+                this.hex2rgb = function (hex) {
+                    hex = hex.toLowerCase();
+                    if (hex && reg.test(hex)) {
+                        if (hex.length === 4) {
+                            var sColorNew = "#";
+                            for (var i = 1; i < 4; i += 1) {
+                                sColorNew += hex.slice(i, i + 1).concat(hex.slice(i, i + 1));
+                            }
+                            hex = sColorNew;
+                        }
+                        var sColorChange = [];
+                        for (var i = 1; i < 7; i += 2) {
+                            sColorChange.push(parseInt("0x" + hex.slice(i, i + 2)));
+                        }
+                        return "RGB(" + sColorChange.join(",") + ")";
+                    } else {
+                        return hex;
+                    }
+                };
+                this.hsl2rgb = function (h, s, l) {//http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion/
+                    var r, g, b;
+                    if (s === 0) {
+                        r = g = b = l;
+                    } else {
+                        var hue2rgb = function hue2rgb(p, q, t) {
+                            if (t < 0) t += 1;
+                            if (t > 1) t -= 1;
+                            if (t < 1 / 6) return p + (q - p) * 6 * t;
+                            if (t < 1 / 2) return q;
+                            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                            return p;
+                        }
+                        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                        var p = 2 * l - q;
+                        r = hue2rgb(p, q, h + 1 / 3);
+                        g = hue2rgb(p, q, h);
+                        b = hue2rgb(p, q, h - 1 / 3);
+                    }
+
+                    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+                };
+                this.rgb2hsl = function rgbToHsl(r, g, b) {
+                    r /= 255, g /= 255, b /= 255;
+                    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+                    var h, s, l = (max + min) / 2;
+                    if (max === min) {
+                        h = s = 0;
+                    } else {
+                        var d = max - min;
+                        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                        switch (max) {
+                            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                            case g: h = (b - r) / d + 2; break;
+                            case b: h = (r - g) / d + 4; break;
+                        }
+                        h /= 6;
+                    }
+                    return [h, s, l];
+                }
+            };
+            return new innerClass();
+        })();
         this.math = (function () {
-            //TODO:
-            return {};
+            //get m from n, return indexes array, max index is n.
+            function combination(n, m) {
+                var r = [];
+                var arr = [];
+                for (var i = 0; i < n; i++) {
+                    arr.push(i);
+                }
+                (function f(t, a, n) {
+                    for (var i = 0, l = a.length; i <= l - n; i++) {
+                        var _t = t.concat(a[i]);
+                        if (_t.length === m) {
+                            r.push(_t);
+                        } else {
+                            f(_t, a.slice(i + 1), n - 1);
+                        }
+                    }
+                })([], arr, m);
+                return r;
+            }
+            function permutation(n, m) {
+                var arr = [];
+                for (var i = 0; i < n; i++) {
+                    arr.push(i);
+                }
+                var r = [];
+                (function c(t, a) {
+                    for (var i = 0; i < a.length; i++) {
+                        var arri = a[i];
+                        var _t = t.concat(arri);
+                        if (_t.length === m) {
+                            r.push(_t);
+                        } else {
+                            c(_t, a.filter(function (ii) { return ii != arri; }));
+                        }
+                    }
+                })([], arr, m);
+                return r;
+            }
+
+            return { combination: combination, permutation: permutation };
         })(),
         this.arr = (function () {
             function moveArray(distance, arr, instance) {
@@ -458,6 +647,7 @@
                     if (!this.orignal) {
                         this.orignal = arr;
                     }
+                    this.current = arr.slice(front, front + arr.length);
                     this[tag] = true;
                     return this;
                 }
@@ -474,5 +664,5 @@
         })();
     };
     this.god = new GodThere();
-})();
+}).call(this);
 document.head.innerHTML += '<style type="text/css">@keyframes slide2topPosition{to{bottom:256px;display:none;}}@keyframes slide2topColor{to{color:rgba(0,0,0,0);background-color:rgba(0,0,0,0);border-color:rgba(0,0,0,0);}}.toast,.toast_slide2top{bottom:0;position:fixed;width:100%;text-align:center;z-index:1111;animation:slide2topPosition 2s cubic-bezier(0,1,0.5,1) 1 normal;}.toast .toastInner,.toast_slide2top .toastInner{padding:5px;display:inline-block;background-color:#393939;color:#a4a4a4;border-radius:5px;animation:slide2topColor 2s ease 1 normal;}</style>';
