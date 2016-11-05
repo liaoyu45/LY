@@ -189,7 +189,6 @@
     mData.blur = function () {
         mData.pick.ing = false;
         mData.toggleEvent(mData.pick);
-        var move = god.window.mobile ? "touchmove" : "mousemove";
         mData.toggleEvent(mData.move);
         mData.toggleEvent(mData.blur);
     };
@@ -206,9 +205,7 @@
         mData.row = [];
         mData.type = -1;
         mData.maxMovedPlus = mData.maxMovedMinus = 0;
-        mData.hrl = graphic.allTris.filter(function (el) {
-            return ev.target == el.tri;
-        })[0].hrl;
+        mData.hrl = graphic.getHRL(ev.target);
         while (mData.cover.firstChild) {
             mData.cover.removeChild(mData.cover.firstChild);
         }

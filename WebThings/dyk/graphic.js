@@ -11,20 +11,6 @@ Object.defineProperties(graphic, {
         value: [],
         writable: false
     },
-    upPoints: {
-        get: function () {
-            return [[0, this.height], [this.width / 2, 0], [this.width, this.height]];
-        }
-    },
-    downPoints: {
-        get: function () {
-            return [[0, 0], [this.width / 2, this.height], [this.width, 0]];
-        }
-    },
-    baseColor: {
-        writable: true,
-        value: "#433"
-    }
 });
 graphic.hrl2tri = function (e) {
     var tri = graphic.createBasicTri(e.direction, e.x, e.y);
@@ -34,16 +20,13 @@ graphic.hrl2tri = function (e) {
 graphic.createElement = function (name) {
     return document.createElementNS("http://www.w3.org/2000/svg", name);
 };
-graphic.getElement = function (name) {
-    return graphic.arena.getElementsByTagName("http://www.w3.org/2000/svg", name)[0];
-};
 graphic.createBasicTri = function (d, x, y, s) {
     x = god.toDefault(x, 0);
     y = god.toDefault(y, 0);
     s = god.toDefault(s, 1);
     x *= graphic.width;
     y *= graphic.height;
-    var points = d ? graphic.upPoints : graphic.downPoints;
+    var points = d ? [[0, this.height], [this.width / 2, 0], [this.width, this.height]] : [[0, 0], [this.width / 2, this.height], [this.width, 0]];
     for (var i = 0; i < points.length; i++) {
         points[i][0] *= s;
         points[i][1] *= s;
@@ -66,10 +49,12 @@ graphic.load = function (w, parent, settings) {
                 }
             }
         }
-        for (var i = 0; i < 3; i++) {
-            for (var j = 0; j < arr.length; j++) {
-                var c = game.allRows[i][arr[j][i]].children;
-                game.allRows[i][arr[j][i]].children.splice(c.indexOf(arr[j]), 1);
+        if (arr.length) {
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < arr.length; j++) {
+                    var c = game.allRows[i][arr[j][i]].children;
+                    game.allRows[i][arr[j][i]].children.splice(c.indexOf(arr[j]), 1);
+                }
             }
         }
     }
@@ -82,8 +67,13 @@ graphic.load = function (w, parent, settings) {
     });
     if (settings && settings.baseColor) {
         graphic.baseColor = settings.baseColor;
+    } else {
+        graphic.baseColor = "#433";
     }
     var arena = graphic.createElement("svg");
+    arena.addEventListener(god.window.mobile ? "touchstart" : "mousedown", function () {
+        arguments[0].preventDefault();
+    });
     arena.setAttribute("width", maxW);
     arena.setAttribute("height", maxH);
     arena.style.overflow = "hidden";
