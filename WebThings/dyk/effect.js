@@ -102,13 +102,6 @@ game.oncollecting = function (e) {
 graphic.onpainting = function (tri, hrl) {
     effect.paint(tri, hrl);
 };
-graphic.arenaCreated = function (arena) {
-    var midLayer = graphic.createElement("svg");
-    midLayer.setAttribute("width", graphic.width * game.count);
-    midLayer.setAttribute("height", graphic.height * game.count);
-    arena.insertBefore(midLayer, arena.cover);
-    effect.midLayer = midLayer;
-};
 movement.onstopped = function () {
     effect.clearMidLayer();
     effect.edges = [];
@@ -202,8 +195,13 @@ var effect = {};
 effect.fillArr = [];
 effect.dur = 22;// god.window.mobile ? 22 : 44;
 effect.load = function (s) {
-    effect.defs = graphic.arena.appendChild(graphic.createElement("defs"));
-    effect.pattern = effect.defs.appendChild(graphic.createElement("pattern"));
+    var midLayer = graphic.createElement("svg");
+    midLayer.setAttribute("width", graphic.width * game.count);
+    midLayer.setAttribute("height", graphic.height * game.count);
+    graphic.arena.insertBefore(midLayer, graphic.arena.cover);
+    effect.midLayer = midLayer;
+    var defs = graphic.arena.appendChild(graphic.createElement("defs"));
+    effect.pattern = defs.appendChild(graphic.createElement("pattern"));
     effect.pattern.id = "dyk_clone"
     effect.pattern.setAttribute("width", 1);
     effect.pattern.setAttribute("height", 1);
@@ -213,7 +211,7 @@ effect.load = function (s) {
     }
     for (var i = 0; i < game.sumMax; i++) {
         for (var j = 0; j < game.tagsMax * 2; j++) {
-            var pattern = effect.defs.appendChild(graphic.createElement("pattern"));
+            var pattern = defs.appendChild(graphic.createElement("pattern"));
             pattern.id = god.formatString("dyk_{0}_{1}_{2}", parseInt(j / 2), j % 2, i);
             pattern.setAttribute("width", 1);
             pattern.setAttribute("height", 1);

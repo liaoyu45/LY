@@ -105,7 +105,6 @@ graphic.load = function (w, parent, settings) {
         graphic.allTris.push(ele);
         arena.appendChild(tri);
     });
-    god.safe(graphic.arenaCreated)(arena);
     return arena;
 };
 graphic.getTri = function (hrl) {
