@@ -28,7 +28,7 @@
                 return;
             }
             if (!this.addEventListener.pre) {
-                this.addEventListener.pre = "god_" + (Math.random() * Number.MAX_VALUE);
+                this.addEventListener.pre = "god_" + Math.random() * Number.MAX_VALUE;
             }
             if (typeof arguments[1] === "string") {
                 var ename = arguments[1];
