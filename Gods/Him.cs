@@ -1,28 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Text;
 
 namespace Gods {
     public static class Him {
-        /// <summary>
-        /// 扩展 DirectoryInfo.EnumerateFiles 的 searchPattern。
-        /// </summary>
-        public static IEnumerable<FileInfo> EnumerateFiles(this DirectoryInfo source, params string[] searchPatterns) {
-            return searchPatterns.SelectMany(p => source.EnumerateFiles("*." + p));
-        }
-
-        /// <summary>
-        /// 扩展 Directory.EnumerateFiles 的 searchPattern。
-        /// </summary>
-        public static IEnumerable<string> EnumerateFiles(string folder, params string[] searchPatterns) =>
-            searchPatterns.SelectMany(p => Directory.EnumerateFiles(folder, "*." + p));
-
         public static IEnumerable<MethodBase> GetCallers(Type type) {
             var types = new StackTrace().GetFrames().Select(f => f.GetMethod());
             var indexes = types.Select((t, i) => t.DeclaringType == type ? i + 1 : 0).Where(i => i > 0);
@@ -60,15 +44,6 @@ namespace Gods {
                 b.Append(spliter);
             }
             return b.ToString();
-        }
-
-        public static IPAddress GetLocalIP() {
-            foreach (var ip in Dns.GetHostEntry(Dns.GetHostName()).AddressList) {
-                if (ip.AddressFamily.ToString() == "InterNetwork") {
-                    return ip;
-                }
-            }
-            return null;
         }
 
         public static Dictionary<int, string> TryAll(Action action, params Action[] actions) {

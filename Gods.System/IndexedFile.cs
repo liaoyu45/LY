@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-namespace Gods.IndexedFiles {
+namespace Gods.System {
     /// <summary>
     /// 以固定格式标记同一文件夹中相的文件，并将其分组。
     /// </summary>

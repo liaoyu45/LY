@@ -11,7 +11,7 @@ using System.Text;
  * 原文出处：http://blog.csdn.net/zhoufoxcn 或 http://zhoufoxcn.blog.51cto.com    
  * 版权说明：本文可以在保留原文出处的情况下使用于非商业用途，周公对此不作任何担保或承诺。    
  * */
-namespace Gods.Web {
+namespace Gods.System {
     /// <summary>
     /// 有关HTTP请求的辅助类。
     /// </summary>

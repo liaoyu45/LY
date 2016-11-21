@@ -31,11 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="AOP\ModelBase.cs" />
     <Compile Include="AOP\AOPAttribute.cs" />
     <Compile Include="AOP\AOPException.cs" />
@@ -47,15 +42,12 @@
     <Compile Include="AOP\Modes.cs" />
     <Compile Include="Data\Space.cs" />
     <Compile Include="Data\Space~T.cs" />
-    <Compile Include="IndexedFiles\http.cs" />
-    <Compile Include="IndexedFiles\IniFile.cs" />
     <Compile Include="Logic\IfElse.cs" />
     <Compile Include="Siblings\SiblingEventHandler.cs" />
     <Compile Include="Siblings\SiblingsContext.cs" />
     <Compile Include="Siblings\Declarations.cs" />
     <Compile Include="Siblings\Model.cs" />
     <Compile Include="Him.cs" />
-    <Compile Include="IndexedFiles\IndexedFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MD5.cs" />
   </ItemGroup>

@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gods.Web", "Gods.Web\Gods.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWeb", "TestWeb\TestWeb.csproj", "{6C6708CF-7CD7-4B50-B8E9-D941FC337786}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gods.System", "Gods.System\Gods.System.csproj", "{B3C33718-4533-4885-B7F4-2F7CF187A6CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{6C6708CF-7CD7-4B50-B8E9-D941FC337786}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C6708CF-7CD7-4B50-B8E9-D941FC337786}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C6708CF-7CD7-4B50-B8E9-D941FC337786}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3C33718-4533-4885-B7F4-2F7CF187A6CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3C33718-4533-4885-B7F4-2F7CF187A6CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3C33718-4533-4885-B7F4-2F7CF187A6CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3C33718-4533-4885-B7F4-2F7CF187A6CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

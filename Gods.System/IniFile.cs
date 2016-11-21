@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Gods.IndexedFiles {
+namespace Gods.System {
     public class IniFile {
         [DllImport("kernel32")]
         private static extern long WritePrivateProfileString(string section, string key, string val, string path);
