@@ -6,8 +6,8 @@ namespace Gods.AOP {
     public static class ModelExtensions {
         private static Dictionary<Guid, List<IValidator>> validators = new Dictionary<Guid, List<IValidator>>();
 
-        public static void AddValidator<T>(IValidator validator) where T : ModelBase {
-            var guid = typeof(T).GUID;
+        public static void AddValidator(Type type, IValidator validator) {
+            var guid = type.GUID;
             if (validators[guid] == null) {
                 validators[guid] = new List<IValidator>();
             }
@@ -15,18 +15,13 @@ namespace Gods.AOP {
         }
 
         public static IEnumerable<IValidator> GetValidators(Type type) {
-            var vs = validators[type.GUID];//TODO: retest all this system.
+            var vs = validators[type.GUID];
             if (vs?.Count > 0) {
                 return vs.ToArray();
             }
-            var all = Him.GetBases(type, typeof(ModelBase));
-            foreach (var g in all) {
-                var vsvs = validators[g.GUID];
-                if (vsvs?.Any(v => v.Inheritable) == true) {
-                    return vsvs;
-                }
-            }
-            return null;
+            return Him.GetBases(type, typeof(ModelBase))
+                .Select(b => validators[b.GUID]).Where(vsvs => vsvs != null)
+                .SelectMany(v => v).Where(v => v.Inheritable);
         }
     }
 }
