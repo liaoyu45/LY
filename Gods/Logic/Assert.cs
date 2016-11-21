@@ -5,9 +5,9 @@ namespace Gods.Logic {
     public class Assert {
         private bool expect;
 
-        public bool? Check { get; internal set; }
-        public bool? Fail { get; internal set; }
-        public bool? Success { get; internal set; }
+        public bool? Check { get; private set; }
+        public bool? Fail { get; private set; }
+        public bool? Success { get; private set; }
 
         public Func<bool> OnCheck { private get; set; }
         public Action OnSuccess { private get; set; }
