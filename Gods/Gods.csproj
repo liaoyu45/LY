@@ -49,7 +49,7 @@
     <Compile Include="Data\Space~T.cs" />
     <Compile Include="IndexedFiles\http.cs" />
     <Compile Include="IndexedFiles\IniFile.cs" />
-    <Compile Include="Logic\Assert.cs" />
+    <Compile Include="Logic\IfElse.cs" />
     <Compile Include="Siblings\SiblingEventHandler.cs" />
     <Compile Include="Siblings\SiblingsContext.cs" />
     <Compile Include="Siblings\Declarations.cs" />
