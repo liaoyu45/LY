@@ -19,9 +19,9 @@ namespace Gods.Web {
             if (IsPostBack) {
                 return;
             }
-            Him.Assert(new Logic.Assert {
-                OnCheck = Initiate,
-                OnFail = () => OnError(EventArgs.Empty)
+            Him.Assert(new Logic.IfElse {
+                Condition = Initiate,
+                IfFalse = () => OnError(EventArgs.Empty)
             });
         }
 
