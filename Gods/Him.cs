@@ -100,12 +100,6 @@ namespace Gods {
             }
         }
 
-        public static void If(Func<bool> i, Action a) {
-            if (i()) {
-                a();
-            }
-        }
-
         public static void ForEach<T>(Action<T> action, T t, params T[] list) {
             action(t);
             foreach (var tt in list) {
