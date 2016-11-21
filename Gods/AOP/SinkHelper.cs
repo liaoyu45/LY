@@ -18,24 +18,24 @@ namespace Gods.AOP {
         }
 
         internal void Analysis(MethodBase calling) {
-            var vv = ModelExtensions.GetValidator(this.type);
-            //TODO:wlkjehrlewjrjj
-            var v = vv.First();
-            if ((Modes.Foreigner | Modes.Sibling | v.Mode) != (Modes.Foreigner | Modes.Sibling)) {
-                return;
-            }
-            var callers = Him.GetCallers(this.type);
-            var badCallers = new List<MethodBase>();
-            if (inMode(v, Modes.Sibling)) {
-                var siblings = callers.Where(isSibling).Where(c => !v.Sibling(this.model, calling, c));
-                badCallers.AddRange(siblings);
-            }
-            if (inMode(v, Modes.Foreigner)) {
-                var foreigners = callers.Where(isForeigner).Where(c => !v.Foreigner(this.model, calling, c));
-                badCallers.AddRange(foreigners);
-            }
-            if (badCallers.Any()) {
-                throw new AOPException(this.model, calling, badCallers.ToArray());
+            var vs = ModelExtensions.GetValidators(this.type);
+            foreach (var v in vs) {
+                if ((Modes.Foreigner | Modes.Sibling | v.Mode) != (Modes.Foreigner | Modes.Sibling)) {
+                    return;
+                }
+                var callers = Him.GetCallers(this.type);
+                var badCallers = new List<MethodBase>();
+                if (inMode(v, Modes.Sibling)) {
+                    var siblings = callers.Where(isSibling).Where(c => !v.Sibling(this.model, calling, c));
+                    badCallers.AddRange(siblings);
+                }
+                if (inMode(v, Modes.Foreigner)) {
+                    var foreigners = callers.Where(isForeigner).Where(c => !v.Foreigner(this.model, calling, c));
+                    badCallers.AddRange(foreigners);
+                }
+                if (badCallers.Any()) {
+                    throw new AOPException(this.model, calling, badCallers.ToArray());
+                } 
             }
         }
 

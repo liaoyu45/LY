@@ -10,7 +10,7 @@ namespace Gods.Data {
                 return filler ?? (filler = Top.create());
             }
         }
-        public Space Upper { get; protected set; }
+        public Space Upper { get; private set; }
         public Space Top => Upper?.Top ?? this;
 
         protected Func<object> create;

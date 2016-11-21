@@ -6,32 +6,24 @@ namespace Gods.AOP {
     public static class ModelExtensions {
         private static Dictionary<Guid, List<IValidator>> validators = new Dictionary<Guid, List<IValidator>>();
 
-        public static void AddValidator(this ModelBase model, IValidator validator) {
-            var guid = model.GetType().GUID;
-            if (validators.ContainsKey(guid)) {
-                validators[guid].Add(validator);
-            } else {
-                var list = new List<IValidator>();
-                list.Add(validator);
-                validators.Add(guid, list);
+        public static void AddValidator<T>(IValidator validator) where T : ModelBase {
+            var guid = typeof(T).GUID;
+            if (validators[guid] == null) {
+                validators[guid] = new List<IValidator>();
             }
+            validators[guid].Add(validator);
         }
 
-        public static IEnumerable<IValidator> GetValidator(Type type) {
-            if (!type.IsSubclassOf(typeof(ModelBase))) {
-                return null;
-            }
-            var vs = validators[type.GUID];
+        public static IEnumerable<IValidator> GetValidators(Type type) {
+            var vs = validators[type.GUID];//TODO: retest all this system.
             if (vs?.Count > 0) {
-                return vs;//TODO, ((List<T>)vs).Add(t), will change?
+                return vs.ToArray();
             }
-            var all = type.GUIDTill(typeof(ModelBase));
+            var all = Him.GetBases(type, typeof(ModelBase));
             foreach (var g in all) {
-                if (validators.ContainsKey(g)) {
-                    var vsvs = validators[g];
-                    if (vsvs?.Any(v => v.Inheritable) == true) {
-                        return vsvs;
-                    }
+                var vsvs = validators[g.GUID];
+                if (vsvs?.Any(v => v.Inheritable) == true) {
+                    return vsvs;
                 }
             }
             return null;

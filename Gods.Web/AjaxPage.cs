@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Linq;
 using System.Web;
+using System.Web.SessionState;
 using System.Web.UI;
 
-namespace WebThings {
+namespace Gods.Web {
     public abstract class AjaxPage : Page {
 
-        public AjaxPage() : this("ajax") { }
+        public AjaxPage() : this("ajax", null) { }
 
-        public AjaxPage(string ajax) : base() {
+        public AjaxPage(string ajax, string mime) : base() {
             ajaxKey = ajax;
+            mimeKey = mime;
             Load += WebHubPage_Load;
         }
 
@@ -17,7 +19,7 @@ namespace WebThings {
             if (IsPostBack) {
                 return;
             }
-            Gods.Him.Assert(Initiate, () => OnError(EventArgs.Empty));
+            //Him.Assert(Initiate, null, () => OnError(EventArgs.Empty));
         }
 
         protected abstract Func<object, string> Serializer { get; }
@@ -25,30 +27,36 @@ namespace WebThings {
         protected virtual bool Initiate() => true;
 
         private string ajaxKey;
+        private string mimeKey;
 
         public override void ProcessRequest(HttpContext context) {
-            if (!string.IsNullOrWhiteSpace(ajaxKey)) {
-                if (!string.IsNullOrWhiteSpace(context.Request[ajaxKey])) {
-                    bool ok;
-                    var result = tryAjax(out ok);
-                    Serializer(new { ok, result });
-                    return;
+            if (Him.Any(string.IsNullOrWhiteSpace, ajaxKey, context.Request[ajaxKey])) {
+                base.ProcessRequest(context);
+            } else {
+                bool ok;
+                var result = tryAjax(out ok);
+                if (ok) {
+                    if (result is byte[]) {
+                        if (!string.IsNullOrWhiteSpace(mimeKey)) {
+                            context.Response.ContentType = MimeMapping.GetMimeMapping('.' + context.Request[mimeKey]);
+                        }
+                        context.Response.BinaryWrite(result as byte[]);
+                        return;
+                    }
                 }
+                var json = Him.TryGet(() => Serializer?.Invoke(new { ok, result }));
+                context.Response.ContentType = "application/json";
+                context.Response.Write(json);
             }
-            base.ProcessRequest(context);
         }
 
         private object tryAjax(out bool ok) {
             var context = HttpContext.Current;
-            var mName = (context.Request[ajaxKey] ?? string.Empty).Trim();
-            if (string.IsNullOrWhiteSpace(mName)) {
+            var name = context.Request[ajaxKey].Trim();
+            var m = GetType().GetMethods((System.Reflection.BindingFlags)256 - 1).FirstOrDefault(mi => mi.Name == name);
+            if (m?.GetParameters().Length > 0) {
                 ok = false;
-                return "try to call an ajax method, but didn't pass a method name.";
-            }
-            var m = GetType().GetMethod(mName);
-            if (m == null) {
-                ok = false;
-                return $"no method like {mName} exists";
+                return $"Valid server method {{{name}}} does not exist.";
             }
             var validators = m.GetCustomAttributes(typeof(HttpValidationAttribute), true) as HttpValidationAttribute[];
             foreach (var v in validators) {
@@ -101,14 +109,10 @@ namespace WebThings {
         }
     }
     public abstract class HttpValidationAttribute : Attribute {
-        public string this[string key] {
-            get { return HttpContext.Current.Request[key]; }
-        }
-
-        public string ErrorMessage { get; set; }
-
-        public bool ThrowError { get; set; }
-
+        protected HttpContext Context { get; } = HttpContext.Current;
+        protected HttpResponse Response { get; } = HttpContext.Current?.Response;
+        protected HttpRequest Request { get; } = HttpContext.Current?.Request;
+        protected HttpSessionState Session { get; } = HttpContext.Current?.Session;
         public abstract string Validate();
     }
 }

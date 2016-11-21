@@ -28,7 +28,7 @@ namespace Gods.AOP {
             var retMsg = this.NextSink.SyncProcessMessage(msg);
             var model = RemotingServices.Unmarshal((retMsg as IMethodReturnMessage).ReturnValue as ObjRef);
             var type = model.GetType();
-            if (ModelExtensions.GetValidator(type) == null) {
+            if (ModelExtensions.GetValidators(type) == null) {
                 return retMsg;
             }
             this.helper = new SinkHelper(model as ModelBase);
