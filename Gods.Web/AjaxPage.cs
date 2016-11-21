@@ -19,7 +19,10 @@ namespace Gods.Web {
             if (IsPostBack) {
                 return;
             }
-            //Him.Assert(Initiate, null, () => OnError(EventArgs.Empty));
+            Him.Assert(new Logic.Assert {
+                OnCheck = Initiate,
+                OnFail = () => OnError(EventArgs.Empty)
+            });
         }
 
         protected abstract Func<object, string> Serializer { get; }
