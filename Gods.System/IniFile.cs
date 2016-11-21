@@ -16,11 +16,11 @@ namespace Gods.System {
 
         public string this[string section, string key] {
             set {
-                WritePrivateProfileString(section, key, value, this.path);
+                WritePrivateProfileString(section, key, value, path);
             }
             get {
                 var temp = new StringBuilder(MaxLength);
-                GetPrivateProfileString(section, key, string.Empty, temp, MaxLength, this.path);
+                GetPrivateProfileString(section, key, string.Empty, temp, MaxLength, path);
                 return temp.ToString();
             }
         }

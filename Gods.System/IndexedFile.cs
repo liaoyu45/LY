@@ -25,10 +25,10 @@ namespace Gods.System {
             if (suffixes.Split('|').Any(s => s.Intersect(Path.GetInvalidFileNameChars()).Any())) {
                 throw new ArgumentException(suffixes);
             }
-            this.Folder = folder;
-            this.Format = format;
-            this.Suffixes = suffixes.Split('|');
-            this.suffixesPattern = $"(?=.({suffixes}))";
+            Folder = folder;
+            Format = format;
+            Suffixes = suffixes.Split('|');
+            suffixesPattern = $"(?=.({suffixes}))";
         }
 
         public string Folder { get; }
@@ -43,12 +43,12 @@ namespace Gods.System {
 
         public int LastIndexOf(int id) {
             const string index = @"\d+";
-            var temp = string.Format(this.Format, id, index);
+            var temp = string.Format(Format, id, index);
             var arr = temp.Split(new[] { index }, StringSplitOptions.RemoveEmptyEntries);
             var pre = temp.StartsWith(index) ? string.Empty : $"(?<={arr[0]})";
             var next = temp.EndsWith(index) ? string.Empty : $"(?={arr[1]})";
-            var pattern = $"{pre}{index}{next}{this.suffixesPattern}";
-            var files = from f in Him.EnumerateFiles(this.Folder, this.Suffixes)
+            var pattern = $"{pre}{index}{next}{suffixesPattern}";
+            var files = from f in Him.EnumerateFiles(Folder, Suffixes)
                         let p = f.Split('/', '\\').Last()
                         where Regex.IsMatch(p, pattern)
                         let v = Regex.Match(p, pattern).Value
@@ -58,12 +58,12 @@ namespace Gods.System {
         }
 
         private string getFilePath(int id, int index, string suffix) {
-            var prename = string.Format(this.Format, id, index);
-            return $"{this.Folder}/{prename}.{suffix}";
+            var prename = string.Format(Format, id, index);
+            return $"{Folder}/{prename}.{suffix}";
         }
 
         private string GetFile(int id, int index) {
-            foreach (var suffix in this.Suffixes) {
+            foreach (var suffix in Suffixes) {
                 var p = getFilePath(id, index, suffix);
                 if (File.Exists(p)) {
                     return p;
@@ -77,7 +77,7 @@ namespace Gods.System {
         /// </summary>
         /// <param name="id">要添加的文件的分组 Id。</param>
         public void AddFile(int id, byte[] bytes) =>
-            this.AddFile(id, bytes, this.Suffixes.First());
+            AddFile(id, bytes, Suffixes.First());
 
         /// <summary>
         /// 添加一个具有指定分组 Id 的文件。
@@ -86,11 +86,11 @@ namespace Gods.System {
         /// <param name="suffix">要添加的文件的后缀。必须属于 <see cref="Suffixes"/>。</param>
         /// <exception cref="FormatException">要添加的文件的后缀不属于 <see cref="Suffixes"/>。</exception>
         public void AddFile(int id, byte[] bytes, string suffix) {
-            if (!this.Suffixes.Contains(suffix)) {
+            if (!Suffixes.Contains(suffix)) {
                 throw new FormatException(suffix);
             }
-            var nextIndex = this.LastIndexOf(id) + 1;
-            var path = this.getFilePath(id, nextIndex, suffix);
+            var nextIndex = LastIndexOf(id) + 1;
+            var path = getFilePath(id, nextIndex, suffix);
             File.WriteAllBytes(path, bytes);
         }
 
@@ -100,7 +100,7 @@ namespace Gods.System {
         /// <param name="index">要删除的文件下标。</param>
         /// <returns>成功返回 0，失败则返回没有被删除的文件下标。</returns>
         public int DeleteFile(int id, int index) {
-            var file = this.GetFile(id, index);
+            var file = GetFile(id, index);
             if (file == null) {
                 return index;
             }
@@ -109,9 +109,9 @@ namespace Gods.System {
             } catch {
                 return index;
             }
-            var lastIndex = this.LastIndexOf(id);
+            var lastIndex = LastIndexOf(id);
             if (lastIndex > index) {
-                var lastFile = this.GetFile(id, lastIndex);
+                var lastFile = GetFile(id, lastIndex);
                 try {
                     File.Move(lastFile, file);
                 } catch {
