@@ -63,8 +63,8 @@ namespace Gods {
             return dict;
         }
 
-        public static bool Assert(Logic.IfElse assert, Logic.IfElseResult r = Logic.IfElseResult.TC0) {
-            return assert.Assert(r);
+        public static bool Assert(Logic.IfElse ifelse, Logic.IfElseResult r = Logic.IfElseResult.TC0) {
+            return ifelse.Assert(r);
         }
 
         public static T TryGet<T>(Func<T> func, T ifError = default(T)) {
