@@ -19,10 +19,13 @@ namespace Gods.Web {
             if (IsPostBack) {
                 return;
             }
-            Him.Assert(new Logic.IfElse {
-                Condition = Initiate,
-                IfFalse = () => OnError(EventArgs.Empty)
-            });
+            try {
+                if (Initiate()) {
+                    return;
+                }
+            } catch {
+            }
+            OnError(EventArgs.Empty);
         }
 
         protected abstract Func<object, string> Serializer { get; }
@@ -33,23 +36,29 @@ namespace Gods.Web {
         private string mimeKey;
 
         public override void ProcessRequest(HttpContext context) {
-            if (Him.Any(string.IsNullOrWhiteSpace, ajaxKey, context.Request[ajaxKey])) {
+            if (string.IsNullOrWhiteSpace(ajaxKey) || string.IsNullOrWhiteSpace(context.Request[ajaxKey])) {
                 base.ProcessRequest(context);
-            } else {
-                bool ok;
-                var result = tryAjax(out ok);
-                if (ok) {
-                    if (result is byte[]) {
-                        if (!string.IsNullOrWhiteSpace(mimeKey)) {
-                            context.Response.ContentType = MimeMapping.GetMimeMapping('.' + context.Request[mimeKey]);
-                        }
-                        context.Response.BinaryWrite(result as byte[]);
-                        return;
+                return;
+            }
+            bool ok;
+            var result = tryAjax(out ok);
+            if (ok) {
+                if (result is byte[]) {
+                    if (!string.IsNullOrWhiteSpace(mimeKey)) {
+                        context.Response.ContentType = MimeMapping.GetMimeMapping('.' + context.Request[mimeKey]);
                     }
+                    context.Response.BinaryWrite(result as byte[]);
+                    return;
                 }
-                var json = Him.TryGet(() => Serializer?.Invoke(new { ok, result }));
+            }
+            try {
+                var json = Serializer?.Invoke(new { ok, result });
+                if (string.IsNullOrWhiteSpace(json)) {
+                    return;
+                }
                 context.Response.ContentType = "application/json";
                 context.Response.Write(json);
+            } catch {
             }
         }
 
@@ -81,34 +90,6 @@ namespace Gods.Web {
                 ok = false;
                 return e.Message;
             }
-        }
-
-        public void WriteOk(HttpResponse r, object result) {
-            Write(r, true, result);
-        }
-        public void WriteError(HttpResponse r, object result) {
-            Write(r, false, result);
-        }
-        void Write(HttpResponse r, bool ok, object result) {
-            if (r == null) {
-                return;
-            }
-            if (ok) {
-                if (result is byte[]) {
-                    //r.ContentType = "application/json";
-                    r.BinaryWrite(result as byte[]);
-                    r.End();
-                    return;
-                }
-            }
-            r.ContentType = "application/json";
-            r.Write(Serializer(new { ok, result }));
-            //var response = JsonConvert.SerializeObject(new {
-            //    ok = ok,
-            //    result = result,
-            //});
-            //r.Write(response);
-            r.End();
         }
     }
     public abstract class HttpValidationAttribute : Attribute {
