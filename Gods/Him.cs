@@ -33,10 +33,6 @@ namespace Gods {
             }
         }
 
-        public static string Remove(this string source, params char[] chars) {
-            return source.Except(chars).ToString(null);//TODO Except(regex)
-        }
-
         public static string ToString<T>(this IEnumerable<T> source, object spliter) {
             var b = new StringBuilder();
             foreach (var c in source) {

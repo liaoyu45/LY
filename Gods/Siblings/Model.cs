@@ -3,75 +3,68 @@ using System.Linq;
 
 namespace Gods.Siblings {
     public abstract class Model<M> : IModel<M, SiblingsContext<M>> where M : Model<M> {
+        protected internal bool UniqueContext { get; set; }
+        protected bool NoticeInvisibleSiblings { get; set; }
+
         public SiblingsContext<M> Context { get; internal set; }
+
         internal int id;
         internal Dictionary<int, bool> records;
         private M self => this as M;
 
-        public IEnumerable<M> InvisibleSiblings => this.records.Where(r => !r.Value).Select(r => this.Context.First(m => m.id == r.Key));
+        public IEnumerable<M> InvisibleSiblings => records.Where(r => !r.Value).Select(r => Context.First(m => m.id == r.Key));
 
-        public IEnumerable<M> VisibleSiblings => this.records.Where(r => r.Value).Select(r => this.Context.First(m => m.id == r.Key));
+        public IEnumerable<M> VisibleSiblings => records.Where(r => r.Value).Select(r => Context.First(m => m.id == r.Key));
 
-        public virtual bool CanSee(M sibling, When when) {
-            return true;
-        }
+        protected virtual bool AutoRemove(M sibling) => true;
 
-        public bool CanSee(M sibling) {
-            return sibling != null && sibling.Context == this.Context && this.records.ContainsKey(sibling.id) && this.records[sibling.id];
-        }
+        protected internal virtual bool CanSee(M sibling, When when) => true;
 
-        internal void OnSiblingJoined(M sibling) {
-            this.SiblingJoined?.BeginInvoke(this.self, sibling, null, null);
-        }
+        public bool CanSee(M sibling) =>
+            sibling?.Context == Context && records[sibling.id];
 
-        internal void ReLoaded() {
-            this.Loaded?.BeginInvoke(this.self, null, null, null);
-        }
+        internal void OnSiblingJoined(M sibling) =>
+            SiblingJoined?.BeginInvoke(self, sibling, null, null);
 
-        protected virtual bool AutoRemove(M sibling) {
-            return true;
-        }
-
+        /// <summary>
+        /// Make a sibling invisible.
+        /// </summary>
         public void Remove(M sibling) {
-            if (!CanSee(this.self, sibling, When.SelfJoined)) {
+            if (!records[sibling.id]) {
                 return;
             }
-            this.Removed?.BeginInvoke(this.self, sibling, null, null);
-            this.records[sibling.id] = false;
-            if (sibling.CanSee(this.self, When.SelfIsRemoved)) {
-                sibling.SelfIsRemoved?.BeginInvoke(sibling, this.self, null, null);
+            records[sibling.id] = false;
+            if (sibling.CanSee(self, When.SelfRemoved)) {
+                sibling.SelfRemoved?.BeginInvoke(sibling, self, null, null);
             }
-            if (sibling.AutoRemove(this.self)) {
-                sibling.Remove(this.self);
+            if (sibling.AutoRemove(self)) {
+                sibling.Remove(self);
             }
         }
 
-        public static bool CanSee(M self, M sibling, When when) {
-            if (self == null || self.Context == null || sibling == null || self == sibling || self.Context != sibling.Context) {
-                return false;
-            }
-            return self.CanSee(sibling, when);
-        }
 
+        /// <summary>
+        /// Remove self from Context.
+        /// </summary>
         public void Leave() {
-            if (this.Context == null) {
+            if (Context == null) {
                 return;
             }
-            foreach (var s in this.Context.NoticeAllWhenLeave ? this.Context : this.VisibleSiblings) {
-                if (s.CanSee(this.self, When.SiblingLeft)) {
-                    s.SiblingLeft?.BeginInvoke(s, this.self, null, null);
+            foreach (var s in Context) {
+                if (s.CanSee(self, When.SiblingLeft)) {
+                    s.SiblingLeft?.BeginInvoke(s, self, null, null);
                 }
-                s.records.Remove(this.id);
+                s.records.Remove(id);
             }
-            this.Left?.BeginInvoke(this.self, null, null, null);
-            this.Context = null;
-            this.records.Clear();
+            Context.all.Remove(self);
+            Context = null;
+            records.Clear();
         }
 
-        public event SiblingEventHandler<M> Left;
-        public event SiblingEventHandler<M> Loaded;
-        public event SiblingEventHandler<M> Removed;
-        public event SiblingEventHandler<M> SelfIsRemoved;
+        /// <summary>
+        /// When self becomes invisible to a sibling.
+        /// </summary>
+        public event SiblingEventHandler<M> SelfRemoved;
         public event SiblingEventHandler<M> SiblingJoined;
         public event SiblingEventHandler<M> SiblingLeft;
     }

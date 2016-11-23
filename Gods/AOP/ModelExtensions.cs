@@ -4,24 +4,23 @@ using System.Linq;
 
 namespace Gods.AOP {
     public static class ModelExtensions {
-        private static Dictionary<Guid, List<IValidator>> validators = new Dictionary<Guid, List<IValidator>>();
+        private static Dictionary<Guid, List<IValidator>> all = new Dictionary<Guid, List<IValidator>>();
 
         public static void AddValidator(Type type, IValidator validator) {
             var guid = type.GUID;
-            if (validators[guid] == null) {
-                validators[guid] = new List<IValidator>();
+            if (!all.ContainsKey(guid)) {
+                all[guid] = new List<IValidator>();
             }
-            validators[guid].Add(validator);
+            all[guid].Add(validator);
         }
 
         public static IEnumerable<IValidator> GetValidators(Type type) {
-            var vs = validators[type.GUID];
+            var vs = all[type.GUID];
             if (vs?.Count > 0) {
                 return vs.ToArray();
             }
-            return Him.GetBases(type, typeof(ModelBase))
-                .Select(b => validators[b.GUID]).Where(vsvs => vsvs != null)
-                .SelectMany(v => v).Where(v => v.Inheritable);
+            return Him.GetBases(type, typeof(ModelBase)).Where(t => all.ContainsKey(t.GUID))
+                .SelectMany(b => all[b.GUID]).Where(v => v.Inheritable);
         }
     }
 }
