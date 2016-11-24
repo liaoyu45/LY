@@ -1,7 +1,6 @@
 ﻿(function () {
     "use strict"
     function GodThere() {
-        var self = this;
         this.initiatedTime = new Date();
         this.modes = {
             coding: location.href.length === 11,
@@ -35,7 +34,7 @@
                 var fullname = "on" + ename;
                 if (!(fullname in obj)) {
                     var store = this.addEventListener.pre + ename;
-                    if (!obj[store]) {
+                    if (!(store in obj)) {
                         obj[store] = [];
                     }
                     Object.defineProperty(obj, fullname, {
@@ -303,24 +302,6 @@
                     result.suffixes = self.suffixes;
                     return result;
                 }
-                this.loadFiles = function (index, onSuccess, onFail) {
-                    if (self.canceled) {
-                        return;
-                    }
-                    var r = create_iiData(arguments);
-                    $.ajax(r.getPath(), {
-                        success: function () {
-                            god.safe(r.onSuccess)(r);
-                            r.nextIndex(self.loadFiles);
-                        },
-                        error: function () {
-                            r.nextSuffix(self.loadFiles, function () {
-                                self.reset();
-                                god.safe(r.onFail)(r);
-                            });
-                        },
-                    });
-                };
                 this.loadImgs = function (index, onSuccess, onFail) {
                     if (god.modes.coding) {
                         if (typeof index === "function") {
@@ -350,64 +331,6 @@
                 }
             }
             return new idIndexFileInner();
-        })();
-        this.request = (function () {
-            function innerClass() {
-                var innerUrl, innerData, serverMethod, serverMethodKey = "serverMethod";
-                this.setUrl = function (url) {
-                    innerUrl = url;
-                    return this;
-                }
-                this.setServerMethodKey = function (key) {
-                    serverMethodKey = key;
-                }
-                var requests = [];
-                this.prepare = function (method, data, url) {
-                    if (arguments.length > 0) {
-                        serverMethod = arguments[0];
-                    }
-                    if (arguments.length > 1) {
-                        innerData = arguments[1];
-                    }
-                    if (arguments.length > 2) {
-                        innerUrl = arguments[2];
-                    }
-                    return this;
-                };
-                this.send = function (callback, tag) {
-                    if (requests.indexOf(tag) > -1) {
-                        return self.window.toast("正在获取数据，请稍候……");
-                    }
-                    if (typeof innerData === "object") {
-                        if (serverMethodKey && serverMethod) {
-                            innerData[serverMethodKey] = serverMethod;
-                        }
-                    }
-                    if (tag) {
-                        requests.push(tag)
-                    }
-                    var random = parseInt(Number.MAX_VALUE * Math.random());
-                    $.ajax(self.formatString("{0}?random{1}={1}", innerUrl, random), {
-                        data: innerData,
-                        success: function (response) {
-                            try {
-                                callback && callback(response);
-                            } catch (e) {
-                                self.window.toast(e.message);
-                            }
-                        },
-                        error: function (e) {
-
-                        },
-                        complete: function () {
-                            requests.splice(requests.indexOf(tag), 1);
-                            serverMethod = "";
-                            innerData = {};
-                        }
-                    });
-                }
-            };
-            return new innerClass();
         })();
         this.random = function (exclude) {
             function innerClass() {
