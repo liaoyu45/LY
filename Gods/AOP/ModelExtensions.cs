@@ -19,8 +19,10 @@ namespace Gods.AOP {
             if (vs?.Count > 0) {
                 return vs.ToArray();
             }
-            return Him.GetBases(type, typeof(ModelBase)).Where(t => all.ContainsKey(t.GUID))
-                .SelectMany(b => all[b.GUID]).Where(v => v.Inheritable);
+            return Him.GetBases(type, typeof(ModelBase))
+                .Where(t => all.ContainsKey(t.GUID))
+                .SelectMany(b => all[b.GUID])
+                .Where(v => v.Inheritable);
         }
     }
 }

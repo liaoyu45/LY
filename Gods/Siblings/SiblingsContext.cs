@@ -1,19 +1,15 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Gods.Siblings {
     public abstract partial class SiblingsContext<M> : ISiblingsContext<M> where M : Model<M> {
-        internal List<M> all = new List<M>();
+        internal List<M> all { get; } = new List<M>();
 
-        public IEnumerator<M> GetEnumerator() {
-            return all.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() {
-            return GetEnumerator();
-        }
         public void Add(M model) {
+            if (typeof(M).GenericTypeArguments[0] != typeof(M)) {
+                throw new ArithmeticException($"About type: {typeof(M).FullName}, write codes like this: class XXX : Model<XXX>{{ .. }}, not: class XXX : Model<YYY> {{ .. }}.");
+            }
             if (model.Context == this || model.UniqueContext && model.Context != null ) {
                 return;
             }

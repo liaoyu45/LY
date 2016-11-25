@@ -3,8 +3,7 @@ using System.Linq;
 
 namespace Gods.Siblings {
     public abstract class Model<M> : IModel<M, SiblingsContext<M>> where M : Model<M> {
-        protected internal bool UniqueContext { get; set; }
-        protected bool NoticeInvisibleSiblings { get; set; }
+        protected internal virtual bool UniqueContext { get; set; } = true;
 
         public SiblingsContext<M> Context { get; internal set; }
 
@@ -12,9 +11,11 @@ namespace Gods.Siblings {
         internal Dictionary<int, bool> records;
         private M self => this as M;
 
-        public IEnumerable<M> InvisibleSiblings => records.Where(r => !r.Value).Select(r => Context.First(m => m.id == r.Key));
+        public IEnumerable<M> Siblings => Context.all.Where(m => m.id != id);
 
-        public IEnumerable<M> VisibleSiblings => records.Where(r => r.Value).Select(r => Context.First(m => m.id == r.Key));
+        public IEnumerable<M> InvisibleSiblings => records.Where(r => !r.Value).Select(r => Context.all.First(m => m.id == r.Key));
+
+        public IEnumerable<M> VisibleSiblings => records.Where(r => r.Value).Select(r => Context.all.First(m => m.id == r.Key));
 
         protected virtual bool AutoRemove(M sibling) => true;
 
@@ -50,7 +51,7 @@ namespace Gods.Siblings {
             if (Context == null) {
                 return;
             }
-            foreach (var s in Context) {
+            foreach (var s in Context.all) {
                 if (s.CanSee(self, When.SiblingLeft)) {
                     s.SiblingLeft?.BeginInvoke(s, self, null, null);
                 }

@@ -4,7 +4,7 @@ namespace Gods.Siblings {
     partial interface IModel<M, out C> where M : IModel<M, ISiblingsContext<M>> where C : ISiblingsContext<M> {
     }
 
-    partial interface ISiblingsContext<M> : IEnumerable<M> where M : IModel<M, ISiblingsContext<M>> {
+    partial interface ISiblingsContext<M> where M : IModel<M, ISiblingsContext<M>> {
     }
 
     public enum When {
