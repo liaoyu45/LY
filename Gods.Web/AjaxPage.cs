@@ -6,24 +6,9 @@ using System.Web.UI;
 namespace Gods.Web {
     public abstract class AjaxPage : Page {
         #region script
-        static readonly string SCRIPT = (@"
+        static readonly string SCRIPT = @"
         (function () {
             'use strict';
-            function getHttp() {
-                var http;
-                try {
-                    http = new XMLHttpRequest();
-                }
-                catch (e) {
-                    try {
-                        http = new ActiveXObject('Msxml2.XMLHTTP');
-                    }
-                    catch (e) {
-                        http = new ActiveXObject('Microsoft.XMLHTTP');
-                    }
-                }
-                return http;
-            }
             var key = '{0}';
             var methods = ['put', 'delete', 'post', 'get'];
             function form2str(form) {
@@ -137,7 +122,7 @@ namespace Gods.Web {
                     } else {
                         url += '?' + data;
                     }
-                    var http = getHttp();
+                    var http = new XMLHttpRequest();
                     http.open(method, url, true);
                     http.onreadystatechange = function (e) {
                         if (this.readyState !== 4) {
@@ -158,21 +143,19 @@ namespace Gods.Web {
                     http.send(isPost ? data : null);
                 }
             };
-        }).call(window);").Replace('\'', '\"');
+        }).call(window);".Replace('\'', '\"');
         #endregion
 
-        public AjaxPage() : this("ajax", null) { }
+        public AjaxPage() : this("ajax") { }
 
-        public AjaxPage(string ajax, string mime) : base() {
+        public AjaxPage(string ajax) : base() {
             ajaxKey = ajax;
-            mimeKey = mime;
             Load += WebHubPage_Load;
         }
 
         protected abstract Func<object, string> Serializer { get; }
 
         private string ajaxKey;
-        private string mimeKey;
 
         protected virtual bool Initiate() => true;
 
@@ -205,9 +188,6 @@ namespace Gods.Web {
             var result = tryAjax(out ok);
             if (ok) {
                 if (result is byte[]) {
-                    if (!string.IsNullOrWhiteSpace(mimeKey)) {
-                        context.Response.ContentType = MimeMapping.GetMimeMapping('.' + context.Request[mimeKey]);
-                    }
                     context.Response.BinaryWrite(result as byte[]);
                     return;
                 }
