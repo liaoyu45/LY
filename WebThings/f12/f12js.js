@@ -1,6 +1,15 @@
-﻿/// <reference path="god.js" />
-god.f12js = function (obj, name, page) {
-    var panel = god.f12js.fromTemplate("panel");
+﻿/// <reference path="/god.js" />
+var f12js = {};
+god.addEventListener(f12js, "load");
+f12js.load = function (page) {
+    Object.defineProperty(this, "page", {
+        get: function () {
+            return page;
+        }
+    });
+};
+f12js.doo = function (obj, startname) {
+    var panel = f12js.templ("panel");
     var container = panel.querySelector("[data-container]");
     var allPs = [];
     var removed = [];
@@ -36,7 +45,7 @@ god.f12js = function (obj, name, page) {
         var size = panel.querySelector("input[type=range][data-size]");
         var start = panel.querySelector("input[type=range][data-start]");
         var i = getLength();
-        var max = Math.min(page, i);
+        var max = Math.min(f12js.page, i);
         if (size.value > max) {
             size.value = max;
         }
@@ -46,22 +55,22 @@ god.f12js = function (obj, name, page) {
     function initiate() {
         var size = panel.querySelector("input[type=range][data-size]");
         var start = panel.querySelector("input[type=range][data-start]");
-        size.max = size.value = page;
+        size.max = size.value = f12js.page;
         size.min = 1;
         start.min = 0;
         start.value = 0;
-        start.max = allPs.length - page;
-        var length = god.f12js.layers.length;
+        start.max = allPs.length - f12js.page;
+        var length = f12js.layers.length;
         panel.style.zIndex = length;
         if (length) {
-            var s = getComputedStyle(god.f12js.layers[length - 1]);
+            var s = getComputedStyle(f12js.layers[length - 1]);
             panel.style.top = parseFloat(s.top) + top + "px";
             panel.style.left = parseFloat(s.left) + top + "px";
         } else {
             panel.style.top = 0 + "px";
             panel.style.left = 0 + "px";
         }
-        if (!god.f12js.layers.length) {
+        if (!f12js.layers.length) {
             window.addEventListener("keydown", keydownHide);
         }
         start.addEventListener("change", addItems);
@@ -71,8 +80,8 @@ god.f12js = function (obj, name, page) {
             addItems();
         });
         panel.querySelector("[data-close]").addEventListener("click", function () {
-            for (var i = god.f12js.layers.length - 1; i >= 0; i--) {
-                var isCurrent = god.f12js.layers[i] === panel;
+            for (var i = f12js.layers.length - 1; i >= 0; i--) {
+                var isCurrent = f12js.layers[i] === panel;
                 removeLast();
                 if (isCurrent) {
                     return;
@@ -87,7 +96,7 @@ god.f12js = function (obj, name, page) {
         var v = obj[i];
         var t = typeof v;
         var isValueType = ["number", "boolean", "string"].indexOf(t) > -1;
-        var item = god.f12js.fromTemplate("item", "tbody");
+        var item = f12js.templ("item", "tbody");
         item.dataset.f12item = true;
         container.appendChild(item);
         item.querySelector("[data-type]").innerHTML = t;
@@ -112,9 +121,9 @@ god.f12js = function (obj, name, page) {
             var self = this;
             var name = this.dataset.name;
             var orignal = this.dataset.orignal;
-            var modify = god.f12js.fromTemplate("modify");
+            var modify = f12js.templ("modify");
             modify.dataset.modifying = true;
-            var title  = modify.querySelector("[data-title]");
+            var title = modify.querySelector("[data-title]");
             title.innerHTML = "modify: " + name;
             modify.querySelector("[data-orignal]").innerText = orignal;
             god.window.dragable(modify, title);
@@ -151,7 +160,7 @@ god.f12js = function (obj, name, page) {
                 panel.firstElementChild.removeChild(modify);
             });
         } else {
-            god.f12js(obj[this.dataset.name], this.dataset.name, page);
+            f12js.doo(obj[this.dataset.name], this.dataset.name);
         }
     }
     function till_f12item(self) {
@@ -170,7 +179,7 @@ god.f12js = function (obj, name, page) {
         var name = this.dataset.name;
         removed[name] = obj[name];
         delete obj[name];
-        var r = god.f12js.fromTemplate("removedItem");
+        var r = f12js.templ("removedItem");
         if ("input" in r) {
             r.value = name;
         } else {
@@ -192,10 +201,10 @@ god.f12js = function (obj, name, page) {
         panel.querySelector("[data-removed]").appendChild(r);
     }
     function hasLocked() {
-        if (!god.f12js.layers.length) {
+        if (!f12js.layers.length) {
             return true;
         }
-        var last = god.f12js.layers[god.f12js.layers.length - 1];
+        var last = f12js.layers[f12js.layers.length - 1];
         var m = last.querySelector("[data-modifying]");
         if (m) {
             m.querySelector("[data-new]").focus();
@@ -208,16 +217,16 @@ god.f12js = function (obj, name, page) {
         return false;
     }
     function removeLast() {
-        var index = god.f12js.layers.length - 1;
-        var last = god.f12js.layers[index];
+        var index = f12js.layers.length - 1;
+        var last = f12js.layers[index];
         var m = last.querySelector("[data-modifying]");
         if (m) {
             m.parentElement.removeChild(m);
             return;
         }
         document.body.removeChild(last);
-        god.f12js.layers.splice(index, 1);
-        if (!god.f12js.layers.length) {
+        f12js.layers.splice(index, 1);
+        if (!f12js.layers.length) {
             window.removeEventListener("keydown", keydownHide);
         }
     }
@@ -234,7 +243,7 @@ god.f12js = function (obj, name, page) {
         return allPs.length;
     }
     function titleText() {
-        panel.dataset.title = name;
+        panel.dataset.title = startname;
         var title = panel.querySelector("[data-title]");
         if (!god.window.browser.mobile) {
             god.window.dragable(panel, title);
@@ -243,17 +252,17 @@ god.f12js = function (obj, name, page) {
         title.onselectstart = function () {
             return false;
         };
-        if (god.f12js.layers.length) {
-            title.innerHTML += god.f12js.layers[0].dataset.title;
-            for (var i = 1; i < god.f12js.layers.length; i++) {
-                title.innerHTML += '.' + god.f12js.layers[i].dataset.title;
+        if (f12js.layers.length) {
+            title.innerHTML += f12js.layers[0].dataset.title;
+            for (var i = 1; i < f12js.layers.length; i++) {
+                title.innerHTML += '.' + f12js.layers[i].dataset.title;
             }
         } else {
-            title.innerHTML += name;
+            title.innerHTML += "[index]";
         }
     }
     function addPanel() {
-        god.f12js.layers.push(panel);
+        f12js.layers.push(panel);
         document.body.appendChild(panel);
     }
     function main() {
@@ -267,11 +276,26 @@ god.f12js = function (obj, name, page) {
     }
     main();
 };
-god.f12js.fromTemplate = function (id, parent) {
-    var tt = document.getElementById(id);
-    var tttt = document.createElement(parent || "div");
-    tttt.innerHTML = tt.textContent;
-    return tttt.firstElementChild;
-
+f12js.layers = [];
+f12js.templates = [];
+(function () {
+    var h = new XMLHttpRequest();
+    h.open("get", "f12js.html", true);
+    h.onreadystatechange = function (r) {
+        if (h.readyState === 4 && h.status === 200) {
+            var d = document.createElement("div");
+            d.innerHTML = h.responseText.split("<body>")[1].split("</body")[0];
+            f12js.templ = function (tn, pn) {
+                var t = d.querySelector("script[data-template=" + tn + "]");
+                var p = document.createElement(pn || "div");
+                p.innerHTML = t.textContent;
+                return p.firstElementChild;
+            };
+            f12js.noticeload();
+        }
+    };
+    h.send(null);
+})();
+if (god.modes.coding) {
+    f12js.load();
 }
-god.f12js.layers = [];

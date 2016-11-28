@@ -32,6 +32,7 @@
 
 .f12js {
     position: fixed;
+    width: 618px;
     height: 382px;
     padding: 11px;
     box-shadow: #a66 0 0 5px 5px inset;

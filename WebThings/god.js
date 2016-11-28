@@ -146,13 +146,11 @@
                     function move(e) {
                         ele.style.left = parseFloat(ele.dataset.x) + e.clientX - parseFloat(ele.dataset.ox) + "px";
                         ele.style.top = parseFloat(ele.dataset.y) + e.clientY - parseFloat(ele.dataset.oy) + "px";
-                        document.title = ele.style.top + "  " + ele.style.left;
                     }
                     function release() {
                         window.removeEventListener("blur", release);
                         window.removeEventListener("mouseup", release);
                         window.removeEventListener("mousemove", move);
-                        moving = false;
                     }
                 },
                 toast: function (message, duration, later) {
