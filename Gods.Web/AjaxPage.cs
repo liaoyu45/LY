@@ -9,8 +9,6 @@ namespace Gods.Web {
         static readonly string SCRIPT = @"
         (function () {
             'use strict';
-            var key = '{0}';
-            var methods = ['put', 'delete', 'post', 'get'];
             function form2str(form) {
                 var o = {};
                 var s = form.getElementsByTagName('select');
@@ -107,14 +105,11 @@ namespace Gods.Web {
                             data = obj2str(a1.data);
                         }
                     }
-                    data += '&' + key + '=' + action;
+                    data += '&{0}=' + action;
                     if (data[0] === '&') {
                         data = data.substr(1);
                     }
                     var method = isForm ? form.method : a1.method;
-                    if (methods.indexOf(a1.method) === -1) {
-                        method = 'get';
-                    }
                     var isPost = method === 'post';
                     var url = location.href.split('?')[0];
                     if (isPost) {
@@ -163,10 +158,12 @@ namespace Gods.Web {
             if (IsPostBack) {
                 return;
             }
-            for (int i = 0; i < Controls.Count; i++) {
-                var body = Controls[i] as LiteralControl;
+            for (var i = 0; i < this.Controls.Count; i++) {
+                var body = this.Controls[i] as LiteralControl;
                 if (body?.Text.Contains("<body>") == true) {
-                    body.Text = body.Text.Replace("<body>", $"<body>\r\n\t<script type='text/javascript'>{SCRIPT.Replace("{0}", this.ajaxKey)}\r\n\t</script>");
+                    body.Text = body.Text.Replace("<body>", $@"<body>
+    <script type='text/javascript'>{SCRIPT.Replace("{0}", this.ajaxKey)}
+    </script>");
                     break;
                 }
             }
@@ -186,12 +183,6 @@ namespace Gods.Web {
             }
             bool ok;
             var result = tryAjax(out ok);
-            if (ok) {
-                if (result is byte[]) {
-                    context.Response.BinaryWrite(result as byte[]);
-                    return;
-                }
-            }
             try {
                 var json = Serializer?.Invoke(new { ok, result });
                 if (string.IsNullOrWhiteSpace(json)) {

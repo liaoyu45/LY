@@ -105,7 +105,7 @@ namespace Gods {
             if (ones == 1) {
                 bs.Add((byte)0x80); // 0x80 = $10000000 
             }
-            for (int i = 0; i < zeros; i++) {
+            for (var i = 0; i < zeros; i++) {
                 bs.Add((byte)0);
             }
 
@@ -141,7 +141,7 @@ namespace Gods {
 
             uint a, b, c, d;
 
-            for (int k = 0; k < x.Length; k += 16) {
+            for (var k = 0; k < x.Length; k += 16) {
                 a = A;
                 b = B;
                 c = C;
@@ -235,7 +235,7 @@ namespace Gods {
 			* a multiple of 4. 
 			*/
             byte[] output = new byte[bits.Length * 4];
-            for (int i = 0, j = 0; i < bits.Length; i++, j += 4) {
+            for (var i = 0, j = 0; i < bits.Length; i++, j += 4) {
                 output[j] = (byte)(bits[i] & 0xff);
                 output[j + 1] = (byte)((bits[i] >> 8) & 0xff);
                 output[j + 2] = (byte)((bits[i] >> 16) & 0xff);
@@ -255,7 +255,7 @@ namespace Gods {
         public static string Encrypt(string original) {
             char[] c = original.ToCharArray();
             byte[] b = new byte[c.Length];
-            for (int i = 0; i < c.Length; i++) {
+            for (var i = 0; i < c.Length; i++) {
                 b[i] = (byte)c[i];
             }
             byte[] digest = MD5Array(b);

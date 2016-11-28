@@ -254,7 +254,7 @@ namespace KeyboardSynchronizer {
 
         void deleteSelectedRows() {
             var rows = allWindows.SelectedRows;
-            for (int i = rows.Count - 1; i >= 0; i--) {
+            for (var i = rows.Count - 1; i >= 0; i--) {
                 var r = rows[i];
                 allWindows.Rows.Remove(r);
             }

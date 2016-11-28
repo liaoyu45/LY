@@ -49,7 +49,7 @@ namespace Gods {
             } catch (Exception e) {
                 dict.Add(0, e.Message);
             }
-            for (int i = 0; i < actions.Length; i++) {
+            for (var i = 0; i < actions.Length; i++) {
                 try {
                     actions[i]();
                 } catch (Exception e) {

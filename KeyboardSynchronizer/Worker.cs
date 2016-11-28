@@ -125,7 +125,7 @@ namespace KeyboardSynchronizer {
                 return;
             }
             WorkingNotice?.BeginInvoke(fore, null, null);
-            for (int i = AllWindows.Count - 1; i >= 0; i--) {
+            for (var i = AllWindows.Count - 1; i >= 0; i--) {
                 var item = AllWindows[i];
                 var w = item.Key;
                 if (w.SameOrBelongTo(fore)) {

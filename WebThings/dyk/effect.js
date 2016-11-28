@@ -192,9 +192,25 @@ movement.onpicking = function (hrl) {
     r();
 };
 var effect = {};
-effect.fillArr = [];
 effect.dur = 22;// god.window.mobile ? 22 : 44;
-effect.load = function (s) {
+effect.load = function (settings) {
+    var fillarr = [];
+    Object.defineProperty(effect, "fillArr", {
+        get: function () {
+            return fillarr;
+        }
+    });
+    if (settings && settings.tagImages && tagImages.length === game.tagsMax) {
+        for (var i = 0; i < game.tagsMax; i++) {
+            var img = settings.tagImages[i];
+            fillarr.push({ baseColor: img.color, fill: "url(" + img + ")" });
+        }
+    } else {
+        for (var i = 0; i < game.tagsMax; i++) {
+            var color = god.random().color();
+            fillarr.push({ baseColor: color, fill: color });
+        }
+    }
     var midLayer = graphic.createElement("svg");
     midLayer.setAttribute("width", graphic.width * game.count);
     midLayer.setAttribute("height", graphic.height * game.count);
@@ -205,10 +221,6 @@ effect.load = function (s) {
     effect.pattern.id = "dyk_clone"
     effect.pattern.setAttribute("width", 1);
     effect.pattern.setAttribute("height", 1);
-    for (var i = 0; i < game.tagsMax; i++) {
-        var color = god.random().color();
-        effect.fillArr.push({ baseColor: color, image: color });
-    }
     for (var i = 0; i < game.sumMax; i++) {
         for (var j = 0; j < game.tagsMax * 2; j++) {
             var pattern = defs.appendChild(graphic.createElement("pattern"));
@@ -218,9 +230,9 @@ effect.load = function (s) {
             var rect = pattern.appendChild(graphic.createElement("rect"));
             rect.setAttribute("width", 111);
             rect.setAttribute("height", 111);
-            var fill = effect.fillArr[parseInt(j / 2)];
+            var fill = fillarr[parseInt(j / 2)];
             fill.id = pattern.id;
-            rect.style.fill = fill.image;
+            rect.style.fill = fill.fill;
             var content = i ? i.toString() : "";
             var text = pattern.appendChild(graphic.createElement("text"));
             text.setAttribute("stroke", "#fff");
