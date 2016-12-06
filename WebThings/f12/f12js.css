@@ -32,7 +32,7 @@
 
 .f12js {
     position: fixed;
-    width: 618px;
+    /*width: 618px;*/
     height: 382px;
     padding: 11px;
     box-shadow: #a66 0 0 5px 5px inset;
@@ -70,8 +70,6 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
-            box-shadow: #a66 0 0 5px 5px inset;
-            background-color: #fff;
         }
 
             .layer > table > * > tr > *:first-child + td {
@@ -80,13 +78,16 @@
 
         .layer > table > thead > tr {
             background-image: linear-gradient(#fff,#a66);
+            height: 22px;
         }
 
         .layer > table > tbody > tr:nth-child(2n) {
+            height: 33px;
             background-image: linear-gradient(#fff,#a66);
         }
 
         .layer > table > tbody > tr:nth-child(2n+1) {
+            height: 22px;
             border-bottom: 1px solid #a66;
         }
 

@@ -62,14 +62,8 @@ f12js.doo = function (obj, startname) {
         start.max = allPs.length - f12js.page;
         var length = f12js.layers.length;
         panel.style.zIndex = length;
-        if (length) {
-            var s = getComputedStyle(f12js.layers[length - 1]);
-            panel.style.top = parseFloat(s.top) + top + "px";
-            panel.style.left = parseFloat(s.left) + top + "px";
-        } else {
-            panel.style.top = 0 + "px";
-            panel.style.left = 0 + "px";
-        }
+        panel.style.top = length * 33 + "px";
+        panel.style.left = 0 + "px";
         if (!f12js.layers.length) {
             window.addEventListener("keydown", keydownHide);
         }
@@ -105,7 +99,8 @@ f12js.doo = function (obj, startname) {
         dataName.dataset.name = i;
         dataName.addEventListener("click", removeItem);
         var vE = item.querySelector("[data-orignal]");
-        vE.innerText = isValueType ? v : "(click to show more)";
+        vE.style.textAlign = "left";
+        vE.innerText = isValueType ? v : "(+)";
         vE.dataset.name = i;
         if (isValueType) {
             vE.dataset.orignal = v;
@@ -245,7 +240,9 @@ f12js.doo = function (obj, startname) {
     function titleText() {
         panel.dataset.title = startname;
         var title = panel.querySelector("[data-title]");
-        if (!god.window.browser.mobile) {
+        if (god.window.mobile) {
+            panel.style.width = window.document.body.clientWidth;
+        } else {
             god.window.dragable(panel, title);
         }
         title.innerHTML = "Debugger: ";
