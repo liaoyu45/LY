@@ -235,7 +235,7 @@ namespace Gods {
 			* a multiple of 4. 
 			*/
             byte[] output = new byte[bits.Length * 4];
-            for (var i = 0, j = 0; i < bits.Length; i++, j += 4) {
+            for (int i = 0, j = 0; i < bits.Length; i++, j += 4) {
                 output[j] = (byte)(bits[i] & 0xff);
                 output[j + 1] = (byte)((bits[i] >> 8) & 0xff);
                 output[j + 2] = (byte)((bits[i] >> 16) & 0xff);
