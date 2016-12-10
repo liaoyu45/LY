@@ -43,6 +43,7 @@
     <Compile Include="AOP\Modes.cs" />
     <Compile Include="Data\Space.cs" />
     <Compile Include="Data\Space~T.cs" />
+    <Compile Include="Linq\Sort.cs" />
     <Compile Include="Logic\IfElse.cs" />
     <Compile Include="Siblings\SiblingEventHandler.cs" />
     <Compile Include="Siblings\SiblingsContext.cs" />
@@ -54,6 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
