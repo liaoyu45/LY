@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -6,36 +6,18 @@
     <script src="/god.js"></script>
 </head>
 <body>
-    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" id="svg">
-        <defs id="defs">
-            <linearGradient id="hts">
-                <stop offset="0" stop-color="#f00"></stop>
-                <stop offset="50%" stop-color="#0f0"></stop>
-                <stop offset="100%" stop-color="#00f"></stop>
-            </linearGradient>
-        </defs>
-        <rect x="90" width="20" y="200" height="200" fill="url(#hts)"></rect>
-    </svg>
-
     <script type="text/javascript">
-        var ooo = {};
-        god.addEventListener(ooo, "click");
-        ooo.onclick = function () {
-            alert(1);
-        };
-        var e = function e() {
-            alert(999);
-        };
-        ooo.onclick = e;
-        god.removeEventListener(ooo, "click", e);
-        ooo.onclick = 123;
-        ooo.noticeclick();
-        function haha(p, s, a) {
+        function createLollipop(p, s, a, c) {
             var r = a * s * s * 0.5;
             if (r > 100) {
                 r = 100;
                 a = r * 2 / s / s;
             }
+            var ns = "http://www.w3.org/2000/svg";
+            var svg = document.createElementNS(ns, "svg");
+            svg.setAttribute("width", r * 2);
+            svg.setAttribute("height", r * 2);
+            var defs = svg.appendChild(document.createElementNS(ns, "defs"));
             function getPoints() {
                 function rr(fA) {
                     return function (t) {
@@ -58,46 +40,54 @@
                 }
                 return pts;
             }
-            var pts = getPoints(p, s, a);
+            var pts = getPoints();
             var d = god.formatString("M {0} {0}", r);
             for (var i = 0; i < pts.length; i++) {
                 d += god.formatString(" L {0} {1}", pts[i][0], pts[i][1]);
             }
             d += god.formatString(" L {0} {0}", r);
-            var path = document.createElementNS(svg.namespaceURI, "path");
+            var path = document.createElementNS(ns, "path");
             path.setAttribute("d", d);
             path.id = "woeirj";
             defs.appendChild(path);
             for (var i = 0; i < p; i++) {
-                var use = svg.appendChild(document.createElementNS(svg.namespaceURI, "g"));
+                var use = svg.appendChild(document.createElementNS(ns, "g"));
                 var child = use.appendChild(path.cloneNode());
                 use.setAttribute("transform", god.formatString("rotate({0} {1} {1})", i / p * 360, r));
                 child.style.fill = god.formatString("rgb({0})", god.color.hsl2rgb(i / p, 1, 0.5).join());
             }
-            var cir = svg.appendChild(document.createElementNS(svg.namespaceURI, "circle"));
+            var cir = svg.appendChild(document.createElementNS(ns, "circle"));
             cir.cx.baseVal.value = cir.cy.baseVal.value = r;
-            cir.style.stroke = "#00f";
-            cir.style.strokeWidth = 2;
             cir.r.baseVal.value = r;
-            var fck = defs.appendChild(document.createElementNS(svg.namespaceURI, "radialGradient"));
-            fck.id = "fff";
-            var white0 = document.createElementNS(svg.namespaceURI, "stop");
-            white0.setAttribute("stop-color", "#fff");
-            white0.setAttribute("offset", 0);
-            var white1 = document.createElementNS(svg.namespaceURI, "stop");
-            white1.setAttribute("stop-color", "rgba(255,255,255,0.8)");
-            white1.setAttribute("offset", "20%");
-            var white2 = document.createElementNS(svg.namespaceURI, "stop");
-            white2.setAttribute("stop-color", "rgba(255,255,156,0)");
-            white2.setAttribute("offset", "100%");
-            fck.appendChild(white0);
-            fck.appendChild(white1);
-            fck.appendChild(white2);
+            var fck = defs.appendChild(document.createElementNS(ns, "radialGradient"));
+            fck.id = "fck" + Math.random();
+            for (var i = 0; i < c.length; i++) {
+                var cc = document.createElementNS(ns, "stop");
+                cc.setAttribute("stop-color", c[i][0]);
+                cc.setAttribute("offset", c[i][1]);
+                fck.appendChild(cc);
+            }
             cir.setAttribute("fill", god.formatString("url(#{0})", fck.id));
             return svg;
         }
         var p = 444, s = 444, a = 0.0011;
-        document.body.appendChild(haha(p, s, a));
+        var c = [["rgba(255,255,255,1)", 0], ["rgba(255,255,255,0.9)", "20%"], ["rgba(255,255,255,0.8)", "80%"], ["rgba(255,255,255,1)", "100%"]];
+        document.body.appendChild(createLollipop(p, s, a, c));
     </script>
+    <style type="text/css">
+        svg {
+            animation: rotate 1s linear infinite normal;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(360deg);
+            }
+
+            to {
+                transform: rotate(0deg);
+            }
+        }
+    </style>
 </body>
 </html>
