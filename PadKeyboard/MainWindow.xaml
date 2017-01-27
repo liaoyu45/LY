@@ -1,0 +1,88 @@
+﻿<Window x:Class="PadKeyboard.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PadKeyboard"
+        mc:Ignorable="d"
+		Background="Transparent"
+		AllowsTransparency="True"
+		WindowStyle="None"
+		Top="0"
+		Left="0"
+		ResizeMode="NoResize"
+		Topmost="True">
+    <Window.Resources>
+        <ResourceDictionary Source="Css.xaml"></ResourceDictionary>
+    </Window.Resources>
+    <Grid Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <Canvas Name="path" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <Grid Grid.Row="0" Name="infoPanel" Background="Transparent" VerticalAlignment="Top">
+            <Button Name="test" Width="523" Height="123" ></Button>
+        </Grid>
+        <Grid Grid.Row="1" Name="keysPanel" VerticalAlignment="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <!--<ColumnDefinition Width="1*"/>-->
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Grid.Column="0" Name="q"></Grid>
+            <Grid Grid.Row="0" Grid.Column="1" Name="w"></Grid>
+            <Grid Grid.Row="0" Grid.Column="2" Name="e"></Grid>
+            <Grid Grid.Row="0" Grid.Column="3" Name="r"></Grid>
+            <Grid Grid.Row="0" Grid.Column="4" Name="t"></Grid>
+            <Grid Grid.Row="0" Grid.Column="5" Name="y"></Grid>
+            <Grid Grid.Row="0" Grid.Column="6" Name="u"></Grid>
+            <Grid Grid.Row="0" Grid.Column="7" Name="i"></Grid>
+            <Grid Grid.Row="0" Grid.Column="8" Name="o"></Grid>
+            <Grid Grid.Row="0" Grid.Column="9" Name="p"></Grid>
+            <!--line 0-->
+            <Grid Grid.Row="1" Grid.Column="0" Name="a"></Grid>
+            <Grid Grid.Row="1" Grid.Column="1" Name="s"></Grid>
+            <Grid Grid.Row="1" Grid.Column="2" Name="d"></Grid>
+            <Grid Grid.Row="1" Grid.Column="3" Name="f"></Grid>
+            <Grid Grid.Row="1" Grid.Column="4" Name="g"></Grid>
+            <Grid Grid.Row="1" Grid.Column="5" Name="h"></Grid>
+            <Grid Grid.Row="1" Grid.Column="6" Name="j"></Grid>
+            <Grid Grid.Row="1" Grid.Column="7" Name="k"></Grid>
+            <Grid Grid.Row="1" Grid.Column="8" Name="l"></Grid>
+            <Grid Grid.Row="1" Grid.Column="9" Name="m"></Grid>
+            <!--line 1-->
+            <Grid Grid.Row="2" Grid.Column="0" Name="tab"></Grid>
+            <Grid Grid.Row="2" Grid.Column="1" Name="z"></Grid>
+            <Grid Grid.Row="2" Grid.Column="2" Name="x"></Grid>
+            <Grid Grid.Row="2" Grid.Column="3" Name="c"></Grid>
+            <Grid Grid.Row="2" Grid.Column="4" Name="minus"></Grid>
+            <Grid Grid.Row="2" Grid.Column="5" Name="plus"></Grid>
+            <Grid Grid.Row="2" Grid.Column="6" Name="v"></Grid>
+            <Grid Grid.Row="2" Grid.Column="7" Name="b"></Grid>
+            <Grid Grid.Row="2" Grid.Column="8" Name="n"></Grid>
+            <Grid Grid.Row="2" Grid.Column="9" Name="esc"></Grid>
+            <!--line 2-->
+            <Grid Grid.Row="3" Grid.Column="0" Name="qwre"></Grid>
+            <Grid Grid.Row="3" Grid.Column="1" Name="zqwre"></Grid>
+            <Grid Grid.Row="3" Grid.Column="2" Name="tqwx"></Grid>
+            <Grid Grid.Row="3" Grid.Column="3" Name="c3245"></Grid>
+            <Grid Grid.Row="3" Grid.Column="4" Name="minureyws"></Grid>
+            <Grid Grid.Row="3" Grid.Column="5" Name="e2345325sc"></Grid>
+            <Grid Grid.Row="3" Grid.Column="6" Name="p235lus"></Grid>
+            <Grid Grid.Row="3" Grid.Column="7" Name="vrwyu"></Grid>
+            <Grid Grid.Row="3" Grid.Column="8" Name="bquqeu"></Grid>
+            <Grid Grid.Row="3" Grid.Column="9" Name="n2365236"></Grid>
+        </Grid>
+    </Grid>
+</Window>
