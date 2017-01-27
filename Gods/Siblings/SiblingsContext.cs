@@ -10,7 +10,7 @@ namespace Gods.Siblings {
             if (typeof(M).GenericTypeArguments[0] != typeof(M)) {
                 throw new ArithmeticException($"About type: {typeof(M).FullName}, write codes like this: class XXX : Model<XXX>{{ .. }}, not: class XXX : Model<YYY> {{ .. }}.");
             }
-            if (model.Context == this || model.UniqueContext && model.Context != null ) {
+            if (model.Context == this) {
                 return;
             }
             model.Context = this;

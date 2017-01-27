@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <script type="text/javascript">
+        (function () {
+            'use strict';
+            function obj2str(obj) {
+                var t = '';
+                for (var i in obj) {
+                    t += '&' + i + '=' + obj[i];
+                }
+                return t.length ? t.substr(1) : t;
+            }
+            function analysis(arr) {
+                var query, method, data, success, fail, error, complete, thisArg;
+                var a0 = arr[0], a1 = arr[1], a2 = arr[2];
+                if (a0.constructor === HTMLFormElement) {
+                    data = new FormData(a0);
+                    method = a0.method;
+                    query = a0.action.substr(a0.action.lastIndexOf('/') + 1);                       
+                } else {
+                    query = a0;
+                    if (a1) {
+                        if (a1.method) {
+                            method = a1.method;
+                        }
+                        if (a1.method === "post") {
+                            if (a1.data) {
+                                data = obj2str(a1.data);
+                            }
+                        }
+                    }
+                }
+                if (a1) {
+                    if (typeof a1 === 'function') {
+                        success = a1;
+                    } else {
+                        if (typeof a1.success === 'function') {
+                            success = a1.success;
+                        }
+                        if (typeof a1.fail === 'function') {
+                            fail = a1.fail;
+                        }
+                        if (typeof a1.error === 'function') {
+                            error = a1.error;
+                        }
+                        if (typeof a1.complete === 'function') {
+                            complete = a1.complete;
+                        }
+                    }
+                }
+            }
+            this.$ajax = {
+                send: function () {
+                    var arr = analysis(arguments);
+                    var http = new XMLHttpRequest();
+                    http.open(method, url, true);
+                    http.onreadystatechange = function (e) {
+                        if (this.readyState !== 4) {
+                            return;
+                        }
+                        if (this.status !== 200) {
+                            if (error) {
+                                error(this.status, this.statusText);
+                            }
+                            return;
+                        }
+                        var r = JSON.parse(this.responseText);
+                        ((r.ok ? success : fail) || function () { })(r.result);
+                        if (complete) {
+                            complete(r);
+                        }
+                    }
+                    http.send();
+                }
+            };
+        }).call(window);
+    </script>
+</body>
+</html>

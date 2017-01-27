@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Gods.Siblings {
+﻿namespace Gods.Siblings {
     partial interface IModel<M, out C> where M : IModel<M, ISiblingsContext<M>> where C : ISiblingsContext<M> {
     }
 

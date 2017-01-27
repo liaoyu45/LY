@@ -3,7 +3,6 @@ using System.Linq;
 
 namespace Gods.Siblings {
     public abstract class Model<M> : IModel<M, SiblingsContext<M>> where M : Model<M> {
-        protected internal virtual bool UniqueContext { get; set; } = true;
 
         public SiblingsContext<M> Context { get; internal set; }
 

@@ -10,25 +10,25 @@ namespace KeyboardSynchronizer {
         [DllImport("user32.dll")]
         public static extern bool IsIconic(IntPtr hWnd);
 
-        [DllImport("user32.dll")]
-        public static extern int RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+		//[DllImport("user32.dll")]
+		//public static extern int RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
 
-        [DllImport("user32.dll")]
-        public static extern int UnregisterHotKey(IntPtr hWnd, int id);
+		//[DllImport("user32.dll")]
+		//public static extern int UnregisterHotKey(IntPtr hWnd, int id);
 
-        [DllImport("user32.dll")]
-        public static extern int GetKeyboardLayout(int idThread);
+		//[DllImport("user32.dll")]
+		//public static extern int GetKeyboardLayout(int idThread);
 
-        [DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
+		[DllImport("user32.dll")]
+		public static extern bool ReleaseCapture();
 
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetDesktopWindow();
+		[DllImport("user32.dll")]
+		public static extern IntPtr GetDesktopWindow();
 
-        [DllImport("Gdi32.dll")]
-        public extern static int BitBlt(IntPtr hDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int dwRop);
+		//[DllImport("Gdi32.dll")]
+		//public extern static int BitBlt(IntPtr hDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int dwRop);
 
-        [DllImport("user32.dll")]
+		[DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [DllImport("user32.dll")]
@@ -88,17 +88,17 @@ namespace KeyboardSynchronizer {
         [DllImport("user32.dll")]
         public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
-        [DllImport("user32.dll")]
-        public static extern int GetWindowRect(IntPtr hWnd, out Rectangle lpRect);
+        //[DllImport("user32.dll")]
+        //public static extern int GetWindowRect(IntPtr hWnd, out Rectangle lpRect);
 
-        [DllImport("user32.dll")]
-        public static extern int GetClientRect(IntPtr hWnd, out Rectangle lpRect);
+        //[DllImport("user32.dll")]
+        //public static extern int GetClientRect(IntPtr hWnd, out Rectangle lpRect);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern int ScreenToClient(IntPtr hWnd, ref Rectangle rect);
+        //[DllImport("user32.dll", SetLastError = true)]
+        //public static extern int ScreenToClient(IntPtr hWnd, ref Rectangle rect);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern int ClientToScreen(IntPtr hWnd, ref Rectangle rect);
+        //[DllImport("user32.dll", SetLastError = true)]
+        //public static extern int ClientToScreen(IntPtr hWnd, ref Rectangle rect);
 
         [DllImport("user32.dll")]
         public static extern int MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
@@ -106,8 +106,8 @@ namespace KeyboardSynchronizer {
         [DllImport("user32.dll")]
         public static extern IntPtr GetParent(IntPtr hWnd);
 
-        [DllImport("user32.dll")]
-        public static extern bool EnumThreadWindows(int threadId, EnumFunc pfnEnum, IntPtr lParam);
+        //[DllImport("user32.dll")]
+        //public static extern bool EnumThreadWindows(int threadId, EnumFunc pfnEnum, IntPtr lParam);
 
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindowEx(IntPtr parentHwnd, IntPtr childAfterHwnd, IntPtr className, string windowText);
@@ -115,17 +115,17 @@ namespace KeyboardSynchronizer {
         [DllImport("user32.dll")]
         public static extern int ShowWindow(IntPtr hWnd, int nCmdShow);
 
-        [DllImport("user32.dll")]
-        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
+        //[DllImport("user32.dll")]
+        //public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
-        [DllImport("Kernel32.dll")]
-        public extern static IntPtr OpenProcess(int fdwAccess, int fInherit, uint IDProcess);
+        //[DllImport("Kernel32.dll")]
+        //public extern static IntPtr OpenProcess(int fdwAccess, int fInherit, uint IDProcess);
 
-        [DllImport("kernel32.dll")]
-        public static extern uint GetModuleFileName(IntPtr hModule, [Out] StringBuilder lpszFileName, int nSize);
+        //[DllImport("kernel32.dll")]
+        //public static extern uint GetModuleFileName(IntPtr hModule, [Out] StringBuilder lpszFileName, int nSize);
 
-        [DllImport("user32.dll")]
-        public extern static IntPtr GetSystemMenu(IntPtr hWnd, IntPtr bRevert);
+        //[DllImport("user32.dll")]
+        //public extern static IntPtr GetSystemMenu(IntPtr hWnd, IntPtr bRevert);
 
         [DllImport("user32.dll")]
         public extern static int RemoveMenu(IntPtr hMenu, int nPos, int flags);
