@@ -38,92 +38,18 @@
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="Css.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DanymicKeyboard.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Dictionary1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="FREEEEEE.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="FRRREEE.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Beard.cs" />
-    <Compile Include="DanymicKeyboard.xaml.cs">
-      <DependentUpon>DanymicKeyboard.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FREEEEEE.xaml.cs">
-      <DependentUpon>FREEEEEE.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FRRREEE.xaml.cs">
-      <DependentUpon>FRRREEE.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FREE.xaml.cs">
-      <DependentUpon>FREE.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Fuck.cs" />
-    <Compile Include="Rrrrrr.cs" />
-    <Compile Include="SliderTest.xaml.cs">
-      <DependentUpon>SliderTest.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Soakupthesun.xaml.cs">
-      <DependentUpon>Soakupthesun.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TesT.xaml.cs">
-      <DependentUpon>TesT.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Steps\Board.cs" />
+    <Compile Include="Steps\Step.cs" />
+    <Compile Include="Steps\Step1.cs" />
+    <Compile Include="Steps\Step2.cs" />
     <Compile Include="Win32API.cs" />
     <Compile Include="Worker.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="FREE.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="SliderTest.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Soakupthesun.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="TesT.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -154,6 +80,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="lollipop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Gods\Gods.csproj">
+      <Project>{cc8d063d-e023-4950-aab9-3f0f9f40db59}</Project>
+      <Name>Gods</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

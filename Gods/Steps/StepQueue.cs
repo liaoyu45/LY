@@ -2,52 +2,41 @@
 using System.Collections.Generic;
 
 namespace Gods.Steps {
-    public abstract class StepQueue {
-        private int progress;
+    /// <summary>
+    /// 执行序列，分步并且单步执行。
+    /// </summary>
+    /// <typeparam name="T">各步共用的目标类型。</typeparam>
+    /// <typeparam name="S">步骤类型。</typeparam>
+    public class StepQueue<T, S> where T : class, new() where S : Step<T> {
+        public int progress { get; private set; } = -1;
+        public T target { get; private set; }
 
-        public List<Step> Steps { get; } = new List<Step>();
-        public StepQueue(Step one, Step two, params Step[] more) {
-            Steps.Add(one);
-            Steps.Add(two);
-            Steps.AddRange(more);
-            doo(0, true);
+        public List<S> Steps { get; } = new List<S>();
+        public bool Ongoing { get; private set; }
+
+        public void Start(T target) {
+            this.target = target;
+            Move(true);
         }
 
-        public void Stop() {
-            Steps[progress].Finished = null;
-            Steps[progress].Canceled = null;
-            Canceled?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void doo(int i, bool d) {
-            Steps[i].Finished = doAndClear(s => {
-                progress = Steps.IndexOf(s) + 1;
-                if (progress < Steps.Count) {
-                    doo(progress, true);
-                } else {
-                    Finished?.Invoke(this, EventArgs.Empty);
+        public void Move(bool direction) {
+            foreach (var item in Steps) {
+                item.Target = target;
+            }
+            var c = Steps[progress];
+            if (direction) {
+                c.Finish();
+                if (progress < Steps.Count - 1) {
+                    progress++;
+                    Steps[progress].Initiate(c.Result, true);
                 }
-            });
-            Steps[i].Canceled = doAndClear(s => {
-                progress = Steps.IndexOf(s) - 1;
-                if (progress > -1) {
-                    doo(progress, false);
-                } else {
-                    Canceled?.Invoke(this, EventArgs.Empty);
+            } else {
+                c.Cancel();
+                if (progress > 0) {
+                    progress--;
+                    Steps[progress].Initiate(null, false);
                 }
-            });
-            Steps[i].Execute(d);
+            }
         }
-
-        private Action<Step> doAndClear(Action<Step> a) {
-            return s => {
-                a(s);
-                s.Finished = null;
-                s.Canceled = null;
-            };
-        }
-
-        public event EventHandler Finished;
-        public event EventHandler Canceled;
     }
 }
