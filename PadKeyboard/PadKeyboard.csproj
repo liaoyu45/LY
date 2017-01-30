@@ -44,10 +44,11 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Steps\Board.cs" />
-    <Compile Include="Steps\Step.cs" />
-    <Compile Include="Steps\Step1.cs" />
-    <Compile Include="Steps\Step2.cs" />
+    <Compile Include="Beard.cs" />
+    <Compile Include="Step1SetRadiusAndCount.cs" />
+    <Compile Include="Step3.cs" />
+    <Compile Include="Step2AddPoints.cs" />
+    <Compile Include="TouchEventArgsExtensions.cs" />
     <Compile Include="Win32API.cs" />
     <Compile Include="Worker.cs" />
   </ItemGroup>
@@ -86,6 +87,15 @@
       <Project>{cc8d063d-e023-4950-aab9-3f0f9f40db59}</Project>
       <Name>Gods</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TODO\TODO.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TODO\TODO.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
