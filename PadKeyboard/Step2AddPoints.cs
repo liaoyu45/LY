@@ -11,8 +11,9 @@ namespace PadKeyboard {
     internal class Step2AddPoints : Step {
 
         private Grid content = new Grid();
-        private Grid addPanel = new Grid { Background = new SolidColorBrush { Color = new Color { A = 1 } } };
+        private Grid addPanel = Beard.BgA1Grid();
         private Grid effectPanel = new Grid();
+        private double r;
 
         public Step2AddPoints() {
             var ds = new Dictionary<InputDevice, Ellipse>();
@@ -20,18 +21,19 @@ namespace PadKeyboard {
                 if (!ds.ContainsKey(e.Device)) {
                     return;
                 }
-                var p = e.GetPoint();
-                ds[e.Device].Margin = new Thickness { Left = p.X - Beard.Radius, Top = p.Y - Beard.Radius };
+                var ell = ds[e.Device];
+                var p = e.MoveInside(ell);
+                ell.Margin = new Thickness { Left = p.X, Top = p.Y };
             };
             addPanel.TouchLeave += (s, e) => {
                 if (ds.ContainsKey(e.Device)) {
                     var ell = ds[e.Device];
-                    var point = new Point(ell.Margin.Left + Beard.Radius, ell.Margin.Top + Beard.Radius);
+                    var point = new Point(ell.Margin.Left + r, ell.Margin.Top + r);
                     foreach (var item in mapCenter()) {
                         if (item.Key == ell) {
                             continue;
                         }
-                        if ((point - item.Value).Length < Beard.Radius * 2) {
+                        if ((point - item.Value).Length < r * 2 * 2 / 3) {
                             effectPanel.Children.Remove(item.Key);
                         }
                     }
@@ -42,9 +44,9 @@ namespace PadKeyboard {
                 if (ds.ContainsKey(e.Device)) {//why
                     return;
                 }
-                var p = e.GetPoint();
+                var p = e.GetTouchPoint(addPanel).Position;
                 foreach (var item in mapCenter()) {
-                    if ((item.Value - p).Length < Beard.Radius) {
+                    if ((item.Value - p).Length < r) {
                         if (!ds.ContainsValue(item.Key)) {
                             ds.Add(e.Device, item.Key);
                         }
@@ -53,36 +55,49 @@ namespace PadKeyboard {
                 }
                 if (effectPanel.Children.Count >= Beard.KeysCount) {
                     effectPanel.Children.RemoveRange(Beard.KeysCount, 2198714);
-                    Beard.Points = mapCenter().Values;
                     return;
                 }
-                var grid = new Ellipse {
+                var ell = new Ellipse {
                     VerticalAlignment = VerticalAlignment.Top,
                     HorizontalAlignment = HorizontalAlignment.Left,
-                    Margin = new Thickness { Left = p.X - Beard.Radius, Top = p.Y - Beard.Radius },
-                    Width = Beard.Radius * 2,
-                    Height = Beard.Radius * 2,
-                    Fill = new SolidColorBrush(new Color { A = 222 })
+                    Margin = new Thickness { Left = p.X - r, Top = p.Y - r },
+                    Width = r * 2,
+                    Height = r * 2,
+                    Fill = new SolidColorBrush(Colors.Black)
                 };
-                ds.Add(e.Device, grid);
-                effectPanel.Children.Add(grid);
+                ds.Add(e.Device, ell);
+                effectPanel.Children.Add(ell);
             };
             content.Children.Add(effectPanel);
             content.Children.Add(addPanel);
         }
 
         protected override bool Finish() {
-            return effectPanel.Children.Count == Beard.KeysCount;
+            var ok = effectPanel.Children.Count == Beard.KeysCount;
+            if (ok) {
+                Beard.RawPoints = mapCenter().Values; 
+            }
+            return ok;
         }
 
         protected override void Init(int offset) {
-            Beard.Board.Content = content;
-            effectPanel.Children.Clear();
-            addPanel.Children.Clear();
+            r = Beard.Radius;
+            Beard.Content = content;
+            if (offset > 0) {
+                effectPanel.Children.Clear();
+                addPanel.Children.Clear(); 
+            }
+        }
+
+        protected override bool Cancel() {
+            Beard.RawPoints = null;
+            return base.Cancel();
         }
 
         public Dictionary<Ellipse, Point> mapCenter() {
-            return effectPanel.Children.Cast<Ellipse>().ToDictionary(e => e, e => new Point(e.Margin.Left + Beard.Radius, e.Margin.Top + Beard.Radius));
+            return effectPanel.Children.Cast<Ellipse>().ToDictionary(
+                e => e,
+                e => new Point(e.Margin.Left + r, e.Margin.Top + r));
         }
     }
 }

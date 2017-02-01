@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Effects, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -45,10 +46,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Beard.cs" />
+    <Compile Include="BoxShadow.cs" />
+    <Compile Include="KeysSelector.xaml.cs">
+      <DependentUpon>KeysSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Step0LoadLayout.cs" />
     <Compile Include="Step1SetRadiusAndCount.cs" />
-    <Compile Include="Step3.cs" />
+    <Compile Include="Step3AssignKeys.cs" />
     <Compile Include="Step2AddPoints.cs" />
-    <Compile Include="TouchEventArgsExtensions.cs" />
+    <Compile Include="Step4Actions.xaml.cs">
+      <DependentUpon>Step4Actions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Step4AssignKeys.cs" />
     <Compile Include="Win32API.cs" />
     <Compile Include="Worker.cs" />
   </ItemGroup>
@@ -69,6 +78,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -96,6 +106,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="TODO\TODO.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="KeysSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Step4Actions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,5 +1,4 @@
-﻿using Gods.Steps;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -9,69 +8,83 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace PadKeyboard {
-    internal class Step1SetRadiusAndCount : Step {
+    internal class Step1SetRadiusAndCount : Gods.Steps.Step {
 
         private Grid content = new Grid();
-        private Grid addPanel = new Grid { Background = new SolidColorBrush { Color = new Color { A = 1 } } };
+        private Grid addPanel = Beard.BgA1Grid();
         private Grid effectPanel = new Grid();
-        private Grid countPanel = new Grid {
-            Background = new SolidColorBrush { Color = new Color { A = 11 } },
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            VerticalAlignment = VerticalAlignment.Top,
-            Height = Beard.Height / 3
-        };
-        private Grid howtoSay = new Grid {
-            Background = new SolidColorBrush { Color = new Color { A = 255, G = 255 } },
+        private Grid countPanel = Beard.BgA1Grid(g => {
+            g.HorizontalAlignment = HorizontalAlignment.Stretch;
+            g.VerticalAlignment = VerticalAlignment.Top;
+            g.Height = Beard.Height * .382;
+        });
+        private WrapPanel countGrid = new WrapPanel {
             VerticalAlignment = VerticalAlignment.Stretch,
             HorizontalAlignment = HorizontalAlignment.Left,
-            Height = Beard.Height / 3,
-            Width = Beard.Height / 3
-        };
-        private TextBlock countText = new TextBlock {
-            Text = Beard.KeysCount.ToString(),
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-            FontSize = 44,
-            Foreground = new SolidColorBrush { Color = Color.FromScRgb(1, 1, 1, 1) }
+            Height = Beard.Height * .382,
+            Width = Beard.Height * .382
         };
 
-        private double MaxLeft {
-            get { return Beard.Width - howtoSay.Width; }
-        }
-        private Color shownColor = new Color { A = 255, G = 255 };
+        private double r = Beard.Radius;
+        private int c = Beard.KeysCount;
+        private TextBlock countText = new TextBlock {
+            FontSize = 4,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+        };
 
         public Step1SetRadiusAndCount() {
             content.Children.Add(effectPanel);
             content.Children.Add(addPanel);
             content.Children.Add(countPanel);
-            countPanel.Children.Add(howtoSay);
-            howtoSay.Children.Add(countText);
-
-            howtoSay.Margin = new Thickness { Left = MaxLeft * Beard.KeysCount / Beard.KeysCountMax };
+            countPanel.Children.Add(countGrid);
+            var gs = new Dictionary<double, Color> {
+                { 0, Colors.White },
+                { .02, Colors.Black },
+                { .20, Colors.White},
+                { .24, Colors.Black},
+                { .27, Colors.White }
+            }.Select(item => new GradientStop { Offset = item.Key, Color = item.Value }).ToArray();
+            for (var i = 0; i < Beard.KeysMax; i++) {
+                var box = BoxShadow.Create(8, 8, 4, 4, gs);
+                countGrid.Children.Add(new Grid {
+                    Background = new VisualBrush { Visual = box }
+                });
+            }
             setColor();
-
-            var fs = new List<f>();
+            var fs = new List<finger>();
+            var d = default(InputDevice);
+            var maxLeft = Beard.Width - countGrid.Width;
+            countPanel.TouchLeave += (s, e) => {
+                if (e.Device != d) {
+                    return;
+                }
+                d = null;
+            };
             countPanel.TouchMove += (s, e) => {
                 e.Handled = true;
-                var p = e.GetTouchPoint(countPanel).Position;
-                var left = Math.Max(0, Math.Min(MaxLeft, p.X - howtoSay.Width / 2));
-                howtoSay.Margin = new Thickness { Left = left };
-                Beard.KeysCount = (int)(left / MaxLeft * Beard.KeysCountMax);
+                if (d != null && d != e.Device) {
+                    return;
+                }
+                d = e.Device;
+                var left = e.MoveInside(countGrid).X;
+                countGrid.Margin = new Thickness { Left = left };
+                c = Beard.KeysMin + (int)(left / maxLeft * Beard.KeysRange);
                 setColor();
             };
             addPanel.TouchMove += (s, e) => {
-                var f = fs.FirstOrDefault(p => p.d == e.Device);
-                if (f == null) {
+                var f0 = fs.FirstOrDefault(p => p.d == e.Device);
+                if (f0 == null) {
                     return;
                 }
-                f.p = e.GetPoint();
+                f0.p = e.MoveInside(f0.e);
                 if (fs.Count == 2) {
-                    Beard.Radius = Math.Min(Beard.MaxRadius, (fs[0].p - fs[1].p).Length / 2);
+                    var f1 = fs.First(f => f != f0);
+                    r = Math.Min(Beard.MaxRadius, (f0.p - f1.p).Length / 2);
+                    f0.e.Width = f1.e.Width = f0.e.Height = f1.e.Height = r * 2;
                     setColor();
-                    fs[0].e.Width = fs[1].e.Width = fs[0].e.Height = fs[1].e.Height = Beard.Radius * 2;
-                    (f.e.Fill as SolidColorBrush).Color = shownColor;
                 }
-                f.e.Margin = new Thickness { Left = f.p.X - Beard.Radius, Top = f.p.Y - Beard.Radius };
+                f0.e.Margin = new Thickness { Left = f0.p.X, Top = f0.p.Y };
             };
             addPanel.TouchLeave += (s, e) => {
                 var f = fs.FirstOrDefault(p => p.d == e.Device);
@@ -85,47 +98,51 @@ namespace PadKeyboard {
                 if (fs.Count == 2) {
                     return;
                 }
-                var p = e.GetPoint();
+                var p = e.GetTouchPoint(addPanel).Position;
                 var ell = new Ellipse {
                     VerticalAlignment = VerticalAlignment.Top,
                     HorizontalAlignment = HorizontalAlignment.Left,
-                    Margin = new Thickness { Left = p.X - Beard.Radius, Top = p.Y - Beard.Radius },
-                    Width = Beard.Radius * 2,
-                    Height = Beard.Radius * 2,
-                    Fill = new SolidColorBrush(new Color { A = 111 })
+                    Margin = new Thickness { Left = p.X - r, Top = p.Y - r },
+                    Width = r * 2,
+                    Height = r * 2,
+                    Fill = new SolidColorBrush(Colors.Black)
                 };
-                fs.Add(new f { d = e.Device, e = ell, p = p });
+                fs.Add(new finger { d = e.Device, e = ell, p = p });
                 effectPanel.Children.Add(ell);
             };
         }
 
         protected override bool Finish() {
-            effectPanel.Children.Clear();
-            addPanel.Children.Clear();
+            Beard.Radius = r;
+            Beard.KeysCount = c;
             return true;
         }
 
         protected override bool Cancel() {
-            Beard.Board.Close();
+            Application.Current.MainWindow.Close();
             return true;
         }
 
         protected override void Init(int offset) {
+            Beard.Content = content;
             effectPanel.Children.Clear();
             addPanel.Children.Clear();
-            Beard.Board.Content = content;
-
         }
 
         private void setColor() {
-            countText.Text = Beard.KeysCount + string.Empty;
-            shownColor.G = (byte)Math.Min(255, 255.0 * Beard.KeysCount / Beard.KeysCountDefault);
-            shownColor.B = (byte)(Math.Max(0, (Beard.KeysCount - Beard.KeysCountDefault) / (double)(Beard.KeysCountMax - Beard.KeysCountDefault) * 255));
-            shownColor.R = (byte)(255 - (byte)Math.Max(0, (255 * Beard.Radius / Beard.MaxRadius)));
-            (howtoSay.Background as SolidColorBrush).Color = shownColor;
+            var edge = Math.Ceiling(Math.Sqrt(c));
+            if (countText.Parent != null) {
+                ((Grid)countText.Parent).Children.Remove(countText);
+            }
+            countText.Text = c + string.Empty;
+            ((((Grid)(countGrid.Children[c - 1])).Background as VisualBrush).Visual as Grid).Children.Add(countText);
+            for (var i = 0; i < countGrid.Children.Count; i++) {
+                var g = countGrid.Children[i] as Grid;
+                g.Width = g.Height = countGrid.Width / edge;
+            }
         }
 
-        class f {
+        class finger {
             public InputDevice d;
             public Ellipse e;
             public Point p;

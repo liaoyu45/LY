@@ -2,40 +2,58 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace PadKeyboard {
     static class Beard {
-        public static readonly Window Board = new Window {
+        private static readonly Window Board = new Window {
+            Top = 0,//TODO: should config this value.
+            Left = 0,//TODO: should config this value.
+            Width = SystemParameters.WorkArea.Width,//TODO: should config this value.
+            Height = SystemParameters.WorkArea.Height,//TODO: should config this value.
             WindowStyle = WindowStyle.None,
             AllowsTransparency = true,
-            Top = 0,
-            Left = 0,
-            Width = SystemParameters.WorkArea.Width,
-            Height = SystemParameters.WorkArea.Height,
+            Background = new SolidColorBrush(),
             ResizeMode = ResizeMode.NoResize,
         };
 
+        public static Grid Content {
+            set { Board.Content = value; }
+            get { return Board.Content as Grid; }
+        }
+
         public static readonly double Height = Board.Height;
         public static readonly double Width = Board.Width;
-        public const int KeysCountDefault = 20;
-        public const int KeysCountMax = 104;
+        public const int KeysMin = 16;
+        public const int KeysMax = 64;
+        public const int KeysRange = 48;
         public static readonly double MaxRadius = Width / 12;
 
-        public static int KeysCount = 20;
+        public static int KeysCount = KeysMin;
         public static double Radius = Width / 24;
 
-        public static IEnumerable<Point> Points;
-
+        public static IEnumerable<Point> RawPoints;
+        public static IEnumerable<Point> OrderedPoints;
 
         [STAThread()]
         public static void Main() {
             var Queue = new Gods.Steps.StepQueue();
-            Queue.Steps.Add(new Step1SetRadiusAndCount());
-            Queue.Steps.Add(new Step2AddPoints());
-            Queue.Start();
             var ps = new Dictionary<InputDevice, List<Point>>();
             var fs = 0;
+            Board.Loaded += delegate {
+                Queue.Steps.Add(new Step1SetRadiusAndCount());
+                Queue.Steps.Add(new Step2AddPoints());
+                Queue.Steps.Add(new Step3AssignKeys());
+                Queue.Steps.Add(new Step4AssignKeys());
+                Queue.Start();
+            };
+            Board.KeyDown += (s, e) => {
+                if (e.Key == Key.Escape) {
+                    Board.Close();
+                }
+            };
             Board.TouchDown += (s, e) => {
                 if (ps.Count == 3) {
                     return;
@@ -73,13 +91,34 @@ namespace PadKeyboard {
             new Application().Run(Board);
         }
 
-        public static Point GetPoint(this TouchEventArgs e) {
+        public static T Visual<T>(Point p) where T : FrameworkElement, new() {
+            return new T {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Width = Radius * 2,
+                Height = Radius * 2,
+                Margin = new Thickness { Left = p.X - Radius, Top = p.Y - Radius },
+                Tag = p
+            };
+        }
+
+        public static IEnumerable<T> Visual<T>(IEnumerable<Point> ps) where T : FrameworkElement, new() {
+            foreach (var item in ps) {
+                yield return Visual<T>(item);
+            }
+        }
+
+        public static Grid BgA1Grid(Action<Grid> dowith = null) {
+            var g = new Grid {
+                Background = new SolidColorBrush(new Color { A = 1 }),
+            };
+            dowith?.Invoke(g);
+            return g;
+        }
+
+        public static Point MoveInside(this TouchEventArgs e, FrameworkElement ele) {
             var p = e.GetTouchPoint(Board).Position;
-            p.X += Board.Left;
-            p.Y += Board.Top;
-            p.Y = Math.Max(Math.Min(Height - Radius, p.Y), Radius);
-            p.X = Math.Max(Math.Min(Width - Radius, p.X), Radius);
-            return p;
+            return new Point(Math.Max(0, Math.Min(Width - ele.Width, p.X - ele.Width / 2)), Math.Max(0, Math.Min(Height - ele.Height, p.Y - ele.Height / 2)));
         }
     }
 }
