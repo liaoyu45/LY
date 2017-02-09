@@ -11,7 +11,7 @@ namespace PadKeyboard {
     internal class Step2AddPoints : Step {
 
         private Grid content = new Grid();
-        private Grid addPanel = Beard.BgA1Grid();
+        private Grid addPanel = Elements.BgA1Grid();
         private Grid effectPanel = new Grid();
         private double r;
 
@@ -33,7 +33,7 @@ namespace PadKeyboard {
                         if (item.Key == ell) {
                             continue;
                         }
-                        if ((point - item.Value).Length < r * 2 * 2 / 3) {
+                        if ((point - item.Value).Length < r * 2) {
                             effectPanel.Children.Remove(item.Key);
                         }
                     }
@@ -46,7 +46,7 @@ namespace PadKeyboard {
                 }
                 var p = e.GetTouchPoint(addPanel).Position;
                 foreach (var item in mapCenter()) {
-                    if ((item.Value - p).Length < r) {
+                    if (Dicks.IsNear(item.Value, p, r)) {
                         if (!ds.ContainsValue(item.Key)) {
                             ds.Add(e.Device, item.Key);
                         }

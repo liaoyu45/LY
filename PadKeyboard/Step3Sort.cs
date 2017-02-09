@@ -7,9 +7,9 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace PadKeyboard {
-    class Step3AssignKeys : Gods.Steps.Step {
+    class Step3Sort : Gods.Steps.Step {
 
-        private Grid content = Beard.BgA1Grid();
+        private Grid content = Elements.BgA1Grid();
 
         private List<Point> orderedPoints = new List<Point>();
         private TextBlock indexInfo = new TextBlock {
@@ -18,15 +18,11 @@ namespace PadKeyboard {
             VerticalAlignment = VerticalAlignment.Center
         };
         private Grid indexBox;
-
-        private readonly Brush picked = new RadialGradientBrush(Colors.White, Colors.Black);
-        private readonly Brush pending = new RadialGradientBrush(Colors.Black, Colors.White);
-
         private IEnumerable<Ellipse> points;
-        public Step3AssignKeys() {
-            var w6 = Beard.Width / 6;
-            var h22 = Beard.Height / 22;
-            indexBox = BoxShadow.Create(w6, w6, h22, h22, new GradientStop { Color = Colors.Black }, new GradientStop { Color = Colors.White, Offset = 1 });
+
+        private double r => Beard.Radius;
+        public Step3Sort() {
+            indexBox = BoxShadow.Create(r * 4, r * 4 * .382, r / 2, r / 2, new GradientStop { Color = Colors.Black }, new GradientStop { Color = Colors.White, Offset = 1 });
             indexBox.VerticalAlignment = VerticalAlignment.Top;
             indexBox.HorizontalAlignment = HorizontalAlignment.Left;
             indexBox.Background = new SolidColorBrush(Colors.White);
@@ -55,7 +51,7 @@ namespace PadKeyboard {
                 orderedPoints.Clear();
                 indexInfo.Text = "0/" + points.Count();
                 foreach (var item in points) {
-                    item.Fill = pending;
+                    item.Fill = Brushes.pending;
                 }
                 for (int i = content.Children.Count - 1; i >= 0; i--) {
                     var c = content.Children[i];
@@ -63,7 +59,7 @@ namespace PadKeyboard {
                         content.Children.RemoveAt(i);
                     }
                     if (c is Ellipse) {
-                        (c as Ellipse).Fill = pending;
+                        (c as Ellipse).Fill = Brushes.pending;
                     }
                 }
             };
@@ -78,32 +74,33 @@ namespace PadKeyboard {
             Beard.Content = content;
             content.Children.Clear();
             orderedPoints.Clear();
-            points = Beard.Visual<Ellipse>(Beard.RawPoints);
+            var r = Beard.Radius;
+            points = Elements.Visual<Ellipse>(Beard.RawPoints, r);
             indexInfo.Text = "0/" + points.Count();
+            System.EventHandler<TouchEventArgs> addTextTag = (s, e)=> {
+                var ell = s as Ellipse;
+                var p = (Point)ell.Tag;
+                if (orderedPoints.Contains(p)) {
+                    return;
+                }
+                ell.Fill = Brushes.picked;
+                var index = orderedPoints.Count + 1 + string.Empty;
+                indexInfo.Text = index + '/' + points.Count();
+                var g = Elements.Visual<Grid>(p, r);
+                g.Children.Add(new TextBlock {
+                    Text = index,
+                    FontSize = Beard.Radius,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                });
+                content.Children.Add(g);
+                moveIndexInfo();
+                orderedPoints.Add(p);
+            };
             foreach (var item in points) {
                 content.Children.Add(item);
-                item.Fill = pending;
-                item.TouchDown += (s, e) => {
-                    var ell = s as Ellipse;
-                    var p = (Point)ell.Tag;
-                    if (orderedPoints.Contains(p)) {
-                        return;
-                    }
-                    ell.Fill = picked;
-                    var index = orderedPoints.Count + 1 + string.Empty;
-                    indexInfo.Text = index + '/' + points.Count();
-                    var g = Beard.Visual<Grid>(p);
-                    var id = new TextBlock {
-                        Text = index,
-                        FontSize = Beard.Radius,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center
-                    };
-                    g.Children.Add(id);
-                    content.Children.Add(g);
-                    moveIndexInfo();
-                    orderedPoints.Add(p);
-                };
+                item.Fill = Brushes.pending;
+                item.TouchDown += addTextTag;
             }
             moveIndexInfo();
         }

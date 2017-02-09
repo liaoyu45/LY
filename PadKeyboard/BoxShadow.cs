@@ -7,6 +7,11 @@ using System.Windows.Shapes;
 
 namespace PadKeyboard {
     public class BoxShadow {
+        public static Grid Create(params GradientStop[] gs) {
+            return new Grid {
+                Background = new VisualBrush { Visual = Create(2, 2, 1, 1, gs) }
+            };
+        }
         public static Grid Create(double width, double height, double innerX, double innerY, params GradientStop[] gs) {
             var inner = new Rect { X = innerX, Y = innerY, Width = width - innerX * 2, Height = height - innerY * 2 };
             return Create(new Size(width, height), inner, gs);

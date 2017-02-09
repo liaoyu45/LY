@@ -35,28 +35,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Expression.Effects, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AllKeysGrid.cs" />
     <Compile Include="Beard.cs" />
     <Compile Include="BoxShadow.cs" />
-    <Compile Include="KeysSelector.xaml.cs">
-      <DependentUpon>KeysSelector.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Brushes.cs" />
+    <Compile Include="Dick.cs" />
+    <Compile Include="Elements.cs" />
+    <Compile Include="Happy.cs" />
+    <Compile Include="PieRadius.cs" />
     <Compile Include="Step0LoadLayout.cs" />
     <Compile Include="Step1SetRadiusAndCount.cs" />
-    <Compile Include="Step3AssignKeys.cs" />
+    <Compile Include="Step3Sort.cs" />
     <Compile Include="Step2AddPoints.cs" />
-    <Compile Include="Step4Actions.xaml.cs">
-      <DependentUpon>Step4Actions.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Step4AssignKeys.cs" />
     <Compile Include="Win32API.cs" />
     <Compile Include="Worker.cs" />
@@ -102,20 +101,10 @@
     <Resource Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="TODO\TODO.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="TODO\TODO.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="KeysSelector.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Step4Actions.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Resource Include="TODO\KEYSCONFIG.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

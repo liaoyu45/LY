@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using static System.Math;
 
 namespace PadKeyboard {
     internal class Step1SetRadiusAndCount : Gods.Steps.Step {
 
         private Grid content = new Grid();
-        private Grid addPanel = Beard.BgA1Grid();
+        private Grid addPanel = Elements.BgA1Grid();
         private Grid effectPanel = new Grid();
-        private Grid countPanel = Beard.BgA1Grid(g => {
+        private Grid countPanel = Elements.BgA1Grid(g => {
             g.HorizontalAlignment = HorizontalAlignment.Stretch;
             g.VerticalAlignment = VerticalAlignment.Top;
             g.Height = Beard.Height * .382;
@@ -28,7 +28,7 @@ namespace PadKeyboard {
         private double r = Beard.Radius;
         private int c = Beard.KeysCount;
         private TextBlock countText = new TextBlock {
-            FontSize = 4,
+            FontSize = 1,
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
         };
@@ -46,10 +46,7 @@ namespace PadKeyboard {
                 { .27, Colors.White }
             }.Select(item => new GradientStop { Offset = item.Key, Color = item.Value }).ToArray();
             for (var i = 0; i < Beard.KeysMax; i++) {
-                var box = BoxShadow.Create(8, 8, 4, 4, gs);
-                countGrid.Children.Add(new Grid {
-                    Background = new VisualBrush { Visual = box }
-                });
+                countGrid.Children.Add(BoxShadow.Create(gs));
             }
             setColor();
             var fs = new List<finger>();
@@ -80,7 +77,7 @@ namespace PadKeyboard {
                 f0.p = e.MoveInside(f0.e);
                 if (fs.Count == 2) {
                     var f1 = fs.First(f => f != f0);
-                    r = Math.Min(Beard.MaxRadius, (f0.p - f1.p).Length / 2);
+                    r = Min(Beard.MaxRadius, (f0.p - f1.p).Length / 2);
                     f0.e.Width = f1.e.Width = f0.e.Height = f1.e.Height = r * 2;
                     setColor();
                 }
@@ -130,7 +127,7 @@ namespace PadKeyboard {
         }
 
         private void setColor() {
-            var edge = Math.Ceiling(Math.Sqrt(c));
+            var edge = Ceiling(Sqrt(c));
             if (countText.Parent != null) {
                 ((Grid)countText.Parent).Children.Remove(countText);
             }

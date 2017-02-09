@@ -1,15 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Gods.Steps {
-    public class StepQueue {
+    public class StepQueue : IEnumerable<Step> {
 
         public int Progress { get; private set; } = -1;
 
-        public List<Step> Steps { get; } = new List<Step>();
+        private List<Lazy<Step>> steps = new List<Lazy<Step>>();
+
+        public void Add<T>() where T : Step, new() {
+            steps.Add(new Lazy<Step>(() => new T()));
+        }
+
+        public void Remove<T>() {
+            var t = typeof(T);
+            steps.Remove(steps.Find(s => s.GetType().GenericTypeArguments[0] == t));
+        }
 
         private Step current() {
-            if (Progress > -1 && Progress < Steps.Count) {
-                return Steps[Progress];
+            if (Progress > -1 && Progress < steps.Count) {
+                return steps[Progress].Value;
             }
             return null;
         }
@@ -36,6 +47,16 @@ namespace Gods.Steps {
             var s = current();
             s?.Init(offset);
             return s != null;
+        }
+
+        public IEnumerator<Step> GetEnumerator() {
+            foreach (var item in steps) {
+                yield return item.Value;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
         }
     }
 }
