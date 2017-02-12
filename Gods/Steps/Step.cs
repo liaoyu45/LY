@@ -5,5 +5,6 @@
         internal protected virtual bool Cancel() => true;
 
         internal protected abstract void Init(int offset);
+        internal protected virtual bool WillRecreate { get; protected set; }
     }
 }

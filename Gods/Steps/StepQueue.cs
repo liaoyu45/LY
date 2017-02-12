@@ -46,6 +46,10 @@ namespace Gods.Steps {
             Progress += offset;
             var s = current();
             s?.Init(offset);
+            if (s?.WillRecreate == true) {
+                s = (Step)Activator.CreateInstance(s.GetType());
+                steps[Progress] = new Lazy<Step>(() => s);
+            }
             return s != null;
         }
 
