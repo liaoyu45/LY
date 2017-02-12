@@ -11,37 +11,41 @@ using static System.Math;
 namespace PadKeyboard {
     class Step4AssignKeys : Gods.Steps.Step {
         private Grid content = Elements.BgA1Grid();
-        private InputDevice d;
         private Ellipse current;
         private Grid keyPanel = Elements.BgA1Grid();
 
         private double r => Beard.Radius;
-        private Grid effect;
         UIElementCollection ps;
         private Dicks ds;
 
         public Step4AssignKeys() {
             ds = new Dicks(r);
-            effect = BoxShadow.Create(new GradientStop { Color = Colors.Black }, new GradientStop { Offset = 1 });
-            effect.Width = effect.Height = r * 4;
-            effect.HorizontalAlignment = HorizontalAlignment.Left;
-            effect.VerticalAlignment = VerticalAlignment.Top;
-            ps = ((effect.Background as VisualBrush).Visual as Grid).Children;
-            for (var i = 0; i < ps.Count; i++) {
-                ps[i].Visibility = Visibility.Hidden;
-            }
+            var ddddd = new List<InputDevice>();
+            var createEffect = new Func<Grid>(() => {
+                var e = BoxShadow.Create(new GradientStop { Color = Colors.Black }, new GradientStop { Offset = 1 });
+                e.Width = e.Height = r * 4;
+                e.HorizontalAlignment = HorizontalAlignment.Left;
+                e.VerticalAlignment = VerticalAlignment.Top;
+                ps = ((e.Background as VisualBrush).Visual as Grid).Children;
+                for (var i = 0; i < ps.Count; i++) {
+                    ps[i].Visibility = Visibility.Hidden;
+                }
+                return e;
+            });
+            var editting = new Dictionary<Ellipse, Grid>();
             content.TouchLeave += (s, e) => {
-                if (d != e.Device) {
+                if (!ddddd.Contains(e.Device)) {
                     return;
                 }
-                Beard.Queue.Move(1);
-                return;
-                content.Children.Add(keyPanel);
-                keyPanel.Focus();
+
+                if (editting.Count == 0) {
+                    Beard.Queue.Move(1);
+
+                }
             };
             var gest = Gests.Click;
             content.TouchMove += (s, e) => {
-                if (d != e.Device) {
+                if (!ddddd.Contains(e.Device)) {
                     return;
                 }
                 var pc = (Point)current.Tag;
@@ -65,12 +69,12 @@ namespace PadKeyboard {
                     if (newOne < ps.Count) {
                         ps[newOne].Visibility = Visibility.Visible;
                     }
-                    if (content.Children.IndexOf(effect) == -1) {
-                        content.Children.Add(effect);
-                    }
                     var len = Min(v.Length, r * 2);
+                    var effect = createEffect();
                     effect.Width = effect.Height = len * 2;
                     effect.Margin = new Thickness { Left = pc.X - len, Top = pc.Y - len };
+                    content.Children.Add(effect);
+                    editting.Add(s as Ellipse, effect);
                 }
             };
         }
@@ -82,9 +86,6 @@ namespace PadKeyboard {
             }
             content.Children.Clear();
             EventHandler<TouchEventArgs> editting = (s, e) => {
-                if (d != null) {
-                    return;
-                }
                 d = e.Device;
                 current = s as Ellipse;
                 current.Fill = Brushes.picked;

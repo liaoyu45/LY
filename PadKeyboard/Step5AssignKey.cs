@@ -120,26 +120,8 @@ namespace PadKeyboard {
 
         protected List<Key> Keys { get; } = new List<Key>();
 
-        protected List<KeyValuePair<Key, bool>> Filter() {
-            var r = new List<KeyValuePair<Key, bool>>();
-            foreach (var item in Keys) {
-                var c = r.Count(i => i.Key == item);
-                if (c > 2) {
-                    continue;
-                }
-                r.Add(new KeyValuePair<Key, bool>(item, c == 0));
-            }
-            r.AddRange(Keys.GroupBy(i => i).Where(g => g.Count() == 1).ToDictionary(g => g.Key, g => false));
-            return r;
-        }
-
         protected override void Init(int offset) {
             Beard.Content = content;
-        }
-
-        public delegate void KeyQueuesEventHandler(object sender, KeyQueuesEventArgs e);
-        public class KeyQueuesEventArgs : EventArgs {
-            public List<KeyValuePair<Key, bool>> Keys { get; set; }
         }
     }
 }
