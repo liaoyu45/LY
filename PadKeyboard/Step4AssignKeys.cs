@@ -13,13 +13,7 @@ namespace PadKeyboard {
         private Grid content = Elements.BgA1Grid();
         private InputDevice d;
         private Ellipse current;
-        private Grid keyPanel = Elements.BgA1Grid(g => {
-            var v = (int[])Enum.GetValues(typeof(Key));
-            var n = Enum.GetNames(typeof(Key));
-            for (var i = 0; i < v.Length; i++) {
-                var b = BoxShadow.Create();//TODO:layout all keys, do as KEYSCONFIG.PNG.
-            }
-        });
+        private Grid keyPanel = Elements.BgA1Grid();
 
         private double r => Beard.Radius;
         private Grid effect;
@@ -28,12 +22,6 @@ namespace PadKeyboard {
 
         public Step4AssignKeys() {
             ds = new Dicks(r);
-            effect = new Grid {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-                Width = r * 4,
-                Height = r * 4
-            };
             effect = BoxShadow.Create(new GradientStop { Color = Colors.Black }, new GradientStop { Offset = 1 });
             effect.Width = effect.Height = r * 4;
             effect.HorizontalAlignment = HorizontalAlignment.Left;
@@ -46,6 +34,8 @@ namespace PadKeyboard {
                 if (d != e.Device) {
                     return;
                 }
+                Beard.Queue.Move(1);
+                return;
                 content.Children.Add(keyPanel);
                 keyPanel.Focus();
             };
@@ -85,13 +75,12 @@ namespace PadKeyboard {
             };
         }
 
-        protected override bool Finish() {
-            return ds.Any();
-        }
-
         protected override void Init(int offset) {
-            content.Children.Clear();
             Beard.Content = content;
+            if (offset < 0) {
+                return;
+            }
+            content.Children.Clear();
             EventHandler<TouchEventArgs> editting = (s, e) => {
                 if (d != null) {
                     return;
@@ -107,6 +96,5 @@ namespace PadKeyboard {
                 item.TouchDown += editting;
             }
         }
-
     }
 }

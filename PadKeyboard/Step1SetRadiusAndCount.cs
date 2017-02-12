@@ -38,15 +38,8 @@ namespace PadKeyboard {
             content.Children.Add(addPanel);
             content.Children.Add(countPanel);
             countPanel.Children.Add(countGrid);
-            var gs = new Dictionary<double, Color> {
-                { 0, Colors.White },
-                { .02, Colors.Black },
-                { .20, Colors.White},
-                { .24, Colors.Black},
-                { .27, Colors.White }
-            }.Select(item => new GradientStop { Offset = item.Key, Color = item.Value }).ToArray();
             for (var i = 0; i < Beard.KeysMax; i++) {
-                countGrid.Children.Add(BoxShadow.Create(gs));
+                countGrid.Children.Add(Elements.ShadowButton());
             }
             setColor();
             var fs = new List<finger>();

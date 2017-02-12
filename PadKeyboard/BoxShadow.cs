@@ -7,14 +7,26 @@ using System.Windows.Shapes;
 
 namespace PadKeyboard {
     public class BoxShadow {
+        public static void ShowCorner(Grid r, int index, Action<VisualBrush> dowith = null) {
+            var brush = r.Background as VisualBrush;
+            var c = (brush?.Visual as Grid)?.Children;
+            if (c == null) {
+                return;
+            }
+            for (var i = 0; i < c.Count; i++) {
+                c[i].Visibility = Visibility.Hidden;
+            }
+            c[index].Visibility = Visibility.Visible;
+            dowith?.Invoke(brush);
+        }
+
         public static Grid Create(params GradientStop[] gs) {
             return new Grid {
                 Background = new VisualBrush { Visual = Create(2, 2, 1, 1, gs) }
             };
         }
         public static Grid Create(double width, double height, double innerX, double innerY, params GradientStop[] gs) {
-            var inner = new Rect { X = innerX, Y = innerY, Width = width - innerX * 2, Height = height - innerY * 2 };
-            return Create(new Size(width, height), inner, gs);
+            return Create(new Size(width, height), new Rect { X = innerX, Y = innerY, Width = width - innerX * 2, Height = height - innerY * 2 }, gs);
         }
 
         public static Grid Create(Size size, Rect inner, params GradientStop[] gs) {

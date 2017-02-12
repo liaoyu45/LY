@@ -38,9 +38,9 @@ namespace PadKeyboard {
         public static IEnumerable<Point> RawPoints;
         public static IEnumerable<Point> OrderedPoints;
 
+        public static Gods.Steps.StepQueue Queue = new Gods.Steps.StepQueue();
         [STAThread()]
         public static void Main() {
-            var Queue = new Gods.Steps.StepQueue();
             var touched = new Dictionary<InputDevice, List<Point>>();
             var touching = 0;
             Board.Loaded += delegate {
@@ -49,6 +49,7 @@ namespace PadKeyboard {
                 Queue.Add<Step2AddPoints>();
                 Queue.Add<Step3Sort>();
                 Queue.Add<Step4AssignKeys>();
+                Queue.Add<Step5AssignKey>();
                 Queue.Start();
             };
             Board.KeyDown += (s, e) => {

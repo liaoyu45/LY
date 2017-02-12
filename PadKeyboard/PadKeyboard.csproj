@@ -51,6 +51,7 @@
     <Compile Include="Dick.cs" />
     <Compile Include="Elements.cs" />
     <Compile Include="Happy.cs" />
+    <Compile Include="Step5AssignKey.cs" />
     <Compile Include="PieRadius.cs" />
     <Compile Include="Step0LoadLayout.cs" />
     <Compile Include="Step1SetRadiusAndCount.cs" />
