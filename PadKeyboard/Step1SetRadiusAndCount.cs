@@ -8,21 +8,21 @@ using System.Windows.Shapes;
 using static System.Math;
 
 namespace PadKeyboard {
-    internal class Step1SetRadiusAndCount : Gods.Steps.Step {
+    internal class Step1SetRadiusAndCount : KeyStep {
 
-        private Grid content = new Grid();
         private Grid addPanel = Elements.BgA1Grid();
         private Grid effectPanel = new Grid();
-        private Grid countPanel = Elements.BgA1Grid(g => {
-            g.HorizontalAlignment = HorizontalAlignment.Stretch;
-            g.VerticalAlignment = VerticalAlignment.Top;
-            g.Height = Beard.Height * .382;
-        });
+        private Grid countPanel = new Grid {
+            Background = new SolidColorBrush(new Color { A = 1 }),
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Top,
+            Height = Height * .382
+        };
         private WrapPanel countGrid = new WrapPanel {
             VerticalAlignment = VerticalAlignment.Stretch,
             HorizontalAlignment = HorizontalAlignment.Left,
-            Height = Beard.Height * .382,
-            Width = Beard.Height * .382
+            Height = Height * .382,
+            Width = Height * .382
         };
 
         private double r = Beard.Radius;
@@ -34,17 +34,17 @@ namespace PadKeyboard {
         };
 
         public Step1SetRadiusAndCount() {
-            content.Children.Add(effectPanel);
-            content.Children.Add(addPanel);
-            content.Children.Add(countPanel);
+            Content.Children.Add(effectPanel);
+            Content.Children.Add(addPanel);
+            Content.Children.Add(countPanel);
             countPanel.Children.Add(countGrid);
             for (var i = 0; i < Beard.KeysMax; i++) {
-                countGrid.Children.Add(Elements.ShadowButton());
+                countGrid.Children.Add(ShadowBox.SquareButton());
             }
             setColor();
             var fs = new List<finger>();
             var d = default(InputDevice);
-            var maxLeft = Beard.Width - countGrid.Width;
+            var maxLeft = Width - countGrid.Width;
             countPanel.TouchLeave += (s, e) => {
                 if (e.Device != d) {
                     return;
@@ -57,7 +57,7 @@ namespace PadKeyboard {
                     return;
                 }
                 d = e.Device;
-                var left = e.MoveInside(countGrid).X;
+                var left = Inside(e, countGrid).X;
                 countGrid.Margin = new Thickness { Left = left };
                 c = Beard.KeysMin + (int)(left / maxLeft * Beard.KeysRange);
                 setColor();
@@ -67,10 +67,13 @@ namespace PadKeyboard {
                 if (f0 == null) {
                     return;
                 }
-                f0.p = e.MoveInside(f0.e);
+                f0.p = Inside(e, f0.e);
                 if (fs.Count == 2) {
                     var f1 = fs.First(f => f != f0);
-                    r = Min(Beard.MaxRadius, (f0.p - f1.p).Length / 2);
+                    var _r = Min(MaxRadius, (f0.p - f1.p).Length / 2);
+                    if (_r > 0) {
+                        r = _r;
+                    }
                     f0.e.Width = f1.e.Width = f0.e.Height = f1.e.Height = r * 2;
                     setColor();
                 }
@@ -102,21 +105,10 @@ namespace PadKeyboard {
             };
         }
 
-        protected override bool Finish() {
+        protected override int Finish() {
             Beard.Radius = r;
             Beard.KeysCount = c;
-            return true;
-        }
-
-        protected override bool Cancel() {
-            Application.Current.MainWindow.Close();
-            return true;
-        }
-
-        protected override void Init(int offset) {
-            Beard.Content = content;
-            effectPanel.Children.Clear();
-            addPanel.Children.Clear();
+            return 1;
         }
 
         private void setColor() {

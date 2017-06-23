@@ -1,66 +1,55 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Gods.Steps {
-    public class StepQueue : IEnumerable<Step> {
+    public class StepQueue {
 
         public int Progress { get; private set; } = -1;
 
-        private List<Lazy<Step>> steps = new List<Lazy<Step>>();
+        public List<Lazy<Step>> Steps { get; } = new List<Lazy<Step>>();
 
         public void Add<T>() where T : Step, new() {
-            steps.Add(new Lazy<Step>(() => new T()));
+            Steps.Add(new Lazy<Step>(() => new T()));
         }
 
-        public void Remove<T>() {
-            var t = typeof(T);
-            steps.Remove(steps.Find(s => s.GetType().GenericTypeArguments[0] == t));
-        }
-
-        private Step current() {
-            if (Progress > -1 && Progress < steps.Count) {
-                return steps[Progress].Value;
+        public Step Current {
+            get {
+                if (Progress > -1 && Progress < Steps.Count) {
+                    return Steps[Progress].Value;
+                }
+                return null;
             }
-            return null;
         }
 
         public void Start() {
             Progress = 0;
-            current()?.Init(1);
+            Current?.Init(1);
         }
 
-        public bool Move(int offset) {
-            var old = current();
-            bool? canMove;
-            if (offset > 0) {
-                canMove = old?.Finish();
-            } else if (offset < 0) {
-                canMove = old?.Cancel();
-            } else {
-                canMove = true;
+        public void Move(bool d) {
+            var s = d ? Current.Finish() : Current.Cancel();
+            if (s == 0) {
+                return;
             }
-            if (!canMove.HasValue || !canMove.Value) {
-                return false;
+            Progress += s;
+            if (Progress < 0) {
+                Progress = 0;
+                Cancelled?.Invoke(this, EventArgs.Empty);
+                return;
             }
-            Progress += offset;
-            var s = current();
-            s?.Init(offset);
-            if (s?.WillRecreate == true) {
-                s = (Step)Activator.CreateInstance(s.GetType());
-                steps[Progress] = new Lazy<Step>(() => s);
+            if (Progress > Steps.Count - 1) {
+                Progress = Steps.Count - 1;
+                Finished?.Invoke(this, EventArgs.Empty);
+                return;
             }
-            return s != null;
-        }
-
-        public IEnumerator<Step> GetEnumerator() {
-            foreach (var item in steps) {
-                yield return item.Value;
+            Current.Init(s);
+            if (Current.WillRecreate) {
+                var type = Current.GetType();
+                Steps[Progress] = new Lazy<Step>(() => (Step)Activator.CreateInstance(type));
+                Current.Init(s);
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator() {
-            return GetEnumerator();
-        }
+        public event EventHandler Finished, Cancelled;
     }
 }

@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gods.System", "Gods.System\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PadKeyboard", "PadKeyboard\PadKeyboard.csproj", "{FB6573A9-B24E-443E-B7A7-016CF9E6896E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoMoreTestProjects", "NoMoreTestProjects\NoMoreTestProjects.csproj", "{6B52AEC0-6436-4F1E-8283-7B30CFCBB559}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{FB6573A9-B24E-443E-B7A7-016CF9E6896E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB6573A9-B24E-443E-B7A7-016CF9E6896E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB6573A9-B24E-443E-B7A7-016CF9E6896E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B52AEC0-6436-4F1E-8283-7B30CFCBB559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B52AEC0-6436-4F1E-8283-7B30CFCBB559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B52AEC0-6436-4F1E-8283-7B30CFCBB559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B52AEC0-6436-4F1E-8283-7B30CFCBB559}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

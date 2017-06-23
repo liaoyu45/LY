@@ -46,18 +46,24 @@
   <ItemGroup>
     <Compile Include="AllKeysGrid.cs" />
     <Compile Include="Beard.cs" />
-    <Compile Include="BoxShadow.cs" />
+    <Compile Include="BoardPanel.cs" />
+    <Compile Include="ShadowBox.cs" />
     <Compile Include="Brushes.cs" />
     <Compile Include="Dick.cs" />
+    <Compile Include="EffectFuck.cs" />
     <Compile Include="Elements.cs" />
     <Compile Include="Happy.cs" />
-    <Compile Include="Step5AssignKey.cs" />
+    <Compile Include="ITrace.cs" />
+    <Compile Include="Step4PickKeys.cs" />
+    <Compile Include="KeyStep.cs" />
+    <Compile Include="GestureBuilder.cs" />
     <Compile Include="PieRadius.cs" />
-    <Compile Include="Step0LoadLayout.cs" />
     <Compile Include="Step1SetRadiusAndCount.cs" />
     <Compile Include="Step3Sort.cs" />
     <Compile Include="Step2AddPoints.cs" />
-    <Compile Include="Step4AssignKeys.cs" />
+    <Compile Include="TouchBoard.cs" />
+    <Compile Include="Trace.cs" />
+    <Compile Include="TraceEffect.cs" />
     <Compile Include="Win32API.cs" />
     <Compile Include="Worker.cs" />
   </ItemGroup>

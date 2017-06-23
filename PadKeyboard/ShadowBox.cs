@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,18 +7,42 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace PadKeyboard {
-    public class BoxShadow {
+    public class ShadowBox {
         public static void ShowCorner(Grid r, int index, Action<VisualBrush> dowith = null) {
             var brush = r.Background as VisualBrush;
             var c = (brush?.Visual as Grid)?.Children;
             if (c == null) {
                 return;
             }
-            for (var i = 0; i < c.Count; i++) {
-                c[i].Visibility = Visibility.Hidden;
+            if (index > -1 && index < 4) {
+                for (var i = 0; i < 4; i++) {
+                    c[i].Visibility = Visibility.Hidden;
+                }
+                c[index].Visibility = Visibility.Visible;
             }
-            c[index].Visibility = Visibility.Visible;
             dowith?.Invoke(brush);
+        }
+
+
+        static GradientStop[] gs = new Dictionary<double, Color> {
+                { 0, Colors.White },
+                { .02, Colors.Black },
+                { .20, Colors.White},
+                { .24, Colors.Black},
+                { .27, Colors.White }
+            }.Select(item => new GradientStop { Offset = item.Key, Color = item.Value }).ToArray();
+
+        public static Grid SquareButton(UIElement content = null) {
+            var b = Create(gs);
+            if (content != null) {
+                ((b.Background as VisualBrush).Visual as Grid).Children.Add(content);
+            }
+            return b;
+        }
+
+
+        public static Grid Create() {
+            return Create(new[] { new GradientStop(), new GradientStop(Colors.Black, 1) });
         }
 
         public static Grid Create(params GradientStop[] gs) {
@@ -25,6 +50,7 @@ namespace PadKeyboard {
                 Background = new VisualBrush { Visual = Create(2, 2, 1, 1, gs) }
             };
         }
+
         public static Grid Create(double width, double height, double innerX, double innerY, params GradientStop[] gs) {
             return Create(new Size(width, height), new Rect { X = innerX, Y = innerY, Width = width - innerX * 2, Height = height - innerY * 2 }, gs);
         }
