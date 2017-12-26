@@ -26,11 +26,11 @@ namespace Gods.AOP {
                 var callers = Him.GetCallers(this.type);
                 var badCallers = new List<MethodBase>();
                 if (inMode(v, Modes.Sibling)) {
-                    var siblings = callers.Where(isSibling).Where(c => !v.Sibling(this.model, calling, c));
+                    var siblings = callers.Where(isSibling).Where(c => !v.Validate(this.model, calling, c));
                     badCallers.AddRange(siblings);
                 }
                 if (inMode(v, Modes.Foreigner)) {
-                    var foreigners = callers.Where(isForeigner).Where(c => !v.Foreigner(this.model, calling, c));
+                    var foreigners = callers.Where(isForeigner).Where(c => !v.Validate(this.model, calling, c));
                     badCallers.AddRange(foreigners);
                 }
                 if (badCallers.Any()) {

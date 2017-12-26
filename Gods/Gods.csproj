@@ -41,6 +41,7 @@
     <Compile Include="AOP\Property.cs" />
     <Compile Include="AOP\ModelExtensions.cs" />
     <Compile Include="AOP\Modes.cs" />
+    <Compile Include="AOP\ValidatorAttribute.cs" />
     <Compile Include="Data\Space.cs" />
     <Compile Include="Data\Space~T.cs" />
     <Compile Include="Linq\Sort.cs" />
