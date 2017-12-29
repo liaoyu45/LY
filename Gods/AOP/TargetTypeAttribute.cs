@@ -1,8 +1,8 @@
 ﻿using System;
 
 namespace Gods.AOP {
-	public class ValidatorAttribute : Attribute {
-		public ValidatorAttribute(Type validatorType) {
+	public class TargetTypeAttribute : Attribute {
+		public TargetTypeAttribute(Type validatorType) {
 			ValidatorType = validatorType;
 		}
 

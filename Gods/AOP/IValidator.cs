@@ -1,23 +1,25 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 
 namespace Gods.AOP {
 	public interface IValidator {
-		Modes Mode { get; }
 		bool Inheritable { get; }
 
-		bool Validate(ModelBase target, MethodBase calling, MethodBase caller);
+		void Validate(ModelBase target, IMethodCallMessage calling, MethodBase caller);
 	}
-	public abstract class ValidatorBase : IValidator {
-		public abstract Modes Mode { get; }
 
-		public virtual bool Inheritable => true;
+	class GenericValidator<T> : IValidator {
+		public bool Inheritable => true;
 
-		public abstract bool Validate(ModelBase target, MethodBase calling, MethodBase caller);
-	}
-	public abstract class ForeignValidator : ValidatorBase {
-		public override Modes Mode => Modes.Foreigner;
-	}
-	public abstract class SiblingValidator : ValidatorBase {
-		public override Modes Mode => Modes.Sibling;
+		void IValidator.Validate(ModelBase target, IMethodCallMessage calling, MethodBase caller) {
+			var obj = Activator.CreateInstance<T>();
+			try {
+				typeof(T).GetMethod(Him.GetAllAttribute<TargetMethodAttribute>(calling.MethodBase).FirstOrDefault().Name)?.Invoke(obj, null);
+			} catch (Exception e) {
+				throw e.InnerException;
+			}
+		}
 	}
 }

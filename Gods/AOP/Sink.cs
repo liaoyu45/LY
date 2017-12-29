@@ -2,36 +2,36 @@
 using System.Runtime.Remoting.Messaging;
 
 namespace Gods.AOP {
-    class Sink : IMessageSink {
-        private SinkHelper helper;
+	class Sink : IMessageSink {
+		private SinkHelper helper;
 
-        public Sink(IMessageSink nextSink) {
-            this.NextSink = nextSink;
-        }
+		public Sink(IMessageSink nextSink) {
+			this.NextSink = nextSink;
+		}
 
-        public IMessageSink NextSink { get; }
+		public IMessageSink NextSink { get; }
 
-        public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink) {
-            return null;
-        }
+		public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink) {
+			return null;
+		}
 
-        public IMessage SyncProcessMessage(IMessage msg) {
-            var method = msg as IMethodMessage;
-            if (method.MethodBase.IsConstructor) {
-                return createHelper(msg);
-            }
-            this.helper?.Analysis(method.MethodBase);
-            return this.NextSink.SyncProcessMessage(msg);
-        }
+		public IMessage SyncProcessMessage(IMessage msg) {
+			var method = msg as IMethodCallMessage;
+			if (method.MethodBase.IsConstructor) {
+				return CreateHelper(msg);
+			}
+			this.helper?.Analysis(method);
+			return this.NextSink.SyncProcessMessage(msg);
+		}
 
-        private IMessage createHelper(IMessage msg) {
-            var retMsg = this.NextSink.SyncProcessMessage(msg);
-            var model = RemotingServices.Unmarshal((retMsg as IMethodReturnMessage).ReturnValue as ObjRef);
-            var type = model.GetType();
-            if (ModelExtensions.GetValidators(type).GetEnumerator().MoveNext()) {
-                this.helper = new SinkHelper(model as ModelBase);
-            }
-            return retMsg;
-        }
-    }
+		private IMessage CreateHelper(IMessage msg) {
+			var retMsg = this.NextSink.SyncProcessMessage(msg);
+			var model = RemotingServices.Unmarshal((retMsg as IMethodReturnMessage).ReturnValue as ObjRef);
+			var type = model.GetType();
+			if (ValidatorExtensions.GetValidators(type).GetEnumerator().MoveNext()) {
+				this.helper = new SinkHelper(model as ModelBase);
+			}
+			return retMsg;
+		}
+	}
 }
