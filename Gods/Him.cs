@@ -5,10 +5,16 @@ using System.Linq;
 using System.Reflection;
 
 namespace Gods {
+
 	public static class Him {
-		public readonly static string MicrosoftCompany = typeof(object).Assembly.GetCustomAttribute<AssemblyCompanyAttribute>().Company;
+		public readonly static string MicrosoftCompany = nameof(Microsoft).ToLower();
 		public readonly static string MeMySelfAndI = typeof(Him).Assembly.GetCustomAttribute<AssemblyCompanyAttribute>().Company;
-		public static string[] Companies => new [] { MeMySelfAndI, MicrosoftCompany };
+
+		public static bool IsOutAssembly(Assembly assembly) {
+			var c = assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company?.ToLower() ?? string.Empty;
+			return c == MicrosoftCompany || c == MeMySelfAndI;
+		}
+
 		/// <summary>
 		/// 获取一个类型的所有调用者。
 		/// </summary>
@@ -18,7 +24,7 @@ namespace Gods {
 			return new StackTrace(1).GetFrames().Select(f => f.GetMethod())
 				.Where(t =>
 					t.DeclaringType != target
-					&& !Companies.Contains(t.DeclaringType.Assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company));
+					&& Any(c => c == MicrosoftCompany || c == MeMySelfAndI, t.DeclaringType.Assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company));
 		}
 
 		/// <summary>

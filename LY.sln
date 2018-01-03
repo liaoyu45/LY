@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyboardSynchronizer", "KeyboardSynchronizer\KeyboardSynchronizer.csproj", "{FF68FA64-AE6D-4DAB-B0CF-C7675228C61F}"
 EndProject
@@ -15,7 +15,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gods.System", "Gods.System\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PadKeyboard", "PadKeyboard\PadKeyboard.csproj", "{FB6573A9-B24E-443E-B7A7-016CF9E6896E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{65D87989-6543-40DA-97FA-69377B9F7882}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllOfMe", "AllOfMe\AllOfMe.csproj", "{2693BB61-B48D-4C71-9FD1-FF38469778C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL", "BLL\BLL.csproj", "{AC06168C-C4E0-482D-9BEB-F66058BB4052}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL.V0", "BLL.V0\BLL.V0.csproj", "{8513809D-4E8A-489B-8172-4343C3121BAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +51,18 @@ Global
 		{FB6573A9-B24E-443E-B7A7-016CF9E6896E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB6573A9-B24E-443E-B7A7-016CF9E6896E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB6573A9-B24E-443E-B7A7-016CF9E6896E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{65D87989-6543-40DA-97FA-69377B9F7882}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{65D87989-6543-40DA-97FA-69377B9F7882}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{65D87989-6543-40DA-97FA-69377B9F7882}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{65D87989-6543-40DA-97FA-69377B9F7882}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2693BB61-B48D-4C71-9FD1-FF38469778C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2693BB61-B48D-4C71-9FD1-FF38469778C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2693BB61-B48D-4C71-9FD1-FF38469778C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2693BB61-B48D-4C71-9FD1-FF38469778C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC06168C-C4E0-482D-9BEB-F66058BB4052}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC06168C-C4E0-482D-9BEB-F66058BB4052}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC06168C-C4E0-482D-9BEB-F66058BB4052}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC06168C-C4E0-482D-9BEB-F66058BB4052}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8513809D-4E8A-489B-8172-4343C3121BAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8513809D-4E8A-489B-8172-4343C3121BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8513809D-4E8A-489B-8172-4343C3121BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8513809D-4E8A-489B-8172-4343C3121BAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
