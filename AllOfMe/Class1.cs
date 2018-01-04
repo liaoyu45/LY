@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 
-namespace Gods.Web {
-	static class JObjectExtensions {
-		public static void Append(this JObject j, Type item, Func<Type, bool> filterType, Func<MethodInfo,bool> filterMethod) {
+namespace AllOfMe {
+	public class Class1 {
+		private static void Append(JObject j, Type item, Func<MethodInfo, bool> predicate) {
 			var ns = item.FullName.Split('.');
 			foreach (var n in ns) {
 				if (j.Properties().Any(p => p.Name == n)) {
@@ -20,7 +21,7 @@ namespace Gods.Web {
 				j[nameof(Properties)] = Properties;
 			}
 			var Methods = new JArray();
-			item.GetInterfaces().Where(filterType).SelectMany(t => t.GetMethods()).Where(filterMethod).ToList().ForEach(m => {
+			item.GetInterfaces().SelectMany(t => t.GetMethods()).Where(predicate).ToList().ForEach(m => {
 				var t = new JObject {
 					[nameof(m.Name)] = m.Name,
 					["Key"] = m.GetHashCode()

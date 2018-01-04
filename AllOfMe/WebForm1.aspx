@@ -9,6 +9,7 @@
 </head>
 <body>
 	<script type="text/javascript">
+		new BLL.V0.Live().WakeUp();
 		new BLL.V0.Live().WakeUp()
 	</script>
 	w289034234

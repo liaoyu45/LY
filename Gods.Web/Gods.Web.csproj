@@ -45,6 +45,7 @@
     <Compile Include="Extensions\JObjectExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Javascript.cs" />
     <Compile Include="JSON.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
