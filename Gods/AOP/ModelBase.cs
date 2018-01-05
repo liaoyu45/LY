@@ -6,37 +6,56 @@ using System.Reflection;
 
 namespace Gods.AOP {
 	[AOP]
-	public abstract class ModelBase : ContextBoundObject {
-		public ModelBase() {
-			if (ValidatorType == null) {
+	public abstract class ModelBase : ContextBoundObject { }
+
+	public class Model : ModelBase, IModelFactory {
+		public Model() {
+			var t = ValidatorType;
+			if (t == null) {
 				return;
 			}
-			typeof(ValidatorExtensions).GetMethod(nameof(ValidatorExtensions.Validate)).MakeGenericMethod(GetType()).Invoke(null, new[] { Activator.CreateInstance(typeof(GenericValidator<>).MakeGenericType(ValidatorType)) });
+			var v = Activator.CreateInstance(
+						typeof(GenericValidator<>).MakeGenericType(t));
+			typeof(ValidatorExtensions)
+				.GetMethod(nameof(ValidatorExtensions.Validate))
+				.MakeGenericMethod(GetType())
+				.Invoke(null, new[] {
+					v
+				});
 		}
-		protected virtual Type ValidatorType => Him.GetAllAttribute<TargetTypeAttribute>(GetType()).FirstOrDefault()?.ValidatorType;
-
 		protected internal virtual string GetValidator(MethodBase name) {
 			return Him.GetAllAttribute<TargetMethodAttribute>(name).FirstOrDefault().Name;
 		}
-	}
-	public class Model : ModelBase, IModelFactory {
+
+		private bool ever;
 		private Type type;
-		protected override Type ValidatorType {
+		protected virtual Type ValidatorType {
 			get {
-				return type ?? (type = ((IModelFactory)this).GetType(base.ValidatorType));
+				if (ever) {
+					return type;
+				}
+				ever = true;
+				var a = Him.GetAllAttribute<TargetTypeAttribute>(GetType()).FirstOrDefault();
+				if (a == null) {
+					return null;
+				}
+				return type = ((IModelFactory)this).GetType(a.ValidatorType);
 			}
 		}
 		public virtual string Folder { get; } = nameof(Gods);
 		private static Dictionary<Guid, Type> cache = new Dictionary<Guid, Type>();
-
+		protected internal virtual void DealTarget(object obj) { }
+		protected internal virtual object[] InvokeParameters(MethodBase method) {
+			return null;
+		}
 		Type IModelFactory.GetType(Type type) {
 			if (cache.ContainsKey(type.GUID)) {
 				return cache[type.GUID];
 			}
 			if (type.IsInterface || type.IsAbstract) {
 				var pre = type.Assembly.FullName.Split(',')[0] + '.';
-				return cache[type.GUID] = Directory.GetFiles(Folder)
-					.Select(e => Him.TryGet(() => Assembly.LoadFile(e)))
+				return cache[type.GUID] = Directory.GetFiles(Folder, "*.dll")
+					.Select(e => Him.TryGet(() => Assembly.LoadFrom(e)))
 					.Where(ass => ass?.FullName.Split(',')[0].StartsWith(pre) == true)
 					.OrderBy(ae => ae.FullName)
 					.LastOrDefault()?.ExportedTypes.

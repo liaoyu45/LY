@@ -1,5 +1,5 @@
 ﻿namespace BLL {
 	public interface ILive {
-		void WakeUp();
+		void WakeUp(int time);
 	}
 }

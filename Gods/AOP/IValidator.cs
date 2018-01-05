@@ -16,7 +16,11 @@ namespace Gods.AOP {
 		void IValidator.Validate(ModelBase target, IMethodCallMessage calling, MethodBase caller) {
 			var obj = Activator.CreateInstance<T>();
 			try {
-				typeof(T).GetMethod(target.GetValidator(calling.MethodBase))?.Invoke(obj, null);
+				var tar = (Model)target;
+				tar.DealTarget(obj);
+				var methodInfo = typeof(T).GetMethod(tar.GetValidator(calling.MethodBase));
+				var paras = tar.InvokeParameters(methodInfo);
+				methodInfo?.Invoke(obj, paras);
 			} catch (Exception e) {
 				throw e.InnerException;
 			}

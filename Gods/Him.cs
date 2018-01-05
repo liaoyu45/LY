@@ -54,7 +54,7 @@ namespace Gods {
 								 select m).FirstOrDefault()?.GetCustomAttributes<T>(true));
 		}
 		public static IEnumerable<T> GetAllAttribute<T>(Type type) where T : Attribute {
-			return type.GetCustomAttributes<T>(true).Concat(type.GetInterfaces().SelectMany(i => i.GetCustomAttributes<T>(true)));
+			return type.GetCustomAttributes<T>(true).Concat(type.GetInterfaces().SelectMany(i => i.GetCustomAttributes<T>(true))).ToArray();
 		}
 
 		public static Dictionary<int, string> TryAll(Action action, params Action[] actions) {
