@@ -82,7 +82,44 @@
 		s[i] = obj[i];
 	}
 })(
-"Gods",
+"window",
 "Him1344150689",
-CSharp
+{
+  "BLL": {
+    "ILive": {
+      "Properties": [
+        {
+          "Name": "Left",
+          "Type": "System.Int32"
+        }
+      ],
+      "Methods": [
+        {
+          "Name": "WakeUp",
+          "Key": "19017142.1058140961",
+          "Parameters": [
+            {
+              "Name": "time",
+              "Type": "System.Int32"
+            }
+          ]
+        },
+        {
+          "Name": "Test",
+          "Key": "19017142.388525491",
+          "Queryable": true,
+          "ReturnType": []
+        }
+      ]
+    },
+    "IWork": {
+      "Methods": [
+        {
+          "Name": "GoWork",
+          "Key": "39070558.265120529"
+        }
+      ]
+    }
+  }
+}
 );

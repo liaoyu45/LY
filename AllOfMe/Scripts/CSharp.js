@@ -1,7 +1,7 @@
-(function (gods, key, obj) {
+(function (thisArg, ajax, obj) {
 	"user strict"
 	var s = {};
-	gods.split('.').forEach(i => {
+	thisArg.split('.').forEach(i => {
 		s = i in window ? window[i] : window[i] = {};
 	});
 	function makeClass(n, i) {
@@ -38,7 +38,7 @@
 			if (m.Queryable) {
 				n[i].prototype[m.Name] = function () {
 					var t = this,
-						url = `?${key}=${m.Key}`;
+						url = `?${ajax}=${m.Key}`;
 					[...arguments].forEach((a, i) => url += `&${m.Parameters[i].Name}=${a}`);
 					return {
 						get: function (later) {
@@ -50,7 +50,7 @@
 				n[i].prototype[m.Name] = function (form) {
 					var t = this;
 					form = new FormData(form);
-					form.append(key, m.Key);
+					form.append(ajax, m.Key);
 					return {
 						post: function (later) {
 							return then("post", "", form, makeLater(t, later));
@@ -82,7 +82,44 @@
 		s[i] = obj[i];
 	}
 })(
-"Gods",
-"Him1344150689",
-CSharp
+"window",
+"AjaxKey811297106",
+{
+  "BLL": {
+    "ILive": {
+      "Properties": [
+        {
+          "Name": "Left",
+          "Type": "System.Int32"
+        }
+      ],
+      "Methods": [
+        {
+          "Name": "WakeUp",
+          "Key": "19017142.-1089913253",
+          "Parameters": [
+            {
+              "Name": "time",
+              "Type": "System.Int32"
+            }
+          ]
+        },
+        {
+          "Name": "Test",
+          "Key": "19017142.816121540",
+          "Queryable": true,
+          "ReturnType": []
+        }
+      ]
+    },
+    "IWork": {
+      "Methods": [
+        {
+          "Name": "GoWork",
+          "Key": "16090703.566279348"
+        }
+      ]
+    }
+  }
+}
 );

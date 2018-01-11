@@ -1,11 +1,26 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 
 namespace Gods.Web {
 	static class Mapper {
-		internal static object map(this Type pt, string name) {
+		internal static object MapProperties(object r) {
+			foreach (var item in r.GetType().GetProperties()) {
+				if (item.CanWrite) {
+					var v = Map(item.PropertyType, item.Name);
+					if (item.PropertyType.Equals(v?.GetType())) {
+						item.SetValue(r, v);
+					}
+				}
+			}
+			return r;
+		}
+		internal static object[] MapParameters(MethodInfo m) {
+			return m.GetParameters().Select(p => Map(p.ParameterType, p.Name)).ToArray();
+		}
+		private static object Map(Type pt, string name) {
 			var req = HttpContext.Current.Request;
 			var fs = HttpContext.Current.Request.Files;
 			if (pt == typeof(string)) {

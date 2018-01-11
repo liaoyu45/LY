@@ -1,6 +1,8 @@
 ﻿using Gods.AOP;
+using System.ComponentModel.Composition;
 
 namespace BLL.V0 {
+	[Export(typeof(IWork))]
 	public class Work : Model, IWork {
 		public int GoWork() {
 			System.Console.WriteLine(nameof(GoWork));

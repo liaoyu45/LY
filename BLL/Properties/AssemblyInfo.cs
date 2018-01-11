@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("BLL")]
 [assembly: AssemblyDescription("")]
+[assembly: AssemblyCompany("LY")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyProduct("BLL")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2018")]

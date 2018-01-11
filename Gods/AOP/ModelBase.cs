@@ -24,8 +24,10 @@ namespace Gods.AOP {
 				});
 		}
 		protected internal virtual string GetValidator(MethodBase name) {
-			return Him.GetAllAttribute<TargetMethodAttribute>(name).FirstOrDefault().Name;
+			return Him.GetAllAttributes<TargetMethodAttribute>(name).FirstOrDefault().Name;
 		}
+
+		protected Dictionary<string, object> Values { get; set; }
 
 		private bool ever;
 		private Type type;
@@ -35,7 +37,7 @@ namespace Gods.AOP {
 					return type;
 				}
 				ever = true;
-				var a = Him.GetAllAttribute<TargetTypeAttribute>(GetType()).FirstOrDefault();
+				var a = Him.GetAllAttributes<TargetTypeAttribute>(GetType()).FirstOrDefault();
 				if (a == null) {
 					return null;
 				}
@@ -45,8 +47,9 @@ namespace Gods.AOP {
 		public virtual string Folder { get; } = nameof(Gods);
 		private static Dictionary<Guid, Type> cache = new Dictionary<Guid, Type>();
 		protected internal virtual void DealTarget(object obj) { }
+
 		protected internal virtual object[] InvokeParameters(MethodBase method) {
-			return null;
+			return method.GetParameters().Select(p => Activator.CreateInstance(p.ParameterType)).ToArray();
 		}
 		Type IModelFactory.GetType(Type type) {
 			if (cache.ContainsKey(type.GUID)) {

@@ -1,27 +1,22 @@
-﻿using Javascript.Extensions;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Hosting;
+using System.Web.SessionState;
+using System.Web.UI;
 
 namespace Gods.Web {
-	public class AsyncPage : System.Web.UI.Page {
-		internal static Dictionary<Guid, Dictionary<string, MethodInfo>> cache = new Dictionary<Guid, Dictionary<string, MethodInfo>>();
-		internal static Dictionary<Guid, string> keys = new Dictionary<Guid, string>();
+	public class Me : You, IRequiresSessionState {	}
 
-		internal static Assembly WebApp;
-		internal static string AjaxKey;
+	public class You : Page, IHttpHandler {
+		public virtual ICacheManager CacheManager => Web.CacheManager.Instance;
+		public virtual IValidator Validator => Web.Validator.Instance;
+
 		public override void ProcessRequest(HttpContext context) {
-			var r = HttpContext.Current.Request;
-			if (!r.Params.AllKeys.Contains(AjaxKey)) {
+			if (!Regex.IsMatch(context.Request[Him.AjaxKey]?.Trim() ?? string.Empty, @"^\d+\.\d+$")) {
 				base.ProcessRequest(context);
 				return;
 			}
-			var result = Invoke() ?? string.Empty;
+			var result = Gods.Him.TryGet(Invoke, string.Empty);
 			if (result is string) {
 				context.Response.StatusCode = 501;
 			} else if (result.GetType().IsClass) {
@@ -37,48 +32,28 @@ namespace Gods.Web {
 		}
 
 		private object Invoke() {
-			var m = default(MethodInfo);
-			var t = GetType().BaseType.GUID;
-			if (cache[t].TryGetValue(HttpContext.Current.Request[AjaxKey], out m)) {
-				var tar = JSON.From(m.DeclaringType.AssemblyQualifiedName).ForIn(p => p.PropertyType.map(p.Name));
-				try {
-					return tar[m](GetArgs(m, tar.Source));
-				} catch (Exception e) {
-					return e.Final().Message;
+			var args = HttpContext.Current.Request[Him.AjaxKey].Split('.');
+			var t = Him.FindImplement(args[0]);
+			var m = Gods.Him.GetSignedMethod(t, int.Parse(args[1]), nameof(Gods));
+			object r;
+			var a = CacheManager?.Cacheable(m) ?? 0;
+			if (a > 0) {
+				r = CacheManager.Read(a);
+				if (r != null) {
+					return r;
 				}
 			}
-			return t;
-		}
-		private object[] GetArgs(MethodInfo m, object tar) {
-			var vt = LoadValidator(m);
-			if (vt != null) {
-				var c = vt.GetConstructors()[0];
-				var ca = c.GetParameters().Length == 0 ? null : new[] { tar };
-				var v = JSON.From(c.Invoke(ca))[mm => mm.Name == m.Name];
-				if (v != null) {
-					var args = v?.Invoke(null);
-					if (args != null) {
-						return args is object[] ? args as object[] : new[] { args };
-					}
-				}
+			var ins = Activator.CreateInstance(t);
+			Mapper.MapProperties(ins);
+			var ps = Mapper.MapParameters(m);
+			ps = Validator?.Validate(ins, m, ps) as object[] ?? ps;
+			r = m.Invoke(ins, ps);
+			if (a > 0) {
+				CacheManager.Save(a, r);
+			} else {
+				CacheManager?.Remove(a);
 			}
-			return m.GetParameters().Select(p => p.ParameterType.map(p.Name)).ToArray();
-		}
-
-		protected virtual Type LoadValidator(MethodInfo m) {
-			return WebApp.GetType(WebApp.FullName.Split(',')[0] + '.' + m.DeclaringType.FullName);
-		}
-
-		protected internal virtual bool FilterMethod(MethodInfo method) {
-			return method.DeclaringType != typeof(object);
-		}
-
-		protected internal virtual bool FilterType(Type type) {
-			return true;
-		}
-
-		protected internal virtual bool FilterAssembly(Assembly assembly) {
-			return true;
+			return r;
 		}
 	}
 }

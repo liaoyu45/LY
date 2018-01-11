@@ -46,36 +46,45 @@ namespace Gods {
 			}
 		}
 
-		public static IEnumerable<T> GetAllAttribute<T>(MethodBase method) where T : Attribute {
+		public static IEnumerable<T> GetAllAttributes<T>(MethodBase method) where T : Attribute {
 			return method.GetCustomAttributes<T>(true).Concat(
 								(from i in method.DeclaringType.GetInterfaces()
 								 from m in i.GetMethods()
 								 where m.Name == method.Name && false == m.GetParameters().Select(p => p.ParameterType).Except(method.GetParameters().Select(p => p.ParameterType)).Any()
 								 select m).FirstOrDefault()?.GetCustomAttributes<T>(true));
 		}
-		public static IEnumerable<T> GetAllAttribute<T>(Type type) where T : Attribute {
+		public static IEnumerable<T> GetAllAttributes<T>(Type type) where T : Attribute {
 			return type.GetCustomAttributes<T>(true).Concat(type.GetInterfaces().SelectMany(i => i.GetCustomAttributes<T>(true))).ToArray();
 		}
 
-		public static Dictionary<int, string> TryAll(Action action, params Action[] actions) {
-			var dict = new Dictionary<int, string>();
-			try {
-				action();
-			} catch (Exception e) {
-				dict.Add(0, e.Message);
-			}
-			for (var i = 0; i < actions.Length; i++) {
-				try {
-					actions[i]();
-				} catch (Exception e) {
-					dict.Add(i + 1, e.Message);
-				}
-			}
-			return dict;
+		/// <summary>
+		/// 将方法名称和各个参数类型的 <see cref="object.GetHashCode"/> 的累加再除以总数，以值为此方法的标识。仅保证在定义的类中几乎唯一。
+		/// </summary>
+		/// <param name="method">要标记的方法。</param>
+		/// <param name="extra">通常为 null。</param>
+		/// <returns>生成的标识。</returns>
+		public static int SignMethod(MethodInfo method, object extra) {
+			var ps = method.GetParameters();
+			var c = ps.Length + 2;
+			return method.Name.GetHashCode() / c + ps.Aggregate(0, (i, p) => i + p.GetHashCode() / c) + (extra?.GetHashCode() ?? 0) / c;
 		}
 
 		/// <summary>
-		/// 用于当 <paramref name="func"/> 可能发生异常时。可免去类型声明，如：T t; try { t = func(); } catch { t = default(T); }，现可使用：var obj = Him.TryGet(func)。
+		/// 查找 <see cref="SignMethod(MethodInfo, object)"/> 的返回值对应的方法。
+		/// </summary>
+		/// <param name="type">要查找的类型。</param>
+		/// <param name="sign">原方法标识。</param>
+		/// <param name="extra">通常为 null。</param>
+		/// <returns><paramref name="sign"/> 对应的方法。</returns>
+		public static MethodInfo GetSignedMethod(Type type, int sign, object extra) {
+			return type.GetMethods().FirstOrDefault(m => SignMethod(m, extra) == sign);
+		}
+		public static MethodInfo GetMappedMethod(Type type, MethodInfo method, object extra) {
+			return GetSignedMethod(type, SignMethod(method, extra), extra);
+		}
+
+		/// <summary>
+		/// 对于无 out 参数的方法，可免去类型声明，如：T t; try { t = func(); } catch { t = default(T); }，现可使用：var obj = Him.TryGet(func)。
 		/// </summary>
 		/// <typeparam name="T"><paramref name="func"/> 的返回值类型。</typeparam>
 		/// <param name="func">可能发生异常的函数。</param>
@@ -88,6 +97,7 @@ namespace Gods {
 				return ifError;
 			}
 		}
+
 		/// <summary>
 		/// 类似于 <see cref="List{T}.ForEach(Action{T})"/>。
 		/// </summary>
@@ -111,6 +121,31 @@ namespace Gods {
 				}
 			}
 			return false;
+		}
+
+		public static T CopyTo<T>(this object fromA, params string[] excludes) where T : new() =>
+			CopyTo<T>(fromA, true, excludes);
+
+		public static T CopyTo<T>(this object fromA, bool contains, params string[] props) where T : new() {
+			var toB = new T();
+			CopyTo(fromA, toB, contains, props);
+			return toB;
+		}
+		public static void CopyTo(this object fromA, object toB, params string[] excludes) =>
+			CopyTo(fromA, toB, true, excludes);
+		public static void CopyTo(this object fromA, object toB, bool contains, params string[] props) {
+			if (fromA == null || toB == null) {
+				return;
+			}
+			var wontCheck = props.Length == 0;
+			toB.GetType().GetProperties()
+				.Where(p => p.CanWrite && (wontCheck || props.Contains(p.Name) == contains))
+				.ToList().ForEach(p => {
+					var va = fromA.GetType().GetProperty(p.Name)?.GetValue(fromA);
+					if (va?.GetType() == p.PropertyType) {
+						p.SetValue(toB, va);
+					}
+				});
 		}
 	}
 }

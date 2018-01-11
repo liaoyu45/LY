@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="I.cs" />
     <Compile Include="ILive.cs" />
     <Compile Include="IWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -39,6 +40,9 @@
       <Project>{cc8d063d-e023-4950-aab9-3f0f9f40db59}</Project>
       <Name>Gods</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

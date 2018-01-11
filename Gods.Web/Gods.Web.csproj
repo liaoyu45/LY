@@ -35,17 +35,20 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncPage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="CacheManager.cs" />
+    <Compile Include="ExceptionDefinations.cs" />
     <Compile Include="Extensions\ExceptionExtentions.cs" />
-    <Compile Include="Extensions\JObjectExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Javascript.cs" />
+    <Compile Include="Him.cs" />
+    <Compile Include="IValidator.cs" />
     <Compile Include="JSON.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
