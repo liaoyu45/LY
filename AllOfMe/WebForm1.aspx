@@ -8,18 +8,26 @@
 	<script src="Him.js"></script>
 </head>
 <body>
-	<script type="text/javascript">
-		new BLL.IWork().GoWork().post(function (a, aa) {
-			alert(aa.responseText);
-		});
-		//new BLL.ILive().Test().get(function (a, aa) {
-		//	alert(aa.responseText);
-		//});
-	</script>
-	w289034234
     <form id="form1" runat="server">
 		<div>
+			<input type="text" name="Left" value="989248" />
+			<input type="text" name="time" value="123123" />
 		</div>
+		<input type="button" name="name" value="query" onclick="qqqqqq()" />
+		<input type="button" name="name" value="post" onclick="pppp();" />
 	</form>
+	<script type="text/javascript">
+		function pppp() {
+			new BLL.IWork().GoWork(form1).post(function (a, aa) {
+				alert(aa.responseText);
+			});
+		}
+		function qqqqqq() {
+			new BLL.ILive({ Left: 3 }).Test().get(function (a, aa) {
+				alert(aa.responseText);
+			});
+		}
+	</script>
+	w289034234
 </body>
 </html>

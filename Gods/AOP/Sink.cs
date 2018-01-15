@@ -20,7 +20,9 @@ namespace Gods.AOP {
 			if (method.MethodBase.IsConstructor) {
 				return CreateHelper(msg);
 			}
-			this.helper?.Analysis(method);
+			if (!method.MethodBase.IsSpecialName) {
+				this.helper?.Analysis(method); 
+			}
 			return this.NextSink.SyncProcessMessage(msg);
 		}
 

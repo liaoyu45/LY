@@ -39,6 +39,10 @@
       <Project>{AC06168C-C4E0-482D-9BEB-F66058BB4052}</Project>
       <Name>BLL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Gods.Web\Gods.Web.csproj">
+      <Project>{a522e914-ed91-4a6b-a15c-78ff07061fb1}</Project>
+      <Name>Gods.Web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gods\Gods.csproj">
       <Project>{cc8d063d-e023-4950-aab9-3f0f9f40db59}</Project>
       <Name>Gods</Name>

@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.SessionState;
 using System.Web.UI;
 
 namespace Gods.Web {
-	public class Me : You, IRequiresSessionState {	}
+	public class Me : You, IRequiresSessionState { }
 
 	public class You : Page, IHttpHandler {
 		public virtual ICacheManager CacheManager => Web.CacheManager.Instance;
@@ -32,7 +33,8 @@ namespace Gods.Web {
 		}
 
 		private object Invoke() {
-			var args = HttpContext.Current.Request[Him.AjaxKey].Split('.');
+			var re = HttpContext.Current.Request;
+			var args = re[Him.AjaxKey].Split('.');
 			var t = Him.FindImplement(args[0]);
 			var m = Gods.Him.GetSignedMethod(t, int.Parse(args[1]), nameof(Gods));
 			object r;
@@ -44,10 +46,21 @@ namespace Gods.Web {
 				}
 			}
 			var ins = Activator.CreateInstance(t);
-			Mapper.MapProperties(ins);
-			var ps = Mapper.MapParameters(m);
-			ps = Validator?.Validate(ins, m, ps) as object[] ?? ps;
-			r = m.Invoke(ins, ps);
+			if (ins is AOP.Model) {
+				var model = ins as AOP.Model;
+				foreach (var item in re.Params.AllKeys) {
+					model.Values[item] = re[item];
+				}
+				foreach (var item in re.Files.AllKeys) {
+					model.Values[item] = re.Files[item];
+				}
+				r = AOP.Mapper.Invoke(model, m);
+			} else {
+				Mapper.MapProperties(ins);
+				var ps = Mapper.MapParameters(m);
+				ps = Validator?.Validate(ins, m, ps) as object[] ?? ps;
+				r = m.Invoke(ins, ps);
+			}
 			if (a > 0) {
 				CacheManager.Save(a, r);
 			} else {

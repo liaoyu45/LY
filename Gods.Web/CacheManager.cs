@@ -61,7 +61,7 @@ namespace Gods.Web {
 		void Remove(int i);
 	}
 	[AttributeUsage(AttributeTargets.Method)]
-	internal class CacheAttribute : Attribute {
+	public class CacheAttribute : Attribute {
 
 		public CacheAttribute(int id) {
 			Id = id;

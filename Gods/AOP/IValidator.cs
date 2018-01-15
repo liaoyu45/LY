@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 
@@ -14,13 +13,15 @@ namespace Gods.AOP {
 		public bool Inheritable => true;
 
 		void IValidator.Validate(ModelBase target, IMethodCallMessage calling, MethodBase caller) {
-			var obj = Activator.CreateInstance<T>();
+			var t = (Model)target;
+			var m = t.GetValidator(typeof(T), calling.MethodBase);
 			try {
-				var tar = (Model)target;
-				tar.DealTarget(obj);
-				var methodInfo = typeof(T).GetMethod(tar.GetValidator(calling.MethodBase));
-				var paras = tar.InvokeParameters(methodInfo);
-				methodInfo?.Invoke(obj, paras);
+				var model = Activator.CreateInstance<T>();
+				if (model is Model) {
+					var mm = model as Model;
+					mm.Values = t.Values;
+					Mapper.Invoke(mm, m);
+				}
 			} catch (Exception e) {
 				throw e.InnerException;
 			}

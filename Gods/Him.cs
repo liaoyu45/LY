@@ -47,14 +47,14 @@ namespace Gods {
 		}
 
 		public static IEnumerable<T> GetAllAttributes<T>(MethodBase method) where T : Attribute {
-			return method.GetCustomAttributes<T>(true).Concat(
+			return (method.GetCustomAttributes<T>(true) ?? Enumerable.Empty<T>()).Concat(
 								(from i in method.DeclaringType.GetInterfaces()
 								 from m in i.GetMethods()
 								 where m.Name == method.Name && false == m.GetParameters().Select(p => p.ParameterType).Except(method.GetParameters().Select(p => p.ParameterType)).Any()
-								 select m).FirstOrDefault()?.GetCustomAttributes<T>(true));
+								 select m).FirstOrDefault()?.GetCustomAttributes<T>(true) ?? Enumerable.Empty<T>());
 		}
 		public static IEnumerable<T> GetAllAttributes<T>(Type type) where T : Attribute {
-			return type.GetCustomAttributes<T>(true).Concat(type.GetInterfaces().SelectMany(i => i.GetCustomAttributes<T>(true))).ToArray();
+			return (type.GetCustomAttributes<T>(true) ?? Enumerable.Empty<T>()).Concat(type.GetInterfaces().SelectMany(i => i.GetCustomAttributes<T>(true) ?? Enumerable.Empty<T>())).ToArray();
 		}
 
 		/// <summary>
@@ -66,7 +66,7 @@ namespace Gods {
 		public static int SignMethod(MethodInfo method, object extra) {
 			var ps = method.GetParameters();
 			var c = ps.Length + 2;
-			return method.Name.GetHashCode() / c + ps.Aggregate(0, (i, p) => i + p.GetHashCode() / c) + (extra?.GetHashCode() ?? 0) / c;
+			return Math.Abs(method.Name.GetHashCode() / c) + ps.Aggregate(0, (i, p) => i + Math.Abs(p.GetHashCode() / c)) + Math.Abs(extra?.GetHashCode() ?? 0) / c;
 		}
 
 		/// <summary>

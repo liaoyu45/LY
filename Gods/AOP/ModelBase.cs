@@ -8,66 +8,48 @@ namespace Gods.AOP {
 	[AOP]
 	public abstract class ModelBase : ContextBoundObject { }
 
-	public class Model : ModelBase, IModelFactory {
+	public class Model : ModelBase {
 		public Model() {
 			var t = ValidatorType;
 			if (t == null) {
 				return;
 			}
-			var v = Activator.CreateInstance(
-						typeof(GenericValidator<>).MakeGenericType(t));
 			typeof(ValidatorExtensions)
-				.GetMethod(nameof(ValidatorExtensions.Validate))
+				.GetMethod(nameof(ValidatorExtensions.Validate), BindingFlags.Static | BindingFlags.NonPublic)
 				.MakeGenericMethod(GetType())
-				.Invoke(null, new[] {
-					v
-				});
+				.Invoke(null, new[] { Activator.CreateInstance(typeof(GenericValidator<>).MakeGenericType(t)) });
 		}
-		protected internal virtual string GetValidator(MethodBase name) {
-			return Him.GetAllAttributes<TargetMethodAttribute>(name).FirstOrDefault().Name;
+		protected internal virtual MethodInfo GetValidator(Type type, MethodBase name) {
+			return type.GetMethod(Him.GetAllAttributes<TargetMethodAttribute>(name).FirstOrDefault()?.Name ?? string.Empty);
 		}
 
-		protected Dictionary<string, object> Values { get; set; }
-
-		private bool ever;
-		private Type type;
 		protected virtual Type ValidatorType {
 			get {
-				if (ever) {
-					return type;
-				}
-				ever = true;
 				var a = Him.GetAllAttributes<TargetTypeAttribute>(GetType()).FirstOrDefault();
-				if (a == null) {
-					return null;
+				var type = a.ValidatorType;
+				if (cache.ContainsKey(type.GUID)) {
+					return cache[type.GUID];
 				}
-				return type = ((IModelFactory)this).GetType(a.ValidatorType);
+				if (type.IsInterface) {
+					var pre = type.Assembly.FullName.Split(',')[0] + '.';
+					return cache[type.GUID] = Directory.GetFiles(Folder, "*.dll")
+						.Select(e => Him.TryGet(() => Assembly.LoadFrom(e)))
+						.Where(ass => ass?.FullName.Split(',')[0].StartsWith(pre) == true)
+						.OrderBy(ae => ae.FullName)
+						.LastOrDefault()?.ExportedTypes
+						.FirstOrDefault(t => t.GetInterfaces().Contains(type));
+				}
+				return type;
 			}
 		}
 		public virtual string Folder { get; } = nameof(Gods);
-		private static Dictionary<Guid, Type> cache = new Dictionary<Guid, Type>();
-		protected internal virtual void DealTarget(object obj) { }
 
-		protected internal virtual object[] InvokeParameters(MethodBase method) {
-			return method.GetParameters().Select(p => Activator.CreateInstance(p.ParameterType)).ToArray();
+		public Dictionary<string, object> Values { get; set; } = new Dictionary<string, object>();
+		internal object GetValue(string key) {
+			return Values.ContainsKey(key) ? Values[key] : null;
 		}
-		Type IModelFactory.GetType(Type type) {
-			if (cache.ContainsKey(type.GUID)) {
-				return cache[type.GUID];
-			}
-			if (type.IsInterface || type.IsAbstract) {
-				var pre = type.Assembly.FullName.Split(',')[0] + '.';
-				return cache[type.GUID] = Directory.GetFiles(Folder, "*.dll")
-					.Select(e => Him.TryGet(() => Assembly.LoadFrom(e)))
-					.Where(ass => ass?.FullName.Split(',')[0].StartsWith(pre) == true)
-					.OrderBy(ae => ae.FullName)
-					.LastOrDefault()?.ExportedTypes.
-					FirstOrDefault(t => t.GetInterfaces().Contains(type));
-			}
-			return type;
-		}
-	}
-	public interface IModelFactory {
-		Type GetType(Type type);
+		public virtual Mapper Mapper => Mapper.Mappers[GetType().BaseType.GUID].Value as Mapper;
+
+		private static Dictionary<Guid, Type> cache = new Dictionary<Guid, Type>();
 	}
 }

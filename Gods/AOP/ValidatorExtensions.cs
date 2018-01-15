@@ -6,7 +6,7 @@ namespace Gods.AOP {
 	public static class ValidatorExtensions {
 		private static Dictionary<Guid, List<IValidator>> all = new Dictionary<Guid, List<IValidator>>();
 
-		public static void Validate<T>(this IValidator validator) where T : ModelBase {
+		internal static void Validate<T>(IValidator validator) where T : ModelBase {
 			var guid = typeof(T).GUID;
 			if (!all.ContainsKey(guid)) {
 				all[guid] = new List<IValidator>();

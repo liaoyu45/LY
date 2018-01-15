@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Angle\LY.cs" />
+    <Compile Include="AOP\Mapper.cs" />
     <Compile Include="AOP\TargetMethodAttribute.cs" />
     <Compile Include="AOP\ModelBase.cs" />
     <Compile Include="AOP\AOPAttribute.cs" />
@@ -62,9 +63,7 @@
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Collections\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
