@@ -25,8 +25,10 @@ namespace Gods.AOP {
 
 		protected virtual Type ValidatorType {
 			get {
-				var a = Him.GetAllAttributes<TargetTypeAttribute>(GetType()).FirstOrDefault();
-				var type = a.ValidatorType;
+				var type = Him.GetAllAttributes<TargetTypeAttribute>(GetType()).FirstOrDefault()?.ValidatorType;
+				if (type == null) {
+					return null;
+				}
 				if (cache.ContainsKey(type.GUID)) {
 					return cache[type.GUID];
 				}
@@ -49,7 +51,6 @@ namespace Gods.AOP {
 			return Values.ContainsKey(key) ? Values[key] : null;
 		}
 		public virtual Mapper Mapper => Mapper.Mappers[GetType().BaseType.GUID].Value as Mapper;
-
 		private static Dictionary<Guid, Type> cache = new Dictionary<Guid, Type>();
 	}
 }

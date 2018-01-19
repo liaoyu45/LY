@@ -11,6 +11,7 @@ namespace Gods.Web {
 	public class You : Page, IHttpHandler {
 		public virtual ICacheManager CacheManager => Web.CacheManager.Instance;
 		public virtual IValidator Validator => Web.Validator.Instance;
+		public virtual AOP.IMapper Mapper => AOP.Mapper.Instance;
 
 		public override void ProcessRequest(HttpContext context) {
 			if (!Regex.IsMatch(context.Request[Him.AjaxKey]?.Trim() ?? string.Empty, @"^\d+\.\d+$")) {
@@ -56,8 +57,8 @@ namespace Gods.Web {
 				}
 				r = AOP.Mapper.Invoke(model, m);
 			} else {
-				Mapper.MapProperties(ins);
-				var ps = Mapper.MapParameters(m);
+				AOP.Mapper.MapObject(ins, Mapper, s => re[s]);
+				var ps = AOP.Mapper.MapParameters(m, Mapper, s => re[s]);
 				ps = Validator?.Validate(ins, m, ps) as object[] ?? ps;
 				r = m.Invoke(ins, ps);
 			}

@@ -5,7 +5,6 @@ using System.Reflection;
 
 namespace Gods.Web {
 	class Validator : IValidator {
-		internal static Type TagInterface;
 		internal static Assembly WebApp;
 		internal static Validator Instance = new Validator();
 
@@ -20,7 +19,7 @@ namespace Gods.Web {
 			if (validators.ContainsKey(c)) {
 				return validators[c](obj, ps);
 			}
-			var it = obj.GetType().GetInterfaces().FirstOrDefault(i => i.GetInterfaces().Any(ii => ii == TagInterface));
+			var it = obj.GetType().GetInterfaces().FirstOrDefault(i => i.GetInterfaces().Any(ii => ii == Him.TagInterface));
 			if (it == null) {
 				wontValidate.Add(c);
 				return null;

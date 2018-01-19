@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -146,6 +148,26 @@ namespace Gods {
 						p.SetValue(toB, va);
 					}
 				});
+		}
+		public static bool HasOwnProperty(this object self, string prop) {
+			var t = self?.GetType();
+			return t?.GetProperties().Any(p => p.DeclaringType == t && p.Name == prop) == true;
+		}
+		private class F<T> {
+			[Import]
+			public T Ti { get; set; }
+			public F(string path) {
+				var catalog = new DirectoryCatalog(path);
+				var container = new CompositionContainer(catalog);
+				container.ComposeParts(this);
+			}
+		}
+		public static T Make<T>(string folder) {
+			return (T)Make(typeof(T), folder);
+		}
+		public static object Make(Type type, string folder) {
+			var ft = typeof(F<>).MakeGenericType(type);
+			return ft.GetProperty(nameof(F<object>.Ti)).GetValue(Activator.CreateInstance(ft, folder));
 		}
 	}
 }

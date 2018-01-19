@@ -18,15 +18,17 @@
 	</form>
 	<script type="text/javascript">
 		function pppp() {
-			new BLL.IWork().GoWork(form1).post(function (a, aa) {
+			new him.BLL.IWork().GoWork(form1).post(function (a, aa) {
 				alert(aa.responseText);
 			});
 		}
 		function qqqqqq() {
-			new BLL.ILive({ Left: 3 }).Test().get(function (a, aa) {
+			new him.BLL.ILive({ Left: 3 }).Test().get(function (a, aa) {
 				alert(aa.responseText);
 			});
 		}
+		var e = {};
+		e.hasOwnProperty("")
 	</script>
 	w289034234
 </body>

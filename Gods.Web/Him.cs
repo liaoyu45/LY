@@ -20,7 +20,7 @@ namespace Gods.Web {
 		private static string WebRoot;
 
 		public static void PreferJavascript() {
-			PreferJavascript("window");
+			PreferJavascript("him");
 		}
 		public static void PreferJavascript(string thisArg) {
 			File.WriteAllText(WebRoot + nameof(Him) + ".js",
@@ -30,7 +30,7 @@ namespace Gods.Web {
 		}
 
 		public static void Create<T>() {
-			Validator.TagInterface = typeof(T);
+			TagInterface = typeof(T);
 			Validator.WebApp = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Assembly;
 			WebRoot = HostingEnvironment.MapPath("/");
 			Directory.GetFiles(WebRoot + Modules, "*.dll")
@@ -41,7 +41,7 @@ namespace Gods.Web {
 						return;
 					}
 					foreach (var t in a.ExportedTypes) {
-						if (t.IsInterface && t.GetInterfaces().Any(i => i == typeof(T))) {
+						if (t.IsInterface && t.GetInterfaces().Any(i => i == TagInterface)) {
 							Append(CSharp, t);
 							interfaces.Add(t);
 						}
@@ -96,15 +96,6 @@ namespace Gods.Web {
 			}));
 		}
 
-		class F<T> {
-			[Import]
-			public T Ti { get; set; }
-			public F(string path) {
-				var catalog = new DirectoryCatalog(path);
-				var container = new CompositionContainer(catalog);
-				container.ComposeParts(this);
-			}
-		}
 		private static List<Type> interfaces = new List<Type>();
 		private static Dictionary<string, Type> implements = new Dictionary<string, Type>();
 
@@ -116,9 +107,7 @@ namespace Gods.Web {
 			}
 			var tt = interfaces.FirstOrDefault(t => t.GetHashCode().ToString() == k);
 			interfaces.Remove(tt);
-			var ft = typeof(F<>).MakeGenericType(tt);
-			var iti = ft.GetProperty(nameof(F<object>.Ti)).GetValue(Activator.CreateInstance(ft, WebRoot + Implements));
-			return implements[k] = iti.GetType();
+			return implements[k] = Gods.Him.Make(tt, WebRoot + Implements)?.GetType();
 		}
 	}
 }

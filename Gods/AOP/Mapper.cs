@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 
 namespace Gods.AOP {
-	public class Mapper {
+	public class Mapper : IMapper {
 		internal static Dictionary<Guid, Lazy<object>> Mappers = new Dictionary<Guid, Lazy<object>> {
 			{ typeof(Model).GUID, new Lazy<object>(() => new Mapper()) }
 		};
@@ -12,14 +12,28 @@ namespace Gods.AOP {
 			Mappers.Add(typeof(M).GUID, new Lazy<object>(() => new T()));
 		}
 		public static object Invoke(Model obj, MethodInfo m) {
+			MapObject(obj, obj.Mapper, obj.GetValue);
+			return m?.Invoke(obj, MapParameters(m, obj.Mapper, obj.GetValue));
+		}
+		public static object[] MapParameters(MethodInfo method, IMapper mapper, Func<string, object> value) {
+			return method.GetParameters().Select(p => mapper.MapObject(p.ParameterType, value(p.Name))).ToArray();
+		}
+		public static object[] MapParameters(MethodInfo method, Func<string, object> value) {
+			return MapParameters(method, new Mapper(), value);
+		}
+		public static void MapObject(object obj, IMapper m, Func<string, object> value) {
 			obj.GetType().GetProperties().Where(p => p.CanWrite).ToList().ForEach(p => {
-				var v = obj.Mapper.MapObject(p.PropertyType, obj.GetValue(p.Name));
+				var v = m.MapObject(p.PropertyType, value(p.Name));
 				if (v != null) {
 					p.SetValue(obj, v);
 				}
 			});
-			return m?.Invoke(obj, m.GetParameters().Select(p => obj.Mapper.MapObject(p.ParameterType, obj.GetValue(p.Name))).ToArray());
 		}
+		public static void MapObject(object obj, Func<string, object> value) {
+			MapObject(obj, new Mapper(), value);
+		}
+		public static readonly IMapper Instance = new Mapper();
+
 		public virtual object MapObject(Type type, object value) {
 			if (value == null) {
 				return null;
