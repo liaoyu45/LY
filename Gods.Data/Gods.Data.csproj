@@ -52,7 +52,6 @@
     <Compile Include="DynamicModel.cs" />
     <Compile Include="DynamicModelEventArgs.cs" />
     <Compile Include="IDbLoader.cs" />
-    <Compile Include="PendingData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordData.cs" />
     <Compile Include="ShardDb.cs" />

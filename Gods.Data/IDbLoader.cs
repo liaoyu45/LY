@@ -6,7 +6,7 @@ namespace LivingDB {
 	/// </summary>
 	public interface IDbLoader {
 		/// <summary>
-		/// 对应连接字符串中的 providerName。继续添加相同 <see cref="ProviderName"/> 的 <see cref="IDbLoader"/> 将被忽略。
+		/// 对应连接字符串中的 providerName。
 		/// </summary>
 		string ProviderName { get; }
 		/// <summary>
@@ -43,5 +43,6 @@ namespace LivingDB {
 		/// <param name="type">代码中定义的类型，和基础结构表一一相应。</param>
 		/// <returns>基础结构表最大数据行数。</returns>
 		int Size(Type type);
+		string CreateTable(string sqlFormat, object model);
 	}
 }

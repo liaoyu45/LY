@@ -41,6 +41,11 @@ if 0 < (select count(*) from sysobjects where xtype='U' and name='__MigrationHis
 			return s.Pluralize(m.Name);
 		}
 
+		public string CreateTable(string sqlFormat, object model) {
+			return string.Format(sqlFormat, GetDynamicTableName(model));
+		}
+
+
 		#region GetRecordSqlFormat
 		private const string GetRecordSqlFormat = @"
 declare

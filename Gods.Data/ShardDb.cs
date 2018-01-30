@@ -1,79 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LivingDB {
 	public abstract partial class ShardDb : DbContext {
+		private List<object> pending = new List<object>();
 		private TypeCache thisCache;
-		private IDbLoader dbLoader;
 
 		public ShardDb(string dbName) : base(dbName) {
-			if (!TypeCache.IsCache(GetType())) {
-				thisCache = DbLoader.GetCache(this);
-				dbLoader = DbLoader.GetLoader(GetType().FullName);
-			}
+			thisCache = DbLoader.GetCache(this);
+		}
+
+		public override Task<int> SaveChangesAsync() {
+			thisCache?.SaveChanges(pending);
+			return base.SaveChangesAsync();
+		}
+		public override Task<int> SaveChangesAsync(CancellationToken cancellationToken) {
+			thisCache?.SaveChanges(pending);
+			return base.SaveChangesAsync(cancellationToken);
 		}
 
 		public override int SaveChanges() {
 			thisCache?.SaveChanges(pending);
-			thisCache?.SaveChanges();
 			return base.SaveChanges();
 		}
 
-		public T Add<T>(T m) where T : DynamicModel {
-			return Add(m, true);
-		}
+		public IEnumerable<object> Pending => pending;
 
-		public T Add<T>(T model, bool limit) where T : DynamicModel {
-			return typeof(ShardDb).GetMethod(CheckState(model, limit).ToString(), (BindingFlags)36)?.Invoke(this, new object[] { model }) as T;
-		}
-
-		public ModelState CheckState(DynamicModel model, bool limit) {
-			var type = model.GetType();
-			var newTable = dbLoader.GetDynamicTableName(model);
-			return thisCache?.CheckState(dbLoader.GetTableName(type), newTable, limit) ?? ModelState.Unavailable;
-		}
-
-		private List<PendingData> pending = new List<PendingData>();
 		public ModelState AddNew(DynamicModel model, bool limit) {
-			var type = model.GetType();
-			var newTable = dbLoader.GetDynamicTableName(model);
-			var r = thisCache?.CheckState(dbLoader.GetTableName(type), newTable, limit) ?? ModelState.Unavailable;
+			var r = thisCache?.CheckState(model) ?? ModelState.Unavailable;
 			if (r < 0) {
-				pending.Add(new PendingData {
-					IsNew = r == ModelState.RecreateInnerDb,
-					Model = model,
-					TableName = newTable
-				});
+				return r;
 			}
+			if (r == ModelState.Overload) {
+				if (limit) {
+					return r;
+				}
+			}
+			if (r == ModelState.AddNew) {
+				var arg = new DynamicModelEventArgs { Model = model };
+				OnTableCreated?.Invoke(this, arg);
+				if (arg.Canceled) {
+					return ModelState.Canceled;
+				}
+			}
+			pending.Add(model);
 			return r;
 		}
 
 		public event EventHandler<DynamicModelEventArgs> OnTableCreated;
-
-		private void SaveMain(object model) {
-			Set(model.GetType()).Add(model);
-		}
-
-		private void RecreateInnerDb(object model) {
-			var newTable = dbLoader.GetDynamicTableName(model);
-			var args = new DynamicModelEventArgs {
-				TableName = newTable,
-				Model = model
-			};
-			OnTableCreated?.Invoke(this, args);
-			if (args.Canceled) {
-				return;
-			}
-			var ttt = dbLoader.GetTableName(model.GetType());
-			Database.ExecuteSqlCommand(dbLoader.CreateTable(model.GetType()).Replace(ttt, newTable));
-			thisCache.RecreateInnerDb(ttt, newTable);
-			AddModel(model);
-		}
-
-		private void AddModel(object model) {
-			thisCache.AddModel(model, dbLoader.GetDynamicTableName(model));
-		}
 	}
 }
