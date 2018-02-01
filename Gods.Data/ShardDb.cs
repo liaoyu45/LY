@@ -13,17 +13,9 @@ namespace LivingDB {
 			thisCache = DbLoader.GetCache(this);
 		}
 
-		public override Task<int> SaveChangesAsync() {
-			thisCache?.SaveChanges(pending);
-			return base.SaveChangesAsync();
-		}
-		public override Task<int> SaveChangesAsync(CancellationToken cancellationToken) {
-			thisCache?.SaveChanges(pending);
-			return base.SaveChangesAsync(cancellationToken);
-		}
-
 		public override int SaveChanges() {
 			thisCache?.SaveChanges(pending);
+			pending.Clear();
 			return base.SaveChanges();
 		}
 
@@ -51,5 +43,11 @@ namespace LivingDB {
 		}
 
 		public event EventHandler<DynamicModelEventArgs> OnTableCreated;
+
+		//private ShardDb innerdb;
+		//public ShardDb InnerDb => innerdb ?? (innerdb = thisCache.GetDataBase());
+		//public System.Linq.IQueryable<T> DynamicSet<T>() {
+		//	return null;
+		//}
 	}
 }

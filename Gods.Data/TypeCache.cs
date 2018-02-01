@@ -5,23 +5,38 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace LivingDB {
 	class TypeCache {
-		internal TypeCache(Type type, IDbLoader loader, Func<MainTableData[]> getTables) {
-			BaseDbContextName = type.FullName;
-			while (type.BaseType != null) {
-				ll.Add(type.Assembly.Location);
-				type = type.BaseType;
+		internal TypeCache(Type dbType, IDbLoader loader, Func<MainTableData[]> getTables) {
+			BaseDbContextName = dbType.FullName;
+			while (dbType.BaseType != null) {
+				assemblies.Add(dbType.Assembly.Location);
+				dbType = dbType.BaseType;
 			}
 			this.loader = loader;
-			LoadTables = getTables;
+			loadTables = getTables;
 		}
 
-		public Func<MainTableData[]> LoadTables { get; }
-		private List<string> ll = new List<string>(ls);
-		private static readonly string[] ls = new[] {
+		public void SaveChanges(IEnumerable<object> pending) {
+			if (!pending.Any()) {
+				return;
+			}
+			var data = pending.ToDictionary(e => e, loader.GetDynamicTableName);
+			var sql = tables.Join(data, e => e.Type, e => e.Key.GetType().BaseType, (e, ee) => {
+				return e.Add(ee.Value) ? e.Sql.Replace(e.TableName, ee.Value) : null;
+			}).Distinct().Aggregate(string.Empty, (s, ss) => s + ss).Trim();
+			var db = DB;
+			if (sql.Any()) {
+				this.db = null;
+				db.Exec(e => e.Database.ExecuteSqlCommand(sql));
+			}
+			db.Save(data);
+		}
+
+
+		private List<string> assemblies = new List<string>(baseAssemblies);
+		private static readonly string[] baseAssemblies = new[] {
 			typeof(Enumerable).Assembly.Location,
 			typeof(CSharpCodeProvider).Assembly.Location,
 			typeof(TableAttribute).Assembly.Location,
@@ -29,71 +44,44 @@ namespace LivingDB {
 			typeof(ShardDb).Assembly.Location
 		};
 
-		public Task SaveChanges(IEnumerable<object> all) {
-			if (!all.Any()) {
-				return null;
-			}
-			var data = all.ToDictionary(e => e, loader.GetDynamicTableName);
-			var sql = tables.Join(data, e => e.Type, e => e.Key.GetType().BaseType, (e, ee) => {
-				return e.Add(ee.Value) ? e.Sql.Replace(e.TableName, ee.Value) : null;
-			}).Distinct().Aggregate(string.Empty, (s, ss) => s + ss).Trim();
-			Compile();
-			var d = Activator.CreateInstance(dbtype) as ShardDb;
-			if (sql.Any()) {
-				return d.Database.ExecuteSqlCommandAsync(sql).ContinueWith(i => Save(d, data));
-			} else {
-				return Save(d, data);
-			}
-		}
-
-		private Task Save(ShardDb d, Dictionary<object, string> data) {
-			foreach (var item in data) {
-				var type = dbsets.FirstOrDefault(e => e.Name == item.Value);
-				if (type != null) {
-					var newModel = Activator.CreateInstance(type);
-					Gods.Him.CopyTo(item.Key, newModel);
-					d.Set(type).Add(newModel);
-				} else {
-					d.Set(item.Key.GetType()).Add(item.Key);
+		private Func<MainTableData[]> loadTables { get; }
+		private IDbLoader loader;
+		private MainTableData[] ts;
+		private MainTableData[] tables => ts ?? (ts = loadTables());
+		private DB db;
+		private DB DB {
+			get {
+				if (db != null) {
+					return db;
 				}
-			}
-			return d.SaveChangesAsync().ContinueWith(i => {
-				ts = null;
-				d.Dispose();
-			});
-		}
-
-		private void Compile() {
-			para.ReferencedAssemblies.Clear();
-			para.ReferencedAssemblies.AddRange(ll.ToArray());
-			para.ReferencedAssemblies.AddRange(tables.Select(e => e.Type).SelectMany(a => Gods.Him.GetBases(a, typeof(object)).Select(e => e.Assembly.Location)).ToArray());
-			var classes = tables.SelectMany(t =>
-					  t.Tables.Where(e => !e.IsMain).Select(d => $@"
+				var para = new CompilerParameters { GenerateInMemory = true };
+				para.ReferencedAssemblies.Clear();
+				para.ReferencedAssemblies.AddRange(assemblies.ToArray());
+				para.ReferencedAssemblies.AddRange(tables.Select(e => e.Type).SelectMany(a => Gods.Him.GetBases(a, typeof(object)).Select(e => e.Assembly.Location)).ToArray());
+				var classes = tables.SelectMany(t =>
+						  t.Tables.Where(e => !e.IsMain).Select(d => $@"
 namespace {cacheNamespace} {{
-	[System.ComponentModel.DataAnnotations.Schema.Table(""{d.Name}"")]
-	public class {d.Name} : {t.FullName} {{
+	[System.ComponentModel.DataAnnotations.Schema.Table(""{d.Detail}"")]
+	public class {d.Detail} : {t.FullName} {{
 	}}
 }}"));
-			var context = $@"
+				var context = $@"
 namespace {cacheNamespace} {{
-	public class {nameof(Compile) + Math.Abs(Guid.NewGuid().GetHashCode())} : {BaseDbContextName} {{{tables.Aggregate(string.Empty, (s, t) => s + t.Tables.Where(e => !e.IsMain).Aggregate(string.Empty, (ss, d) => ss + $@"
-		public System.Data.Entity.DbSet<{cacheNamespace + '.' + d.Name}> {d.Name} {{ get; set; }}"))}
+	public class {nameof(TypeCache) + Math.Abs(Guid.NewGuid().GetHashCode())} : {BaseDbContextName} {{{tables.Aggregate(string.Empty, (s, t) => s + t.Tables.Where(e => !e.IsMain).Aggregate(string.Empty, (ss, d) => ss + $@"
+		public System.Data.Entity.DbSet<{d.Detail}> {d.Detail} {{ get; set; }}"))}
 	}}
 }}";
-			var ts = pr.CompileAssemblyFromSource(para, classes.Concat(new[] { context }).ToArray()).CompiledAssembly.ExportedTypes;
-			dbtype = ts.First(e => e.BaseType.FullName == BaseDbContextName);
-			dbsets = ts.Where(e => e != dbtype).ToList();
+				var pr = new CSharpCodeProvider();
+				var ts = pr.CompileAssemblyFromSource(para, classes.Concat(new[] { context }).ToArray()).CompiledAssembly.ExportedTypes;
+				pr.Dispose();
+				return db = new DB {
+					DbSets = ts.Where(e => e.BaseType.FullName != BaseDbContextName),
+					DbType = ts.First(e => e.BaseType.FullName == BaseDbContextName)
+				};
+			}
 		}
 
-		internal readonly string cacheNamespace = nameof(TypeCache) + DateTime.Now.Ticks;
-		private CompilerParameters para = new CompilerParameters { GenerateInMemory = true };
-		private CSharpCodeProvider pr = new CSharpCodeProvider();
-		private MainTableData[] tables => ts ?? (ts = LoadTables());
-		private IDbLoader loader;
-		private IEnumerable<Type> dbsets;
-		private Type dbtype;
-		private MainTableData[] ts;
-
+		public readonly string cacheNamespace = nameof(TypeCache) + DateTime.Now.Ticks;
 		public string BaseDbContextName { get; }
 
 		public ModelState CheckState(object model) {
@@ -102,7 +90,7 @@ namespace {cacheNamespace} {{
 				return ModelState.NotBuilt;
 			}
 			var dynamicName = loader.GetDynamicTableName(model);
-			var dt = t.Tables.FirstOrDefault(e => e.Name == dynamicName);
+			var dt = t.Tables.FirstOrDefault(e => e.Detail == dynamicName);
 			if (dt == null) {
 				return ModelState.AddNew;
 			}

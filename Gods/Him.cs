@@ -29,6 +29,9 @@ namespace Gods {
 					&& Any(c => c == MicrosoftCompany || c == MeMySelfAndI, t.DeclaringType.Assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company));
 		}
 
+		public static IEnumerable<Type> GetBases(Type self) {
+			return GetBases(self, typeof(object));
+		}
 		/// <summary>
 		/// 返回包含自身的继承链。
 		/// </summary>
@@ -133,21 +136,24 @@ namespace Gods {
 			CopyTo(fromA, toB, contains, props);
 			return toB;
 		}
-		public static void CopyTo(this object fromA, object toB, params string[] excludes) =>
+		public static Dictionary<string, object> CopyTo(this object fromA, object toB, params string[] excludes) =>
 			CopyTo(fromA, toB, true, excludes);
-		public static void CopyTo(this object fromA, object toB, bool contains, params string[] props) {
+		public static Dictionary<string, object> CopyTo(this object fromA, object toB, bool contains, params string[] props) {
 			if (fromA == null || toB == null) {
-				return;
+				return null;
 			}
 			var wontCheck = props.Length == 0;
+			var r = new Dictionary<string, object>();
 			toB.GetType().GetProperties()
 				.Where(p => p.CanWrite && (wontCheck || props.Contains(p.Name) == contains))
 				.ToList().ForEach(p => {
 					var va = fromA.GetType().GetProperty(p.Name)?.GetValue(fromA);
 					if (va?.GetType() == p.PropertyType) {
 						p.SetValue(toB, va);
+						r[p.Name] = va;
 					}
 				});
+			return r;
 		}
 		public static bool HasOwnProperty(this object self, string prop) {
 			var t = self?.GetType();

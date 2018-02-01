@@ -26,20 +26,16 @@ namespace LivingDB {
 						 where pt.IsGenericType && pt.GetGenericTypeDefinition() == typeof(DbSet<>)
 						 select pt.GenericTypeArguments[0]).ToList();
 			var tableToType = types.Where(t => t.BaseType.BaseType == typeof(DynamicModel)).ToDictionary(e => loader.GetTableName(e));//table to type
-			Func<MainTableData[]> all = () => loader.GetRecord(tableToType.Keys.ToArray())
-						.SelectMany(sql => db.Database.SqlQuery<RecordData>(sql))
-						.GroupBy(e => e.Main)
-						.ToDictionary(e => tableToType[e.Key].BaseType, e => e)
-						.Select(e => new MainTableData(
-							e.Key,
-							loader.Size(e.Key),
-							e.Value.Key,
-							loader.CreateTable(e.Key),
-							e.Value.Select(ee => new DetailTable(ee.Detail) {
-								Count = ee.Count
-							}).ToArray()
-						)).ToArray();
-			caches.Add(new TypeCache(type, loader, all));
+			Func<MainTableData[]> all1 = () => loader.GetRecord(tableToType.Keys.ToArray())
+					.SelectMany(sql => db.Database.SqlQuery<DetailTable>(sql))
+					.GroupBy(t => t.Main).ToDictionary(e => e, e => tableToType[e.Key].BaseType).Select(t => new MainTableData(
+							   t.Value,
+							   loader.Size(t.Value),
+							   t.Key.Key,
+							   loader.CreateTable(t.Value),
+							   t.Key.ToArray()
+							   )).ToArray();
+			caches.Add(new TypeCache(type, loader, all1));
 			return caches.Last();
 		}
 	}
