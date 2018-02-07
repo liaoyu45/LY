@@ -4,7 +4,7 @@ using System.ComponentModel.Composition;
 
 namespace BLL.V0 {
 	[Export(typeof(ILive))]
-	public class Live : Gods.AOP.Model, ILive {
+	public class Live : M, ILive {
 		private const int V = 1;
 
 		public int Left { get; set; }

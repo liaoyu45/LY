@@ -32,7 +32,7 @@ namespace Gods.AOP {
 				if (cache.ContainsKey(type.GUID)) {
 					return cache[type.GUID];
 				}
-				if (type.IsInterface) {
+				if (type.IsInterface && Directory.Exists(Folder)) {
 					var pre = type.Assembly.FullName.Split(',')[0] + '.';
 					return cache[type.GUID] = Directory.GetFiles(Folder, "*.dll")
 						.Select(e => Him.TryGet(() => Assembly.LoadFrom(e)))
