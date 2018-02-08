@@ -116,7 +116,7 @@
 				mobile: (function () {
 					return !!navigator.userAgent.match(/Mobile/);
 				})(),
-				dragable: function (ele, trigger) {
+				dragable: function (ele, trigger, withShadow) {
 					var _trigger = (function () {
 						var r;
 						if (typeof trigger === "string") {
@@ -124,6 +124,8 @@
 						} else {
 							if (trigger instanceof HTMLElement) {
 								r = trigger;
+							} else {
+								r = ele;
 							}
 						}
 						return r;
@@ -131,27 +133,58 @@
 					if (!_trigger) {
 						return;
 					}
-					var events = {};
-					events.start = {};
+					var temp = {};
 					_trigger.addEventListener("mousedown", function start(e) {
+						if (e.button) {
+							return;
+						}
 						var os = getComputedStyle(ele);
-						ele.dataset.x = parseFloat(os.left) || 0;
-						ele.dataset.y = parseFloat(os.top) || 0;
-						ele.dataset.ox = e.clientX;
-						ele.dataset.oy = e.clientY;
+						temp.x = parseFloat(temp.oldX = os.left) - e.clientX;
+						temp.y = parseFloat(temp.oldY = os.top) - e.clientY;
 						window.addEventListener("mousemove", move);
-						window.addEventListener("blur", release);
-						window.addEventListener("mouseup", release);
+						window.addEventListener("blur", moveback);
+						window.addEventListener("mouseup", movenew);
+						window.addEventListener("contextmenu", moveback);
+						if (withShadow) {
+							document.body.insertBefore(temp.shadow = ele.cloneNode(1), ele);
+						}
 					});
 					function move(e) {
-						ele.style.left = parseFloat(ele.dataset.x) + e.clientX - parseFloat(ele.dataset.ox) + "px";
-						ele.style.top = parseFloat(ele.dataset.y) + e.clientY - parseFloat(ele.dataset.oy) + "px";
+						ele.style.left = e.clientX + temp.x + "px";
+						ele.style.top = e.clientY + temp.y + "px";
+						if (temp.onmove) {
+							temp.onmove.apply(ele, [temp.oldX, temp.oldY, ele.style.left, ele.style.top].map(e=>parseFloat(e)));
+						}
+					}
+					function movenew(e) {
+						if (e.button) {
+							return;
+						}
+						release();
+					}
+					function moveback() {
+						ele.style.left = temp.oldX;
+						ele.style.top = temp.oldY;
+						release();
 					}
 					function release() {
-						window.removeEventListener("blur", release);
-						window.removeEventListener("mouseup", release);
+						if (temp.shadow) {
+							temp.shadow.remove();
+						}
+						god.safe(temp.onrelease)(ele);
+						window.removeEventListener("blur", moveback);
+						window.removeEventListener("mouseup", movenew);
 						window.removeEventListener("mousemove", move);
+						window.removeEventListener("contextmenu", moveback);
 					}
+					return {
+						onrelease: function (r) {
+							temp.onrelease = r;
+						},
+						onmove: function (r) {
+							temp.onmove = r;
+						}
+					};
 				},
 				toast: function (message, duration, later) {
 					if (!new String(message).length) return;
