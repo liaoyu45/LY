@@ -10,14 +10,9 @@
 			margin: 0;
 		}
 
-			body > div {
-				width: 133px;
-				height: 133px;
-				border-radius: 31px;
-				border: 3px solid #ebd5d5;
-				background-color: #fac4c4;
-				position: fixed;
-			}
+		body {
+			background-color: #b9b9b9;
+		}
 
 		#mainButton {
 		}
@@ -25,10 +20,9 @@
 </head>
 <body>
 	<script src="god.js"></script>
-	<div id="life"></div>
-	<div id="work"></div>
-	<div id="joy"></div>
-	<div id="mainButton"></div>
+	<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88" id="mainButton" style="position:fixed; display: none;">
+		<circle cx="44" cy="44" r="44" fill="red"></circle>
+	</svg>
 	<script type="text/javascript">
 		function distance(p, pp) {
 			return Math.sqrt(Math.pow(p.pageX - pp.pageX, 2) + Math.pow(p.pageY - pp.pageY, 2));
@@ -55,8 +49,6 @@
 			if (dx < 0 || dy < 0 || dx > width || dy > height) {
 				return 0;
 			}
-			joy.innerHTML = "";
-			[...arguments].forEach(e=>joy.innerHTML += e + '|');
 			var k = getK(dx, dy, fx, fy);
 			var kk = getK(0, 0, fx, fx);
 			var kkk = getK(width, 0, fx, fy);
@@ -71,17 +63,24 @@
 			if ((k > kkkk || k < kkkkk) && dy > fy) {
 				return Math.abs((height - dy) / (height - fy));
 			}
-			return Math.abs(dx / dy);
+			return Math.abs(dx / fx);
 		}
 		function getK(x, y, xx, yy) {
 			return (yy - y) / (xx - x);
 		}
-		god.window.dragable(mainButton, mainButton, true).onmove(function (x, y, nx, ny) {
+		var mo = god.window.dragable(mainButton, document.body, true);
+		mo.onstart = function (e) {
+			this.element.style.left = e.pageX - 44;
+		}
+		mo.onmove = function (x, y, nx, ny) {
 			var w = myfunction(document.body.clientWidth - mainButton.clientHeight, document.body.clientHeight - mainButton.clientHeight, x, y, nx, ny);
-			mainButton.innerHTML = x + '   ' + y + ' ' + nx + '   ' + ny + '' + '   <br/>' + w;
-		});
+			this.element.getElementsByTagNameNS("http://www.w3.org/2000/svg", "circle")[0].style.opacity = w;
+		};
+		mo.onrelease = mo.onset = function () {
+			this.element.style.display = "none";
+			this.element.getElementsByTagNameNS("http://www.w3.org/2000/svg", "circle")[0].style.opacity = 1;
+		};
 		god.window.setCenter(mainButton, 1);
-		//mainButton.addEventListener("touchstart", start);
 	</script>
 </body>
 </html>

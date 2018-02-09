@@ -117,26 +117,21 @@
 					return !!navigator.userAgent.match(/Mobile/);
 				})(),
 				dragable: function (ele, trigger, withShadow) {
-					var _trigger = (function () {
-						var r;
-						if (typeof trigger === "string") {
-							r = ele.querySelector(trigger);
-						} else {
-							if (trigger instanceof HTMLElement) {
-								r = trigger;
-							} else {
-								r = ele;
-							}
-						}
-						return r;
-					})();
-					if (!_trigger) {
+					trigger = typeof trigger === "string" ? ele.querySelector(trigger) : trigger instanceof HTMLElement ? trigger : ele;
+					if (!trigger) {
 						return;
 					}
+					trigger.addEventListener("selectstart", () =>false);
 					var temp = {};
-					_trigger.addEventListener("mousedown", function start(e) {
+					var events = { element: ele };
+					god.addEventListener(events, "release", "move", "set", "start");
+					trigger.addEventListener("mousedown", function start(e) {
 						if (e.button) {
 							return;
+						}
+						events.noticestart(e);
+						if (ele.style.display ==="none") {
+							ele.style.display = "block";
 						}
 						var os = getComputedStyle(ele);
 						temp.x = parseFloat(temp.oldX = os.left) - e.clientX;
@@ -146,45 +141,39 @@
 						window.addEventListener("mouseup", movenew);
 						window.addEventListener("contextmenu", moveback);
 						if (withShadow) {
-							document.body.insertBefore(temp.shadow = ele.cloneNode(1), ele);
+							temp.shadow = ele.cloneNode(1);
+							document.body.insertBefore(temp.shadow, ele);
+							temp.shadow.removeAttribute("id");
 						}
 					});
 					function move(e) {
 						ele.style.left = e.clientX + temp.x + "px";
 						ele.style.top = e.clientY + temp.y + "px";
-						if (temp.onmove) {
-							temp.onmove.apply(ele, [temp.oldX, temp.oldY, ele.style.left, ele.style.top].map(e=>parseFloat(e)));
-						}
+						events.noticemove.apply(events, [temp.oldX, temp.oldY, ele.style.left, ele.style.top].map(e=>parseFloat(e)));
 					}
 					function movenew(e) {
 						if (e.button) {
 							return;
 						}
+						events.noticeset(e);
 						release();
 					}
-					function moveback() {
+					function moveback(e) {
 						ele.style.left = temp.oldX;
 						ele.style.top = temp.oldY;
+						events.noticerelease(e);
 						release();
 					}
 					function release() {
 						if (temp.shadow) {
 							temp.shadow.remove();
 						}
-						god.safe(temp.onrelease)(ele);
 						window.removeEventListener("blur", moveback);
 						window.removeEventListener("mouseup", movenew);
 						window.removeEventListener("mousemove", move);
 						window.removeEventListener("contextmenu", moveback);
 					}
-					return {
-						onrelease: function (r) {
-							temp.onrelease = r;
-						},
-						onmove: function (r) {
-							temp.onmove = r;
-						}
-					};
+					return events;
 				},
 				toast: function (message, duration, later) {
 					if (!new String(message).length) return;
@@ -210,10 +199,11 @@
 				},
 				setCenter: function (ele, always) {
 					function resize() {
-						ele.style.left = (window.outerWidth - ele.clientWidth) / 2 + "px";
-						ele.style.top = (window.outerHeight - ele.clientHeight) / 2 + "px";
+						var w = getComputedStyle(ele);
+						ele.style.left = (window.outerWidth - parseFloat(w.width)) / 2 + "px";
+						ele.style.top = (window.outerHeight - parseFloat(w.height)) / 2 + "px";
 					}
-					resize();
+					window.onload = resize;
 					if (always) {
 						window.addEventListener("resize", resize);
 						return function () {
