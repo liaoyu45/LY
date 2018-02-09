@@ -6,11 +6,14 @@
 			coding: location.href.length === 11,
 			debugging: location.href.indexOf("localhost") > 0,
 		};
-		Object.defineProperty(this, "emptyFunction", {
-			get: function () {
-				return function () { };
-			}
-		});
+		this.functions = (function () {
+			var r = {};
+			r.empty = () => { };
+			r.returnFalse = () =>false;
+			r.returnTrue = () =>true;
+			r.returnValue = v=>() =>v;
+			return r;
+		}());
 		this.removeEventListener = function (obj, ename, func) {
 			var store = obj[this.addEventListener.pre + ename];
 			if (!store) {
@@ -121,16 +124,17 @@
 					if (!trigger) {
 						return;
 					}
-					trigger.addEventListener("selectstart", () =>false);
+					function returnfalse() {
+						return false;
+					}
+					trigger.addEventListener("selectstart", returnfalse);
 					var temp = {};
-					var events = { element: ele };
-					god.addEventListener(events, "release", "move", "set", "start");
-					trigger.addEventListener("mousedown", function start(e) {
+					function start(e) {
 						if (e.button) {
 							return;
 						}
 						events.noticestart(e);
-						if (ele.style.display ==="none") {
+						if (ele.style.display === "none") {
 							ele.style.display = "block";
 						}
 						var os = getComputedStyle(ele);
@@ -145,7 +149,22 @@
 							document.body.insertBefore(temp.shadow, ele);
 							temp.shadow.removeAttribute("id");
 						}
-					});
+					}
+					var ing = true,
+						events = {
+							element: ele,
+							toggle: function (state) {
+								if (state && ing) {
+									return;
+								}
+								ing = state;
+								var a = (state ? "add" : "remove") + "EventListener";
+								trigger[a]("mousedown", start);
+								trigger[a]("selectstart", returnfalse);
+							}
+						};
+					god.addEventListener(events, "release", "move", "set", "start");
+					trigger.addEventListener("mousedown", start);
 					function move(e) {
 						ele.style.left = e.clientX + temp.x + "px";
 						ele.style.top = e.clientY + temp.y + "px";
@@ -404,7 +423,7 @@
 			}
 			if (typeof func !== "function") {
 				console.log("not a function");
-				return this.emptyFunction;
+				return this.functions.empty;
 			}
 			return function () {
 				try {
