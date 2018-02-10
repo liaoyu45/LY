@@ -30,12 +30,51 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CacheManager.cs" />
+    <Compile Include="ExceptionDefinations.cs" />
+    <Compile Include="Extensions\ExceptionExtentions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Him.cs" />
+    <Compile Include="IValidator.cs" />
+    <Compile Include="JSON.cs" />
+    <Compile Include="Mapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AjaxPage.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Map.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Gods\Gods.csproj">
+      <Project>{cc8d063d-e023-4950-aab9-3f0f9f40db59}</Project>
+      <Name>Gods</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

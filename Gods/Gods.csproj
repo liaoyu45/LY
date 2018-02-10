@@ -31,7 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Angle\LY.cs" />
+    <Compile Include="AOP\IMapper.cs" />
+    <Compile Include="AOP\Mapper.cs" />
+    <Compile Include="AOP\TargetMethodAttribute.cs" />
     <Compile Include="AOP\ModelBase.cs" />
     <Compile Include="AOP\AOPAttribute.cs" />
     <Compile Include="AOP\AOPException.cs" />
@@ -39,8 +41,8 @@
     <Compile Include="AOP\Sink.cs" />
     <Compile Include="AOP\IValidator.cs" />
     <Compile Include="AOP\Property.cs" />
-    <Compile Include="AOP\ModelExtensions.cs" />
-    <Compile Include="AOP\Modes.cs" />
+    <Compile Include="AOP\ValidatorExtensions.cs" />
+    <Compile Include="AOP\TargetTypeAttribute.cs" />
     <Compile Include="Data\Space.cs" />
     <Compile Include="Data\Space~T.cs" />
     <Compile Include="Linq\Sort.cs" />
@@ -62,7 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
