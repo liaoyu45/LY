@@ -58,7 +58,6 @@
     <Content Include="Fonts\metro.svg" />
     <Content Include="Global.asax" />
     <Content Include="god.js" />
-    <Content Include="JavaScript.js" />
     <Content Include="Me.html" />
     <Content Include="packages.config" />
     <Content Include="Daily.aspx" />
@@ -119,14 +118,6 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BLL.V0\BLL.V0.csproj">
-      <Project>{8513809d-4e8a-489b-8172-4343c3121bad}</Project>
-      <Name>BLL.V0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BLL\BLL.csproj">
-      <Project>{ac06168c-c4e0-482d-9beb-f66058bb4052}</Project>
-      <Name>BLL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Gods.Web\Gods.Web.csproj">
       <Project>{a522e914-ed91-4a6b-a15c-78ff07061fb1}</Project>
       <Name>Gods.Web</Name>
