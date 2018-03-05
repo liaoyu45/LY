@@ -8,21 +8,22 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace PadKeyboard {
-    internal class Step2AddPoints : Step {
+    internal class Step2AddPoints : KeyStep {
 
-        private Grid content = new Grid();
         private Grid addPanel = Elements.BgA1Grid();
         private Grid effectPanel = new Grid();
-        private double r;
+        private double r => Beard.Radius;
 
         public Step2AddPoints() {
+            Content.Children.Add(effectPanel);
+            Content.Children.Add(addPanel);
             var ds = new Dictionary<InputDevice, Ellipse>();
             addPanel.TouchMove += (s, e) => {
                 if (!ds.ContainsKey(e.Device)) {
                     return;
                 }
                 var ell = ds[e.Device];
-                var p = e.MoveInside(ell);
+                var p = Inside(e, ell);
                 ell.Margin = new Thickness { Left = p.X, Top = p.Y };
             };
             addPanel.TouchLeave += (s, e) => {
@@ -68,28 +69,18 @@ namespace PadKeyboard {
                 ds.Add(e.Device, ell);
                 effectPanel.Children.Add(ell);
             };
-            content.Children.Add(effectPanel);
-            content.Children.Add(addPanel);
         }
 
-        protected override bool Finish() {
+        protected override int Finish() {
             var ok = effectPanel.Children.Count == Beard.KeysCount;
             if (ok) {
-                Beard.RawPoints = mapCenter().Values; 
+                Beard.RawPoints = mapCenter().Values;
+                return base.Finish();
             }
-            return ok;
+            return 0;
         }
 
-        protected override void Init(int offset) {
-            r = Beard.Radius;
-            Beard.Content = content;
-            if (offset > 0) {
-                effectPanel.Children.Clear();
-                addPanel.Children.Clear(); 
-            }
-        }
-
-        protected override bool Cancel() {
+        protected override int Cancel() {
             Beard.RawPoints = null;
             return base.Cancel();
         }

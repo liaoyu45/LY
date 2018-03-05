@@ -1,10 +1,10 @@
 ﻿namespace Gods.Steps {
     public abstract class Step {
 
-        internal protected virtual bool Finish() => true;
-        internal protected virtual bool Cancel() => true;
+        internal protected virtual int Finish() => 1;
+        internal protected virtual int Cancel() => -1;
 
         internal protected abstract void Init(int offset);
-        internal protected virtual bool WillRecreate { get; protected set; }
+        protected internal virtual bool WillRecreate { get; set; }
     }
 }
