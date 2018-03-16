@@ -32,6 +32,7 @@
 			if (typeof arguments[1] === "string") {
 				var ename = arguments[1];
 				var fullname = "on" + ename;
+				var notice = ename === "notice" ? "notice" : "notice" + ename;
 				if (!(fullname in obj)) {
 					var store = this.addEventListener.pre + ename;
 					if (!(store in obj)) {
@@ -42,7 +43,6 @@
 							obj[store].push(v);
 						}
 					});
-					var notice = ename === "notice" ? "notice" : "notice" + ename;
 					obj[notice] = function () {
 						for (var i = 0; i < obj[store].length; i++) {
 							try {
@@ -52,6 +52,8 @@
 							}
 						}
 					};
+				} else {
+					obj[notice] = obj[fullname];
 				}
 			}
 			if (typeof arguments[2] === "string") {
@@ -116,42 +118,43 @@
 				mobile: (function () {
 					return !!navigator.userAgent.match(/Mobile/);
 				})(),
-				dragable: function (ele, trigger) {
-					var _trigger = (function () {
-						var r;
-						if (typeof trigger === "string") {
-							r = ele.querySelector(trigger);
-						} else {
-							if (trigger instanceof HTMLElement) {
-								r = trigger;
-							}
-						}
-						return r;
-					})();
-					if (!_trigger) {
-						return;
-					}
-					var events = {};
-					events.start = {};
-					_trigger.addEventListener("mousedown", function start(e) {
-						var os = getComputedStyle(ele);
-						ele.dataset.x = parseFloat(os.left) || 0;
-						ele.dataset.y = parseFloat(os.top) || 0;
-						ele.dataset.ox = e.clientX;
-						ele.dataset.oy = e.clientY;
-						window.addEventListener("mousemove", move);
-						window.addEventListener("blur", release);
-						window.addEventListener("mouseup", release);
-					});
+				dragable: function (ops) {
+					var x0, y0, log = { move: [], element: ops.element };
+					god.addEventListener(ops, "start", "stop", "move");
 					function move(e) {
-						ele.style.left = parseFloat(ele.dataset.x) + e.clientX - parseFloat(ele.dataset.ox) + "px";
-						ele.style.top = parseFloat(ele.dataset.y) + e.clientY - parseFloat(ele.dataset.oy) + "px";
+						var s = getComputedStyle(ops.element);
+						log.newElement.style.left = parseFloat(s.left) + e.clientX - x0 + "px";
+						log.newElement.style.top = parseFloat(s.top) + e.clientY - y0 + "px";
+						log.move.push(e);
+						ops.noticemove(log);
 					}
-					function release() {
-						window.removeEventListener("blur", release);
-						window.removeEventListener("mouseup", release);
+					function stop(e) {
+						if (ops.keepChanges) {
+							log.element.style.left = log.newElement.style.left;
+							log.element.style.top = log.newElement.style.top;
+						}
+						log.newElement.remove();
+						window.removeEventListener("mouseup", stop);
+						window.removeEventListener("blur", stop);
 						window.removeEventListener("mousemove", move);
+						ops.trigger.addEventListener("mousedown", start);
+						log.stop = e;
+						ops.noticestop(log);
 					}
+					function start(e) {
+						log.newElement = ops.element.cloneNode(1);
+						log.newElement.removeAttribute("id");
+						ops.element.parentElement.appendChild(log.newElement);
+						x0 = e.clientX;
+						y0 = e.clientY;
+						ops.trigger.removeEventListener("mousedown", start);
+						window.addEventListener("mousemove", move);
+						window.addEventListener("blur", stop);
+						window.addEventListener("mouseup", stop);
+						log.start = e;
+						ops.noticestart(log);
+					}
+					ops.trigger.addEventListener("mousedown", start);
 				},
 				toast: function (message, duration, later) {
 					if (!new String(message).length) return;

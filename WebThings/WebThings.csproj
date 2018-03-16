@@ -49,15 +49,14 @@
   <ItemGroup>
     <Content Include="dyk\effect.js" />
     <Content Include="dyk\player.js" />
-    <Content Include="f12\f12js.html" />
+    <Content Include="gif\gif.js" />
+    <Content Include="gif\rgif.js" />
+    <Content Include="gif\test.html" />
     <Content Include="lollipop.html" />
     <Content Include="dyk\play.html" />
     <Content Include="dyk\game.js" />
     <Content Include="dyk\graphic.js" />
     <Content Include="dyk\movement.js" />
-    <Content Include="f12\f12js.css" />
-    <Content Include="f12\f12js.js" />
-    <Content Include="f12\f12jstest.html" />
     <Content Include="god.js" />
     <Content Include="physics.js" />
     <Content Include="RGBaster.js" />
