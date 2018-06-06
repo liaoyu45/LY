@@ -31,8 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AOP\IMapper.cs" />
-    <Compile Include="AOP\Mapper.cs" />
     <Compile Include="AOP\TargetMethodAttribute.cs" />
     <Compile Include="AOP\ModelBase.cs" />
     <Compile Include="AOP\AOPAttribute.cs" />

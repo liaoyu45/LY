@@ -46,11 +46,6 @@ namespace Gods.AOP {
 		}
 		public virtual string Folder { get; } = nameof(Gods);
 
-		public Dictionary<string, object> Values { get; set; } = new Dictionary<string, object>();
-		internal object GetValue(string key) {
-			return Values.ContainsKey(key) ? Values[key] : null;
-		}
-		public virtual Mapper Mapper => Mapper.Mappers[GetType().BaseType.GUID].Value as Mapper;
 		private static Dictionary<Guid, Type> cache = new Dictionary<Guid, Type>();
 	}
 }

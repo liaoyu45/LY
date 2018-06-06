@@ -1,69 +1,56 @@
-(function (gods, key, obj) {
-	"user strict"
-	var s = {};
-	gods.split('.').forEach(i => {
-		s = i in window ? window[i] : window[i] = {};
-	});
+(function (url, key, obj) {
+	"user strict";
+	var baseURL = "";
 	function makeClass(n, i) {
 		var oi = n[i];
-		var ps = (oi.Properties || []).map(e=> { return { Name: e.Name, Value: null }; });
 		n[i] = function (data) {
-			if (data) {
-				for (var i of ps) {
-					i.Value = data[i.Name] || null;
-				}
+			for (var i in data || {}) {
+				this[i] = data[i];
 			}
 		};
-		ps.forEach(p=>
-			Object.defineProperty(n[i].prototype, p.Name, {
-				get: () => p.Value,
-				set: v=>p.Value = v,
-				enumerable: true
-			}));
 		oi.Methods.forEach(m=> {
 			var r;
 			function then(m, u, a, t) {//method,url,data,onload
 				r = r || new XMLHttpRequest();
-				r.open(m, u);
+				r.open(m, url + u);
 				r.onload = t;
 				r.send(a);
 				return r;
-			};
-			function makeLater(t, later) {
-				return function (e) {
-					later.call(t, e, this);
-					r = null;
-				};
-			};
-			if (m.Queryable) {
+			}
+			if (typeof m["Return"] === "object") {
+				/// <summary>get</summary>
 				n[i].prototype[m.Name] = function () {
-					var t = this,
-						url = `?${key}=${m.Key}`;
-					[...arguments].forEach((a, i) => url += `&${m.Parameters[i].Name}=${a}`);
-					return {
-						get: function (later) {
-							return then("get", url, null, makeLater(t, later));
+					var u = `?${key}=${m.Key}`;
+					var p = {};
+					for (var i in this) {
+						if (m.Parameters.some(e=>e === i)) {
+							p[i] = this[i];
 						}
-					};
-				}
+					}
+					[...arguments].slice(0, arguments.length - 1).forEach((a, i) => p[m.Parameters[i]] = a);
+					for (var i in p) {
+						u += `&${i}=${p[i]}`;
+					}
+					var cb = [...arguments].reverse()[0];
+					cb = typeof cb === "function" ? cb : function () { };
+					if (location.href.length === 11) {
+						cb(m["Return"]);
+					}
+					return then("get", u, null, e=> {
+						cb(JSON.parse(e.currentTarget.responseText));
+					});
+				};
 			} else {
+				/// <summary>post</summary>
 				n[i].prototype[m.Name] = function (form) {
-					var t = this;
 					form = new FormData(form);
 					form.append(key, m.Key);
-					return {
-						post: function (later) {
-							return then("post", "", form, makeLater(t, later));
-						}
-					};
+					var cb = typeof arguments[1] === "function" ? arguments[1] : function () { };
+					if (location.href.length === 11) {
+						cb(m["Return"]);
+					}
+					return then("post", "", form, e=>cb(e.currentTarget.responseText));
 				};
-			}
-			n[i].prototype[m.Name].prepare = function (request) {
-				r = request();
-				return n[i].prototype[m.Name];
-			};
-			if (location.href.length === 11) {
-				n[i].prototype[m.Name]();
 			}
 		});
 	}
@@ -79,10 +66,10 @@
 	}
 	findClass(obj);
 	for (var i in obj) {
-		s[i] = obj[i];
+		window[i] = obj[i];
 	}
 })(
-"Gods",
-"Him1344150689",
+Route,
+AjaxKey,
 CSharp
 );

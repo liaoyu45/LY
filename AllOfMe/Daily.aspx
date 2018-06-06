@@ -5,54 +5,94 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 	<title></title>
-	<%--<script src="Scripts/linq.js"></script>--%>
-	<%--<script src="Him.js"></script>--%>
-	<style type="text/css">
-		body > div {
-			width: 133px;
-			height: 133px;
-			border-radius: 31px;
-			border: 3px solid #ebd5d5;
-			position: fixed;
-		}
-
-		#mainButton {
-
-		}
-	</style>
+	<script src="/him?Me=recreate"></script>
+	<script src="/Scripts/him/Me.js"></script>
 </head>
 <body>
 	<script src="god.js"></script>
-	<div id="life"></div>
-	<div id="work"></div>
-	<div id="joy"></div>
-	<div id="mainButton"></div>
+	<form action="/" method="post" id="fff">
+		<label>
+			I want:
+			<input type="text" name="thing" value="12839" /></label><input type="button" data-god="form: Soul.Desire" value="confirm" data-bind="click: Desire" />
+		<fieldset>
+			<legend></legend>
+			<label>I need to pay: <span></span>(already/total)</label>
+			<label>
+				This time I will pay:
+			<input type="range" min="1" max="111" name="effort" /></label><input type="button" value="confirm" />
+		</fieldset>
+		<label>
+			Then I got:<span></span>
+		</label>
+	</form>
+	<dl>
+		<dt>My plans:</dt>
+		<!--ko foreach:plans-->
+		<dd>
+			<dl>
+				<dt data-bind="text: Content"></dt>
+				<!--ko foreach:Efforts-->
+				<dd data-bind="text: Content"></dd>
+				<!--/ko-->
+			</dl>
+		</dd>
+		<!--/ko-->
+	</dl>
+	<dl>
+		<dt>I have payed:</dt>
+		<dd></dd>
+	</dl>
 	<script type="text/javascript">
-		function distance(p, pp) {
-			return Math.sqrt(Math.pow(p.pageX - pp.pageX, 2) + Math.pow(p.pageY - pp.pageY, 2));
-		}
-		var main;
-		function start(e) {
-			if (main) {
+		//var obj = {
+		//	thing: ko.observable(),
+		//	Desire: function () {
+		//		new Me.Soul().Desire(document.forms[0], function () {
+		//			console.log(arguments[0]);
+		//		});
+		//	},
+		//	plans: ko.observableArray()
+		//};
+		//ko.applyBindings(obj);
+		[...document.querySelectorAll("input[type=button]")].filter(e=>e.dataset.god).forEach(e=> {
+			var god = {};
+			e.dataset.god.split(/:|,/).forEach(e=>{
+				if (god["last"]) {
+					god[god["last"]] = e.trim();
+					god["last"] = "";
+				} else {
+					god["last"] = e;
+				}
+			});
+			if (!god.form) {
 				return;
 			}
-			main = {};
-			var t0 = e.targetTouches[0];
-			for (var i in t0) {
-				main[i] = t0[i];
+			var later = window;
+			(god.later || "").split('.').forEach(e=> {
+				later = later[e];
+			});
+			if (later === window) {
+				later = function () { };
 			}
-			mainButton.addEventListener("touchmove", move);
-		}
-		function move(e) {
-			var t0 = e.targetTouches[0];
-			if (distance(main, t0) > 33) {
-				document.title = "hahwlerh";
+			var form = e.parentElement;
+			while (!(form instanceof HTMLFormElement)) {
+				form = form.parentElement;
 			}
-		}
-		god.window.dragable(mainButton, mainButton);
-		ele.style.width = (window.outerWidth - ele.clientWidth) / 2 + "px";
-		ele.style.height = (window.outerHeight - ele.clientHeight) / 2 + "px";
-		//mainButton.addEventListener("touchstart", start);
+			e.onclick = () => {
+				var t = window,
+					ev = false;
+				[...god.form.split('.')].forEach(e=> {
+					if (typeof t[e] === "function") {
+						if (ev) {
+							t[e](form, later);
+						} else {
+							ev = t = new t[e]();
+						}
+					} else {
+						t = t[e];
+					}
+				});
+			};
+		});
 	</script>
 </body>
 </html>

@@ -61,25 +61,58 @@ namespace Gods.Web.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (function (thisArg, ajax, obj) {
-        ///	var s = {};
-        ///	thisArg.split(&apos;.&apos;).forEach(i =&gt; {
-        ///		s = i in window ? window[i] : window[i] = {};
-        ///	});
+        ///   Looks up a localized string similar to (function (url, key, obj) {
+        ///	&quot;user strict&quot;;
+        ///	var baseURL = &quot;&quot;;
         ///	function makeClass(n, i) {
         ///		var oi = n[i];
-        ///		var ps = oi.Properties.map(e=&gt; { return { Name: e.Name, Value: null }; });
         ///		n[i] = function (data) {
-        ///			for (var i of ps) {
-        ///				i.Value = data[i.Name] || null;
+        ///			for (var i in data || {}) {
+        ///				this[i] = data[i];
         ///			}
         ///		};
-        ///		ps.forEach(p=&gt;
-        ///			Object.defineProperty(n[i].prototype, p.Name, {
-        ///				get: () =&gt; p.Value,
-        ///				set: v=&gt;p.Value = v,
-        ///				enumerable: true
-        ///			} [rest of string was truncated]&quot;;.
+        ///		oi.Methods.forEach(m=&gt; {
+        ///			var r;
+        ///			function then(m, u, a, t) {//method,url,data,onload
+        ///				r = r || new XMLHttpRequest();
+        ///				r.open(m, url + u);
+        ///				r.onload = t;
+        ///				r.send(a);
+        ///				return r;
+        ///			}
+        ///			if (typeof m[&quot;Return&quot;] === &quot;object&quot;) {
+        ///				/// &lt;summary&gt;get&lt;/summary&gt;
+        ///				n[i].prototy [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string CSharp {
+            get {
+                return ResourceManager.GetString("CSharp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (function (url, key, obj) {
+        ///	&quot;user strict&quot;;
+        ///	var baseURL = &quot;&quot;;
+        ///	function makeClass(n, i) {
+        ///		var oi = n[i];
+        ///		n[i] = function (data) {
+        ///			for (var i in data || {}) {
+        ///				this[i] = data[i];
+        ///			}
+        ///		};
+        ///		oi.Methods.forEach(m=&gt; {
+        ///			var r;
+        ///			function then(m, u, a, t) {//method,url,data,onload
+        ///				r = r || new XMLHttpRequest();
+        ///				r.open(m, url + u);
+        ///				r.onload = t;
+        ///				r.send(a);
+        ///				return r;
+        ///			}
+        ///			if (typeof m[&quot;Return&quot;] === &quot;object&quot;) {
+        ///				/// &lt;summary&gt;get&lt;/summary&gt;
+        ///				n[i].prototy [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Map {
             get {

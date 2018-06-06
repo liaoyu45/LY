@@ -1,19 +1,16 @@
 ﻿(function () {
-	"use strict"
+	"use strict";
 	function GodThere() {
 		this.initiatedTime = new Date();
 		this.modes = {
 			coding: location.href.length === 11,
 			debugging: location.href.indexOf("localhost") > 0,
 		};
-		this.functions = (function () {
-			var r = {};
-			r.empty = () => { };
-			r.returnFalse = () =>false;
-			r.returnTrue = () =>true;
-			r.returnValue = v=>() =>v;
-			return r;
-		}());
+		Object.defineProperty(this, "emptyFunction", {
+			get: function () {
+				return function () { };
+			}
+		});
 		this.removeEventListener = function (obj, ename, func) {
 			var store = obj[this.addEventListener.pre + ename];
 			if (!store) {
@@ -35,6 +32,7 @@
 			if (typeof arguments[1] === "string") {
 				var ename = arguments[1];
 				var fullname = "on" + ename;
+				var notice = ename === "notice" ? "notice" : "notice" + ename;
 				if (!(fullname in obj)) {
 					var store = this.addEventListener.pre + ename;
 					if (!(store in obj)) {
@@ -45,7 +43,6 @@
 							obj[store].push(v);
 						}
 					});
-					var notice = ename === "notice" ? "notice" : "notice" + ename;
 					obj[notice] = function () {
 						for (var i = 0; i < obj[store].length; i++) {
 							try {
@@ -55,6 +52,8 @@
 							}
 						}
 					};
+				} else {
+					obj[notice] = obj[fullname];
 				}
 			}
 			if (typeof arguments[2] === "string") {
@@ -73,6 +72,40 @@
 		};
 		this.window = (function () {
 			return {
+				fakeGIF: function (ele, delay) {
+					var imgs = arguments[2].map(e=> {
+						var i = document.createElement("img");
+						i.style.display = "none";
+						i.src = e;
+						return ele.appendChild(i);
+					});
+					var last = imgs[imgs.length - 1];
+					var id = 0;
+					var i = 0;
+					function start() {
+						i = setInterval(() => {
+							last.style.display = "none";
+							id++;
+							if (id === imgs.length) {
+								id = 0;
+							}
+							(last = imgs[id]).style.display = "block";
+						}, delay);
+					}
+					start();
+					return {
+						stop: function () {
+							clearInterval(i);
+							i = 0;
+						},
+						start: function () {
+							if (!i) {
+								start();
+							}
+						},
+						element: ele
+					}
+				},
 				queryString: function (item) {
 					var svalue = location.search.match(new RegExp("[\?\&]" + item + "=([^\&]*)(\&?)", "i"));
 					return svalue ? svalue[1] : svalue;
@@ -119,80 +152,91 @@
 				mobile: (function () {
 					return !!navigator.userAgent.match(/Mobile/);
 				})(),
-				dragable: function (ele, trigger, withShadow) {
-					trigger = typeof trigger === "string" ? ele.querySelector(trigger) : trigger instanceof HTMLElement ? trigger : ele;
-					if (!trigger) {
-						return;
-					}
-					function returnfalse() {
+				dragable: function (ops) {
+					var x0, y0, log = { move: [], element: ops.element };
+					god.addEventListener(ops, "start", "stop", "move");
+					function returnFalse() {
 						return false;
 					}
-					trigger.addEventListener("selectstart", returnfalse);
-					var temp = {};
+					function move(e) {
+						var s = getComputedStyle(ops.element);
+						log.newElement.style.left = parseFloat(s.left) + e.clientX - x0 + "px";
+						log.newElement.style.top = parseFloat(s.top) + e.clientY - y0 + "px";
+						log.move.push(e);
+						ops.noticemove(log);
+					}
+					function stop(e) {
+						window.removeEventListener("mouseup", stop);
+						window.removeEventListener("touchend", stop);
+						window.removeEventListener("blur", stop);
+						window.removeEventListener("mousemove", move);
+						window.removeEventListener("touchmove", move);
+						ops.trigger.addEventListener("touchstart", start);
+						ops.trigger.addEventListener("mousedown", start);
+						document.removeEventListener("dragstart", returnFalse);
+						log.stop = e;
+						if (ops.noticestop(log)) {
+							log.element.style.top = log.newElement.style.top;
+							log.element.style.left = log.newElement.style.left;
+						}
+						log.newElement.remove();
+					}
 					function start(e) {
 						if (e.button) {
 							return;
 						}
-						events.noticestart(e);
-						if (ele.style.display === "none") {
-							ele.style.display = "block";
-						}
-						var os = getComputedStyle(ele);
-						temp.x = parseFloat(temp.oldX = os.left) - e.clientX;
-						temp.y = parseFloat(temp.oldY = os.top) - e.clientY;
+						document.addEventListener("dragstart", returnFalse);
+						x0 = e.clientX;
+						y0 = e.clientY;
+						ops.trigger.removeEventListener("touchstart", start);
+						ops.trigger.removeEventListener("mousedown", start);
+						window.addEventListener("touchmove", move);
 						window.addEventListener("mousemove", move);
-						window.addEventListener("blur", moveback);
-						window.addEventListener("mouseup", movenew);
-						window.addEventListener("contextmenu", moveback);
-						if (withShadow) {
-							temp.shadow = ele.cloneNode(1);
-							document.body.insertBefore(temp.shadow, ele);
-							temp.shadow.removeAttribute("id");
+						window.addEventListener("blur", stop);
+						window.addEventListener("mouseup", stop);
+						window.addEventListener("touchend", stop);
+						log.start = e;
+						ops.noticestart(log);
+						log.newElement = ops.element.cloneNode(1);
+						log.newElement.removeAttribute("id");
+						log.newElement.style.display = "block";
+						ops.element.parentElement.appendChild(log.newElement);
+					}
+					ops.trigger.addEventListener("mousedown", start);
+					ops.trigger.addEventListener("touchstart", start);
+					return {
+						undragable: function () {
+							ops.trigger.removeEventListener("mousedown", start);
+						},
+						keep: function () {
+							log.element.style.left = log.newElement.style.left;
+							log.element.style.top = log.newElement.style.top;
 						}
 					}
-					var ing = true,
-						events = {
-							element: ele,
-							toggle: function (state) {
-								if (state && ing) {
-									return;
-								}
-								ing = state;
-								var a = (state ? "add" : "remove") + "EventListener";
-								trigger[a]("mousedown", start);
-								trigger[a]("selectstart", returnfalse);
-							}
-						};
-					god.addEventListener(events, "release", "move", "set", "start");
-					trigger.addEventListener("mousedown", start);
-					function move(e) {
-						ele.style.left = e.clientX + temp.x + "px";
-						ele.style.top = e.clientY + temp.y + "px";
-						events.noticemove.apply(events, [temp.oldX, temp.oldY, ele.style.left, ele.style.top].map(e=>parseFloat(e)));
+				},
+				watchDrag: function (ops) {
+					function stop(e) {
+						window.removeEventListener("mouseup", stop);
+						window.removeEventListener("mousemove", ops.move);
+						window.addEventListener("mousedown", start);
+						ops.stop(e);
 					}
-					function movenew(e) {
+					function start(e) {
 						if (e.button) {
 							return;
 						}
-						events.noticeset(e);
+						ops.start(e);
 						release();
+						window.addEventListener("mousemove", ops.move);
+						window.addEventListener("mouseup", stop);
 					}
-					function moveback(e) {
-						ele.style.left = temp.oldX;
-						ele.style.top = temp.oldY;
-						events.noticerelease(e);
-						release();
-					}
+					window.addEventListener("mousedown", start);
 					function release() {
-						if (temp.shadow) {
-							temp.shadow.remove();
-						}
-						window.removeEventListener("blur", moveback);
-						window.removeEventListener("mouseup", movenew);
-						window.removeEventListener("mousemove", move);
-						window.removeEventListener("contextmenu", moveback);
+						window.removeEventListener("mousedown", start);
 					}
-					return events;
+					return {
+						release: release,
+					};
 				},
 				toast: function (message, duration, later) {
 					if (!new String(message).length) return;
@@ -218,11 +262,10 @@
 				},
 				setCenter: function (ele, always) {
 					function resize() {
-						var w = getComputedStyle(ele);
-						ele.style.left = (window.outerWidth - parseFloat(w.width)) / 2 + "px";
-						ele.style.top = (window.outerHeight - parseFloat(w.height)) / 2 + "px";
+						ele.style.left = (window.outerWidth - ele.clientWidth) / 2 + "px";
+						ele.style.top = (window.outerHeight - ele.clientHeight) / 2 + "px";
 					}
-					window.onload = resize;
+					resize();
 					if (always) {
 						window.addEventListener("resize", resize);
 						return function () {
@@ -247,18 +290,18 @@
 			time = time || new Date();
 			return this.formatString("{0}/{1}/{2}", time.getHours(), time.getMinutes(), time.getSeconds());
 		},
-        this.trim = function (str, side, replace) {
-        	if (god.modes.coding) {
-        		str = ""; side = true; replace = [];
-        	}
-        	if (typeof replace === "string") {
-        		replace = replace.split("");
-        	}
-        	if (typeof side === "boolean") {
-        		return god.trim(str, side, replace);
-        	}
-        	return god.trim(str, true, side) + god.trim(str, false, side);
-        };
+		this.trim = function (str, side, replace) {
+			if (god.modes.coding) {
+				str = ""; side = true; replace = [];
+			}
+			if (typeof replace === "string") {
+				replace = replace.split("");
+			}
+			if (typeof side === "boolean") {
+				return god.trim(str, side, replace);
+			}
+			return god.trim(str, true, side) + god.trim(str, false, side);
+		};
 		this.getTypeName = function (obj) {
 			if (typeof obj === "undefined") return undefined;
 			var name = obj.constructor.toString().trim();
@@ -423,7 +466,7 @@
 			}
 			if (typeof func !== "function") {
 				console.log("not a function");
-				return this.functions.empty;
+				return this.emptyFunction;
 			}
 			return function () {
 				try {
@@ -432,6 +475,9 @@
 					console.log(e.message);
 				}
 			};
+		};
+		this.makeFunction = function (func) {
+			return typeof func === "function" ? func : this.emptyFunction;
 		};
 		this.removeItem = function (arr, filter) {
 			for (var i = arr.length - 1; i >= 0; i--) {
@@ -458,20 +504,21 @@
 							strHex = rgb;
 						}
 						return strHex;
-					} else if (reg.test(rgb)) {
+					}
+					if (reg.test(rgb)) {
 						var aNum = rgb.replace(/#/, "").split("");
 						if (aNum.length === 6) {
 							return rgb;
-						} else if (aNum.length === 3) {
+						}
+						if (aNum.length === 3) {
 							var numHex = "#";
 							for (var i = 0; i < aNum.length; i += 1) {
 								numHex += (aNum[i] + aNum[i]);
 							}
 							return numHex;
 						}
-					} else {
-						return rgb;
 					}
+					return rgb;
 				};
 				this.hex2rgb = function (hex) {
 					hex = hex.toLowerCase();
@@ -487,10 +534,9 @@
 						for (var i = 1; i < 7; i += 2) {
 							sColorChange.push(parseInt("0x" + hex.slice(i, i + 2)));
 						}
-						return "RGB(" + sColorChange.join(",") + ")";
-					} else {
-						return hex;
+						return sColorChange;
 					}
+					return hex;
 				};
 				this.hsl2rgb = function (h, s, l) {//http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion/
 					var r, g, b;
@@ -511,7 +557,6 @@
 						g = hue2rgb(p, q, h);
 						b = hue2rgb(p, q, h - 1 / 3);
 					}
-
 					return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 				};
 				this.rgb2hsl = function rgbToHsl(r, g, b) {
@@ -531,6 +576,30 @@
 						h /= 6;
 					}
 					return [h, s, l];
+				};
+				this.cutGragient = function (c0, c1, p) {
+					function toRGBA(str) {
+						if (typeof str !== "string") {
+							return str;
+						}
+						if (str.toLowerCase().startsWith("rgb")) {
+							str = str.split('(')[1].split(')')[0].split(',');
+							return [parseInt(str[0]), parseInt(str[1]), parseInt(str[2]), str.length === 4 ? parseFloat(str[3]) : 1.0];
+						}
+						str = str.replace("#", "");
+						if (str.length === 3) {
+							str = str[0] + str[0] + str[1] + str[1] + str[2] + str[2];
+						}
+						return [parseInt("0x" + str.substr(0, 2)), parseInt("0x" + str.substr(2, 2)), parseInt("0x" + str.substr(4, 2)), 1];
+					}
+					var str = typeof c0 === "string" || typeof c0 === "string";
+					c0 = toRGBA(c0);
+					c1 = toRGBA(c1);
+					var r = [];
+					for (var i = 0; i < 4; i++) {
+						r.push(c0[i] + parseInt((c1[i] - c0[i]) / p));
+					}
+					return str ? `rgba(${r.join(',')})` : r;
 				}
 			};
 			return new innerClass();
@@ -568,76 +637,102 @@
 						if (_t.length === m) {
 							r.push(_t);
 						} else {
-							c(_t, a.filter(function (ii) { return ii != arri; }));
+							c(_t, a.filter(function (ii) { return ii !== arri; }));
 						}
 					}
 				})([], arr, m);
 				return r;
 			}
-
-			return { combination: combination, permutation: permutation };
+			function getOpacity(width, height, fx, fy, dx, dy) {
+				if (dx < 0 || dy < 0 || dx > width || dy > height) {
+					return 0;
+				}
+				function getK(x, y, xx, yy) {
+					return (yy - y) / (xx - x);
+				}
+				var k = getK(dx, dy, fx, fy);
+				var kk = getK(0, 0, fx, fx);
+				var kkk = getK(width, 0, fx, fy);
+				var kkkk = getK(width, height, fx, fy);
+				var kkkkk = getK(0, height, fx, fy);
+				if ((k > kk || k < kkk) && dy < fy) {
+					return Math.abs(dy / fy);
+				}
+				if (k > kkk && k < kkkk && dx > fx) {
+					return Math.abs((width - dx) / (width - fx));
+				}
+				if ((k > kkkk || k < kkkkk) && dy > fy) {
+					return Math.abs((height - dy) / (height - fy));
+				}
+				return Math.abs(dx / fx);
+			}
+			return {
+				combination: combination, permutation: permutation, getOpacity: getOpacity
+			};
 		})(),
-        this.arr = (function () {
-        	function moveArray(distance, arr, instance) {
-        		function innerMove(distance) {
-        			var tag = "uqpoirewuqwpeiruqwre";
-        			var front = 0, end = 0, endAdded = 0, frontAdded = 0;
-        			if (this[tag]) {
-        				front = this.front;
-        				end = this.end;
-        				frontAdded = this.frontAdded;
-        				endAdded = this.endAdded;
-        				arr = this.arr;
-        			}
-        			var d = Math.abs(distance);
-        			if (distance > 0) {
-        				for (var i = 0; i < d - end; i++) {
-        					arr.push(instance(arr[arr.length - 1], false));
-        					endAdded += 1;
-        				}
-        			} else {
-        				for (var i = 0; i < d - front; i++) {
-        					arr.unshift(instance(arr[0], true));
-        					frontAdded += 1;
-        				}
-        			}
-        			front += distance;
-        			end -= distance;
-        			if (front < 0) {
-        				front = 0;
-        			}
-        			if (end < 0) {
-        				end = 0;
-        			}
-        			this.end = end;
-        			this.front = front;
-        			this.endAdded = endAdded;
-        			this.frontAdded = frontAdded;
-        			this.arr = arr;
-        			if (!this.instance) {
-        				this.instance = instance;
-        			}
-        			if (!this.moveArray) {
-        				this.moveArray = innerMove;
-        			}
-        			if (!this.orignal) {
-        				this.orignal = arr;
-        			}
-        			this.current = arr.slice(front, front + arr.length);
-        			this[tag] = true;
-        			return this;
-        		}
-        		return new innerMove(distance, arr, instance);
-        	}
-        	function removeItem(arr, filter) {
-        		for (var i = arr.length - 1; i >= 0; i--) {
-        			if (filter.call(arr[i], i)) {
-        				arr.splice(i, 1);
-        			}
-        		}
-        	}
-        	return { moveArray: moveArray, removeItem: removeItem };
-        })();
+		this.arr = (function () {
+			function moveArray(distance, arr, instance) {
+				function innerMove(distance) {
+					var tag = "uqpoirewuqwpeiruqwre";
+					var front = 0, end = 0, endAdded = 0, frontAdded = 0;
+					if (this[tag]) {
+						front = this.front;
+						end = this.end;
+						frontAdded = this.frontAdded;
+						endAdded = this.endAdded;
+						arr = this.arr;
+					}
+					var d = Math.abs(distance);
+					if (distance > 0) {
+						for (var i = 0; i < d - end; i++) {
+							arr.push(instance(arr[arr.length - 1], false));
+							endAdded += 1;
+						}
+					} else {
+						for (var i = 0; i < d - front; i++) {
+							arr.unshift(instance(arr[0], true));
+							frontAdded += 1;
+						}
+					}
+					front += distance;
+					end -= distance;
+					if (front < 0) {
+						front = 0;
+					}
+					if (end < 0) {
+						end = 0;
+					}
+					this.end = end;
+					this.front = front;
+					this.endAdded = endAdded;
+					this.frontAdded = frontAdded;
+					this.arr = arr;
+					if (!this.instance) {
+						this.instance = instance;
+					}
+					if (!this.moveArray) {
+						this.moveArray = innerMove;
+					}
+					if (!this.orignal) {
+						this.orignal = arr;
+					}
+					this.current = arr.slice(front, front + arr.length);
+					this[tag] = true;
+					return this;
+				}
+				return new innerMove(distance, arr, instance);
+			}
+			function removeItem(arr, filter) {
+				for (var i = arr.length - 1; i >= 0; i--) {
+					if (filter.call(arr[i], i)) {
+						arr.splice(i, 1);
+					}
+				}
+			}
+			return {
+				moveArray: moveArray, removeItem: removeItem
+			};
+		})();
 	};
 	this.god = new GodThere();
 }).call(this);

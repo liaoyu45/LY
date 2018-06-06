@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8" />
+</head>
+<body>
+	<script src="god.js"></script>
+	<script type="text/javascript">
+		var playingCat = god.window.fakeGIF((function () {
+			var p = document.body.appendChild(document.createElement("div"));
+			p.id = "fake" + Math.ceil(Math.random() * 123123);
+			p.innerHTML = `
+<style type="text/css">
+#${p.id} {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 200px;
+	height: 150px;
+}
+#${p.id} div {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 200px;
+	height: 150px;
+}
+</style>
+<div></div>
+<div></div>`;
+			window.addEventListener("mousemove", function (e) {
+				p.style.left = e.clientX - 100 + "px";
+				p.style.top = e.clientY - 75 + "px";
+			});
+			return p.firstElementChild.nextElementSibling;
+		}()), 22, (function () {
+			var r = new Array();
+			for (var i = 0; i < 89; i++) {
+				r.push(`/resources/images/play/${i}.png`);
+			}
+			return r;
+		}()));
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8" />
+	<style type="text/css">
+		#d {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+
+			#d div {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+			}
+	</style>
+</head>
+<body>
+	<script src="html2canvas.js"></script>
+	<div id="d">
+		<div>
+			<div style="background-image: linear-gradient(rgb(255,0,0),rgb(255,255,0),rgb(0,255,0),rgb(0,255,255),rgb(0,0,255),rgb(255,0,255),rgb(255,0,0));"></div>
+			<div style="background-image: linear-gradient(90deg,white,transparent,black);"></div>
+		</div>
+		<div>
+			<div style="background-image: linear-gradient(90deg,rgb(255,0,0),rgb(255,255,0),rgb(0,255,0),rgb(0,255,255),rgb(0,0,255),rgb(255,0,255),rgb(255,0,0));"></div>
+			<div style="background-image: linear-gradient(white,transparent,black);"></div>
+		</div>
+	</div>
+	<div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+		<div style="position: absolute; top: 0; width: 100%; height: 33px;"></div>
+		<div id="cc" style="position: absolute; top: 33px; width: 100%; height: 33px;">
+			<script type="text/javascript">
+				cc.style.height = cc.parentElement.clientHeight - cc.firstElementChild.clientHeight + "px";
+			</script>
+		</div>
+	</div>
+	<svg xmlns="http://www.w3.org/2000/svg" id="c" style="position: fixed; top:0; left:0; width: 122px; height: 122px; display: none;">
+		<defs>
+			<radialGradient id="f">
+				<stop id="p" offset=".4"></stop>
+				<stop id="g" offset=".5"></stop>
+				<stop id="m" offset=".6"></stop>
+			</radialGradient>
+		</defs>
+		<circle r="61" fill="url(#f)" cx="61" cy="61"></circle>
+	</svg>
+	<script type="text/javascript">
+		var di;
+		onload = onresize = () => {
+			[...document.querySelectorAll("canvas")].forEach(e=>e.remove());
+			d.style.display = "block";
+			var ddi = d.clientHeight > d.clientWidth;
+			if (di !== ddi) {
+				di = ddi;
+				d.children[0].style.display = di ? "block" : "none";;
+				d.children[1].style.display = !di ? "block" : "none";;
+			}
+			html2canvas(d).then(function (canvas) {
+				d.style.display = "none";
+				canvas.style.position = "fixed";
+				canvas.style.top = 0;
+				canvas.style.left = 0;
+				canvas.style.height = "100%";
+				cc.appendChild(canvas);
+				window.onmousemove = e=> {
+					c.style.display = "block";
+					var d = canvas.getContext("2d").getImageData(e.clientX, e.clientY, 1, 1).data;
+					var l = parseInt(255 - (Math.max(d[0], d[1], d[2]) + Math.min(d[0], d[1], d[2])) / 2);
+					m.setAttribute("stop-color", `rgb(${d[0]},${d[1]},${d[2]})`);
+					document.title = l;
+					g.setAttribute("stop-color", `rgb(${l},${l},${l})`);
+					c.style.left = e.clientX - 61 + "px";
+					c.style.top = e.clientY - 61 + "px";
+				};
+				window.onclick = e=> {
+					var d = canvas.getContext("2d").getImageData(e.clientX, e.clientY, 1, 1).data;
+					p.setAttribute("stop-color", `rgb(${d[0]},${d[1]},${d[2]})`);
+				};
+				window.onmouseleave = () => {
+					c.style.display = "none";
+				};
+			});
+		};
+	</script>
+</body>
+</html>

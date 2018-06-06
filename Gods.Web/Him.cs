@@ -1,113 +1,38 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Web;
-using System.Web.Hosting;
 
 namespace Gods.Web {
-	public class Him {
-		internal static readonly string AjaxKey = nameof(Him) + nameof(Him).GetHashCode();//Him1344150689
-
-		public static string Modules = "bin";
+	public partial class Him {
 		public static string Implements = "bin";
+		private static Assembly ValidatorAssembly;
+		private static TypeInfo baseInterface;
 
-		private static readonly JObject CSharp = new JObject();
-		private static string WebRoot;
+		private static Dictionary<int, Func<object, object[], object>> validators = new Dictionary<int, Func<object, object[], object>>();
 
-		public static void PreferJavascript() {
-			PreferJavascript("him");
-		}
-		public static void PreferJavascript(string thisArg) {
-			File.WriteAllText(WebRoot + nameof(Him) + ".js",
-				Properties.Resources.Map
-				.Replace(nameof(Gods), thisArg)
-				.Replace(nameof(CSharp), CSharp.ToString()));
+		public static void SetValidator(Assembly ass) {
+			baseInterface = (ValidatorAssembly = ass).DefinedTypes.FirstOrDefault(e => e.IsGenericType && e.IsInterface);
 		}
 
-		public static void Create<T>() {
-			TagInterface = typeof(T);
-			Validator.WebApp = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Assembly;
-			WebRoot = HostingEnvironment.MapPath("/");
-			Directory.GetFiles(WebRoot + Modules, "*.dll")
-				.Select(e => Gods.Him.TryGet(() => Assembly.LoadFrom(e))).ToList()
-				.ForEach(a => {
-					var c = a?.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company ?? string.Empty;
-					if (c.Length == 0 || c.StartsWith(nameof(Microsoft)) || c.StartsWith(nameof(Gods)) || c.StartsWith(nameof(Newtonsoft))) {
-						return;
-					}
-					foreach (var t in a.ExportedTypes) {
-						if (t.IsInterface && t.GetInterfaces().Any(i => i == TagInterface)) {
-							Append(CSharp, t);
-							interfaces.Add(t);
-						}
-					}
-				});
-		}
-
-		public static void Append(JObject j, Type item) {
-			var ns = item.FullName.Split('.');
-			foreach (var n in ns) {
-				if (j.Properties().Any(p => p.Name == n)) {
-					j = j[n] as JObject;
-				} else {
-					j = (j[n] = new JObject()) as JObject;
-				}
+		public static object Validate(object obj, MethodInfo m, params object[] ps) {
+			var c = Gods.Him.SignMethod(m);
+			if (validators.ContainsKey(c)) {
+				return validators[c](obj, ps);
 			}
-			var Properties = GetProperties(item);
-			if (Properties.Count > 0) {
-				j[nameof(Properties)] = Properties;
+			var it = obj.GetType().GetInterfaces().First(i => i.GetInterfaces().Any(ii => ii == TagInterface));
+			var vt = baseInterface.MakeGenericType(it);
+			vt = ValidatorAssembly.DefinedTypes.FirstOrDefault(t => !t.IsInterface && t.GetInterfaces().Contains(vt));
+			var mapped = Gods.Him.GetMappedMethod(vt, m) ?? vt.GetMethods().FirstOrDefault(mm => mm.Name == m.Name && mm.GetParameters().Length == 0);
+			if (mapped == null) {
+				return null;
 			}
-			var Methods = new JArray();
-			item.GetMethods().Where(m => !m.IsSpecialName).ToList().ForEach(m => {
-				var t = new JObject {
-					[nameof(m.Name)] = m.Name,
-					["Key"] = item.GetHashCode() + "." + Gods.Him.SignMethod(m, nameof(Gods))
-				};
-				var Parameters = JArray.FromObject(m.GetParameters().Select(e => new {
-					e.Name, Type = e.ParameterType.FullName
-				}));
-				if (Parameters.Count > 0) {
-					t[nameof(Parameters)] = Parameters;
-				}
-				var rt = m.ReturnType;
-				if (rt == typeof(string) || rt.IsValueType || rt == typeof(void)) {
-				} else {
-					if (rt.IsGenericType && rt.GetGenericTypeDefinition() == typeof(IEnumerable<>)) {
-						rt = rt.GenericTypeArguments[0];
-					}
-					t[nameof(Queryable)] = true;
-					t[nameof(MethodInfo.ReturnType)] = GetProperties(rt);
-				}
-				Methods.Add(t);
-			});
-			if (Methods.Count > 0) {
-				j[nameof(Methods)] = Methods;
-			}
-		}
-
-		private static JArray GetProperties(Type item) {
-			return JArray.FromObject(item.GetProperties().Where(p => p.DeclaringType == item).Select(e => new {
-				e.Name, Type = e.PropertyType.FullName
-			}));
-		}
-
-		private static List<Type> interfaces = new List<Type>();
-		private static Dictionary<string, Type> implements = new Dictionary<string, Type>();
-
-		public static Type TagInterface { get; private set; }
-
-		public static Type FindImplement(string k) {
-			if (implements.ContainsKey(k)) {
-				return implements[k];
-			}
-			var tt = interfaces.FirstOrDefault(t => t.GetHashCode().ToString() == k);
-			interfaces.Remove(tt);
-			return implements[k] = Gods.Him.Make(tt, WebRoot + Implements)?.GetType();
+			return (validators[c] = (tar, pss) => {
+				var ins = vt.IsAbstract ? null : Activator.CreateInstance(vt);
+				vt.GetFields((BindingFlags)36).FirstOrDefault(f => f.DeclaringType == it)?.SetValue(ins, tar);
+				vt.GetProperties((BindingFlags)36).FirstOrDefault(f => f.DeclaringType == it && f.CanWrite)?.SetValue(ins, tar);
+				return mapped.Invoke(ins, mapped.GetParameters().Any() ? pss : null);
+			})(obj, ps);
 		}
 	}
 }

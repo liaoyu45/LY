@@ -12,7 +12,7 @@ namespace Gods.Web {
 			public int Key { get; set; }
 			public object Value { get; set; }
 		}
-		internal static CacheManager Instance = new CacheManager();
+		public static ICacheManager Instance = new CacheManager();
 		public virtual int User => HttpContext.Current.Session?[nameof(User)]?.GetHashCode() ?? 0;
 
 		private static List<Cache> cache = new List<Cache>();

@@ -15,7 +15,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AllOfMe</RootNamespace>
     <AssemblyName>AllOfMe</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,6 +44,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="HtmlPage1.html" />
     <Content Include="Content\metro-colors.css" />
     <Content Include="Content\metro-colors.min.css" />
     <Content Include="Content\metro-icons.css" />
@@ -58,7 +60,6 @@
     <Content Include="Fonts\metro.svg" />
     <Content Include="Global.asax" />
     <Content Include="god.js" />
-    <Content Include="Me.html" />
     <Content Include="packages.config" />
     <Content Include="Daily.aspx" />
     <None Include="Scripts\linq-vsdoc.js" />
@@ -66,7 +67,6 @@
     <Content Include="Scripts\linq.min.js" />
     <Content Include="Scripts\metro.js" />
     <Content Include="Scripts\metro.min.js" />
-    <Content Include="wn8.png" />
     <Content Include="Fonts\selection.json" />
     <Content Include="Fonts\metro.woff" />
     <Content Include="Fonts\metro.ttf" />
@@ -91,11 +91,9 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Him.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -116,12 +114,33 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Gods.Web\Gods.Web.csproj">
+      <Project>{a522e914-ed91-4a6b-a15c-78ff07061fb1}</Project>
+      <Name>Gods.Web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gods\Gods.csproj">
       <Project>{cc8d063d-e023-4950-aab9-3f0f9f40db59}</Project>
       <Name>Gods</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Me.World\Me.World.csproj">
+      <Project>{047c7686-c56b-4afe-981b-f53483a99d33}</Project>
+      <Name>Me.World</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Me\Me.csproj">
+      <Project>{75718a0a-e3ac-4b0b-861a-ddecbaaa31d7}</Project>
+      <Name>Me</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

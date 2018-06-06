@@ -63,33 +63,37 @@ namespace Gods {
 		}
 
 		/// <summary>
-		/// 将方法名称和各个参数类型的 <see cref="object.GetHashCode"/> 的累加再除以总数，以值为此方法的标识。仅保证在定义的类中几乎唯一。
+		/// 将函数名称和参数的 <see cref="object.GetHashCode"/> 的平均值做为此函数的标识。仅保证在定义的类中几乎唯一。
 		/// </summary>
-		/// <param name="method">要标记的方法。</param>
-		/// <param name="extra">通常为 null。</param>
+		/// <param name="method">要标记的函数。</param>
 		/// <returns>生成的标识。</returns>
-		public static int SignMethod(MethodInfo method, object extra) {
-			var ps = method.GetParameters();
-			var c = ps.Length + 2;
-			return Math.Abs(method.Name.GetHashCode() / c) + ps.Aggregate(0, (i, p) => i + Math.Abs(p.GetHashCode() / c)) + Math.Abs(extra?.GetHashCode() ?? 0) / c;
+		public static int SignMethod(MethodInfo method) {
+			return (method.Name.GetHashCode()) + method.GetParameters().Aggregate(0, (i, p) => i + (p.ParameterType.GetHashCode()));
 		}
 
 		/// <summary>
-		/// 查找 <see cref="SignMethod(MethodInfo, object)"/> 的返回值对应的方法。
+		/// 查找对应的函数。
 		/// </summary>
 		/// <param name="type">要查找的类型。</param>
-		/// <param name="sign">原方法标识。</param>
+		/// <param name="sign">原函数标识。</param>
 		/// <param name="extra">通常为 null。</param>
-		/// <returns><paramref name="sign"/> 对应的方法。</returns>
-		public static MethodInfo GetSignedMethod(Type type, int sign, object extra) {
-			return type.GetMethods().FirstOrDefault(m => SignMethod(m, extra) == sign);
-		}
-		public static MethodInfo GetMappedMethod(Type type, MethodInfo method, object extra) {
-			return GetSignedMethod(type, SignMethod(method, extra), extra);
+		/// <returns>对应的函数。</returns>
+		public static MethodInfo GetSignedMethod(Type type, int sign) {
+			return type?.GetMethods().Where(e => !e.IsSpecialName).Concat(type.GetInterfaces().SelectMany(e => e.GetMethods().Where(ee => !ee.IsSpecialName))).FirstOrDefault(m => SignMethod(m) == sign);
 		}
 
 		/// <summary>
-		/// 对于无 out 参数的方法，可免去类型声明，如：T t; try { t = func(); } catch { t = default(T); }，现可使用：var obj = Him.TryGet(func)。
+		/// 在 <paramref name="type"/> 中找到和 <paramref name="method"/> 函数具有相同签名的函数。
+		/// </summary>
+		/// <param name="type">目标函数所在的类型。</param>
+		/// <param name="method">目标函数。</param>
+		/// <returns>和目标函数签名相同的函数。</returns>
+		public static MethodInfo GetMappedMethod(Type type, MethodInfo method) {
+			return GetSignedMethod(type, SignMethod(method));
+		}
+
+		/// <summary>
+		/// 在获取可能发生异常的函数的返回值时，免去类型声明。如：T t; try { t = func(); } catch { t = default(T); }，现可使用：var obj = Him.TryGet(func)。
 		/// </summary>
 		/// <typeparam name="T"><paramref name="func"/> 的返回值类型。</typeparam>
 		/// <param name="func">可能发生异常的函数。</param>
@@ -163,17 +167,30 @@ namespace Gods {
 			[Import]
 			public T Ti { get; set; }
 			public F(string path) {
-				var catalog = new DirectoryCatalog(path);
-				var container = new CompositionContainer(catalog);
-				container.ComposeParts(this);
+				try {
+					new CompositionContainer(new DirectoryCatalog(path)).ComposeParts(this);
+				} catch {
+				}
 			}
 		}
-		public static T Make<T>(string folder) {
-			return (T)Make(typeof(T), folder);
+		/// <summary>
+		/// 在 <paramref name="folder"/> 中找到一个接口（<typeparamref name="T"/>）的实现类，并返回它的实例。
+		/// </summary>
+		/// <typeparam name="T">一个接口类型。</typeparam>
+		/// <param name="folder">实现类的程序集所在的文件夹。</param>
+		/// <returns>一个实现了指定接口类型的实例。</returns>
+		public static T FindInstance<T>(string folder) {
+			return (T)FindInstance(typeof(T), folder);
 		}
-		public static object Make(Type type, string folder) {
-			var ft = typeof(F<>).MakeGenericType(type);
-			return ft.GetProperty(nameof(F<object>.Ti)).GetValue(Activator.CreateInstance(ft, folder));
+		/// <summary>
+		/// 在 <paramref name="folder"/> 中找到一个接口（<paramref name="type"/>）的实现类，并返回它的实例。
+		/// </summary>
+		/// <param name="type">一个接口类型。</param>
+		/// <param name="folder">实现类的程序集所在的文件夹。</param>
+		/// <returns>一个实现了指定接口类型的实例。</returns>
+		public static object FindInstance(Type type, string folder) {
+			var t = typeof(F<>).MakeGenericType(type);
+			return t.GetProperty(nameof(F<object>.Ti)).GetValue(Activator.CreateInstance(t, folder));
 		}
 	}
 }

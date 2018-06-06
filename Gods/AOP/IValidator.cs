@@ -17,11 +17,6 @@ namespace Gods.AOP {
 			var m = t.GetValidator(typeof(T), calling.MethodBase);
 			try {
 				var model = Activator.CreateInstance<T>();
-				if (model is Model) {
-					var mm = model as Model;
-					mm.Values = t.Values;
-					Mapper.Invoke(mm, m);
-				}
 			} catch (Exception e) {
 				throw e.InnerException;
 			}
