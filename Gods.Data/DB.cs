@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LivingDB {
+namespace Gods.Data {
 	class DB {
 		private ShardDb db;
 

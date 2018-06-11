@@ -5,59 +5,58 @@ using System.Linq;
 
 namespace Me.World {
 	[Export(typeof(Soul))]
-	public class I : DbContext, Soul, Me.I {
-		public DbSet<Effort> Efforts { get; set; }
-		public DbSet<Plan> Plans { get; set; }
-		public DbSet<Mine> Mines { get; set; }
-		public DbSet<Feeling> Feelings { get; set; }
-		public DbSet<DailyState> DailyStates { get; set; }
+	public class I : Soul, Me.I {
 		private static Random r = new Random();
 
 		private static int avgFeeling = -1;
 		public I() {
 			if (avgFeeling == -1) {
-				Database.SetInitializer(new DropCreateDatabaseIfModelChanges<I>());
 				ResetAvgFeeling();
+				avgFeeling = Math.Max(avgFeeling, 0);
 			}
 		}
 
 		private void ResetAvgFeeling() {
-			if (Mines.Any()) {
-				avgFeeling = (int)Mines.Average(e => e.Value);
+			if (Db.Instance.Mines.Any()) {
+				avgFeeling = (int)Db.Instance.Mines.Average(e => e.Value);
 			}
 		}
 
 		int Soul.Pay(int planId, int some) {
-			var plan = Plans.Find(planId);
+			var plan = Db.Instance.Plans.Find(planId);
 			if (plan.Done) {
 				return 0;
 			}
 			Effort e;
 			plan.Efforts.Add(e = new Effort { Payed = some });
-			SaveChanges();
+			Db.Instance.SaveChanges();
 			e.Real = r.Next(some);
 			for (int i = 0; i < avgFeeling; i++) {
-				e.Real = r.Next(some);
+				e.Real = r.Next(e.Real);
 			}
-			SaveChanges();
+			Db.Instance.SaveChanges();
 			return e.Real;
 		}
 
 		int Soul.Desire(string thing) {
 			var n = DateTime.Now;
-			var p = Plans.Add(new Plan {
+			var p = Db.Instance.Plans.Add(new Plan {
 				Content = thing,
 				AppearTime = n,
 				Required = r.Next(thing.GetHashCode() / 2 + n.GetHashCode() / 2, int.MaxValue),
 			});
-			SaveChanges();
+			Db.Instance.SaveChanges();
 			return p.Required;
 		}
 
-		int Soul.Feel(string t) {
-			if (t == null) {
-				return avgFeeling;
-			}
+		int Soul.Feel(string content, string tag, double value, long last, int? planId) {
+			Db.Instance.Mines.Add(new Mine {
+				Content = content,
+				Tag = tag,
+				Value = value,
+				Last = last,
+				PlanId = planId
+			});
 			return 1;
 		}
 
@@ -67,6 +66,10 @@ namespace Me.World {
 
 		Plan[] Soul.Arrange(DateTime? start, DateTime? end, int? min, int? max, int? pMin, int? pMax, bool done) {
 			return null;
+		}
+
+		int Soul.MyAverageFeeling() {
+			return avgFeeling;
 		}
 	}
 }

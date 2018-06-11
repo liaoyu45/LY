@@ -51,11 +51,11 @@ namespace Gods {
 			}
 		}
 
-		public static IEnumerable<T> GetAllAttributes<T>(MethodBase method) where T : Attribute {
-			return (method.GetCustomAttributes<T>(true) ?? Enumerable.Empty<T>()).Concat(
-								(from i in method.DeclaringType.GetInterfaces()
+		public static IEnumerable<T> GetAllAttributes<T>(MethodInfo method) where T : Attribute {
+			return (method?.GetCustomAttributes<T>(true) ?? Enumerable.Empty<T>()).Concat(
+								(from i in method?.DeclaringType.GetInterfaces() ?? Enumerable.Empty<Type>()
 								 from m in i.GetMethods()
-								 where m.Name == method.Name && false == m.GetParameters().Select(p => p.ParameterType).Except(method.GetParameters().Select(p => p.ParameterType)).Any()
+								 where SignMethod(m) == SignMethod(method)
 								 select m).FirstOrDefault()?.GetCustomAttributes<T>(true) ?? Enumerable.Empty<T>());
 		}
 		public static IEnumerable<T> GetAllAttributes<T>(Type type) where T : Attribute {

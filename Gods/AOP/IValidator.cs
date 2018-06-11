@@ -14,7 +14,7 @@ namespace Gods.AOP {
 
 		void IValidator.Validate(ModelBase target, IMethodCallMessage calling, MethodBase caller) {
 			var t = (Model)target;
-			var m = t.GetValidator(typeof(T), calling.MethodBase);
+			var m = t.GetValidator(typeof(T), calling.MethodBase as MethodInfo);
 			try {
 				var model = Activator.CreateInstance<T>();
 			} catch (Exception e) {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LivingDB {
+namespace Gods.Data {
 	class MainTableData {
 		public MainTableData(Type type, int max, string tableName, string sql, params DetailTable[] tables) {
 			TableName = tableName;

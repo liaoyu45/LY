@@ -1,15 +1,15 @@
-function Route(url, key, obj) {
+function Gods(url, key, obj) {
 	"user strict";
 	var baseURL = "";
-	function makeClass(obj, i) {
-		var oi = obj[i];
-		obj[i] = function (data) {
+	function makeClass(n, i) {
+		var oi = n[i];
+		n[i] = function (data) {
 			for (var i in data || {}) {
 				this[i] = data[i];
 			}
 		};
 		oi.Methods.forEach(m=> {
-			obj[i].prototype[m.Name] = function () {
+			n[i].prototype[m.Name] = function () {
 				var method = arguments[0] instanceof HTMLFormElement,
 					data = null,
 					u = url;
@@ -18,7 +18,7 @@ function Route(url, key, obj) {
 					data = new FormData(arguments[0]);
 					data.append(key, m.Key);
 					for (var i in this) {
-						if (typeof this[i] === "object" && !(i in arguments[0])) {
+						if (!(i in arguments[0])) {
 							data.append(i, this[i]);
 						}
 					}
@@ -68,6 +68,19 @@ function Route(url, key, obj) {
 }
 addEventListener("load", function () {
 	[...document.querySelectorAll("input[type=button]")].filter(e=>e.dataset.god).forEach(e=> {
+		var d = {},
+			lt = Symbol("use this to fill d's properties");
+		e.dataset.god.split(/:|,/).forEach(e=> {
+			if (d[lt]) {
+				d[d[lt]] = e.trim();
+				d[lt] = "";
+			} else {
+				d[lt] = e;
+			}
+		});
+		if (!d.form) {
+			return;
+		}
 		e.onclick = () => {
 			var form = e.parentElement;
 			while (!(form instanceof HTMLFormElement)) {
@@ -75,10 +88,16 @@ addEventListener("load", function () {
 			}
 			var t = window,
 				ev = false;
-			[...e.dataset.god.split('.')].forEach(e=> {
+			[...d.form.split('.')].forEach(e=> {
 				if (typeof t[e] === "function") {
 					if (ev) {
-						t[e](form);
+						var later = window;
+						(d.later || "").split('.').forEach(e=> {
+							if (later[e]) {
+								later = later[e];
+							}
+						});
+						t[e](form, later);
 					} else {
 						ev = t = new t[e]();
 					}

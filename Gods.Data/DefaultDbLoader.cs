@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace LivingDB {
+namespace Gods.Data {
 	/// <summary>
 	/// 多表存储的默认规则（sql server）。
 	/// </summary>

@@ -1,4 +1,4 @@
-﻿namespace LivingDB {
+﻿namespace Gods.Data {
 	/// <summary>
 	/// 要添加的数据的状态。
 	/// </summary>

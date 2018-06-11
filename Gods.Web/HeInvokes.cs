@@ -5,8 +5,14 @@ namespace Gods.Web {
 	public static partial class Him {
 		public static ICacheManager CacheManager = new CacheManager();
 		internal static object Invoke(int typeHash, int methodSign, Func<string, object> valueMap) {
-			var type = cache.First(e => e.d.GetHashCode() == typeHash).GetImplement();
-			var method = Gods.Him.GetSignedMethod(type, methodSign);
+			var type = cache.FirstOrDefault(e => e.Declare.GetHashCode() == typeHash).GetImplement();
+			if (type == null) {
+				throw new DllNotFoundException();
+			}
+			var method = Gods.Him.GetSignedMethod(type, methodSign) ?? Gods.Him.GetSignedMethod(type, -methodSign);
+			if (method == null) {
+				throw new MissingMethodException();
+			}
 			if (type.IsInterface) {
 				return Activator.CreateInstance(method.ReturnType);
 			}
@@ -28,7 +34,7 @@ namespace Gods.Web {
 			var ps = method.GetParameters().Select(p => MapObject(p.ParameterType, valueMap(p.Name))).ToArray(); ;
 			var newPs = Validate(ins, method, ps);
 			if (newPs != null && ps.Any()) {
-				var e = (newPs as object[] ?? new object[0]).Select(p => p.GetType());
+				var e = (newPs as object[] ?? new object[0]).Select(p => p?.GetType());
 				var ee = ps.Select(p => p.GetType());
 				if (e.Except(ee).Any() || ee.Except(e).Any()) {
 					(ins as IDisposable)?.Dispose();

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LivingDB {
+namespace Gods.Data {
 	/// <summary>
 	/// 使用默认多表存储时，定义建表语句和数据行上限。
 	/// </summary>

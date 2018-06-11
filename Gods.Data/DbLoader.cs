@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 
-namespace LivingDB {
+namespace Gods.Data {
 	public class DbLoader {
 		public static List<IDbLoader> Loaders = new List<IDbLoader> { new DefaultDbLoader() };
 

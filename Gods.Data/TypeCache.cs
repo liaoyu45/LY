@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
 
-namespace LivingDB {
+namespace Gods.Data {
 	class TypeCache {
 		internal TypeCache(Type dbType, IDbLoader loader, Func<MainTableData[]> getTables) {
 			BaseDbContextName = dbType.FullName;

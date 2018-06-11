@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Gods.Web {
 	public class CacheManager : ICacheManager {
-		class Cache {
+		private class Cache {
 			public long SetTime { get; set; }
 			public int Key { get; set; }
 			public object Value { get; set; }

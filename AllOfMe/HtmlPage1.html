@@ -15,10 +15,50 @@
 		</select>
 	</form>
 	<script type="text/javascript">
-		dd.ee.value = "12341";
-		alert(dd.ee.value);
-		[...dd.elements].map(e=>e.name);
-		document.title=	new Date().getTime();
+		var n = window["Me"] || {
+			a: {
+				ee: {
+					hah: function () { },
+					EE: function () { }
+				}
+			},
+			b: {
+				EE: function () { },
+				EEEE: function () { }
+			}
+		};
+		var a = {
+			ee: function () {
+				this.hah = function () { };
+				this.EE = function () { };
+			},
+		}
+		var b = function () {
+			this.EE = function () { };
+			this.EEEE = function () { };
+		}
+
+		function FillFunc(from, to) {
+			for (var i in from) {
+				var ti = to[i];
+				var fi = from[i];
+				if (typeof ti === "function") {
+					if (typeof fi !== "object") {
+						return;
+					}
+					if (i in ti.prototype) {
+						ti.prototype[i].Callback = fi;
+					}
+				} else if (typeof ti === "object") {
+					if (typeof fi !== "object") {
+						return;
+					}
+					FillFunc(fi, ti);
+				}
+			}
+		}
+		FillFunc(n, window);
+
 	</script>
 </body>
 </html>

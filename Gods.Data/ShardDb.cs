@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace LivingDB {
+namespace Gods.Data {
 	public abstract partial class ShardDb : DbContext {
 		private List<object> pending = new List<object>();
 		private TypeCache thisCache;

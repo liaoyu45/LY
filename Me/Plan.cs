@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace Me {
-	public class Plan : ID {
+	public class Plan : ContentBase {
 		public int Required { get; set; }
 		public bool Done { get; set; }
 		public string Tag { get; set; }

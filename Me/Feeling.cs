@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace Me {
-	public class Feeling : ID {
-		public string Name { get; set; }
-
-		public List<Mine> Mines { get; set; }
+	public class Feeling : NameBase {
+		public List<Mine> Mines { get; set; } = new List<Mine>();
 	}
 }

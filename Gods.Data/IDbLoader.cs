@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LivingDB {
+namespace Gods.Data {
 	/// <summary>
 	/// 定义了多表存储的规则。
 	/// </summary>

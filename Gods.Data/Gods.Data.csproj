@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DB.cs" />
+    <Compile Include="DbHelper.cs" />
     <Compile Include="DbLoader.cs" />
     <Compile Include="DefaultDbLoader.cs" />
     <Compile Include="DynamicModel.cs" />

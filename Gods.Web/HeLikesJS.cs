@@ -9,27 +9,46 @@ using System.Web.Routing;
 
 namespace Gods.Web {
 	public partial class Him {
-		private static readonly JObject CSharp = new JObject();
+		internal static readonly JObject CSharp = new JObject();
 		private static string webRoot;
-		internal static string AjaxKey = "Him1344150689";//nameof(Him) + nameof(Him).GetHashCode()
-		internal static string AjaxRoute = "him";
-		public static bool AllowCache = true;
+		public static string AjaxKey { get; private set; } = "Him1344150689";//nameof(Him) + nameof(Him).GetHashCode()
+		public static string AjaxRoute { get; private set; } = "Gods";
+		public static bool AllowCache { get; set; } = true;
 
 		public static string LoadJavascript(string name) {
-			var v = CSharp.GetValue(name)?.ToString();
-			return v == null ? null : Properties.Resources.Map
-					.Replace(nameof(Route), '"' + AjaxRoute + '"')
-					.Replace(nameof(AjaxKey), '"' + AjaxKey + '"')
-					.Replace(nameof(CSharp), v);
+			return Properties.Resources.Map1.Replace(nameof(AjaxRoute), AjaxRoute).Replace(nameof(AjaxKey), AjaxKey).Replace("Value", CSharp.GetValue(name)?.ToString())
+				.Replace(nameof(GetHashCode), CSharp.GetHashCode().ToString())
+				.Replace("Filename", name);
 		}
 
-		public static string Modules = "bin";
-		public static void Create<T>(string route) {
+		public static string Modules { get; set; } = "bin";
+		public static void Create<T>() {
+			Create<T>(AjaxRoute, AjaxKey);
+		}
+		public static void Create<T>(string route, string ajaxKey) {
+			var t = typeof(T);
+			if (!t.IsInterface) {
+				throw new ArgumentException("T should be an interface.");
+			}
+			const string pattern = "[a-zA-Z_][a-zA-Z_0-9]*";
+			if (!System.Text.RegularExpressions.Regex.IsMatch(route, pattern)) {
+				throw new ArgumentException(nameof(route) + " should match " + pattern);
+			}
+			AjaxKey = ajaxKey;
 			RouteTable.Routes.Add(new Route(AjaxRoute = route, new Me()));
-			TagInterface = typeof(T);
+			if (t.IsGenericType) {
+				if (t.GenericTypeArguments.Length > 1 || !t.GenericTypeArguments[0].IsInterface) {
+					throw new ArgumentException("If T is generic, T should have only one type argument 'X' and 'X' should be an interface too.");
+				}
+				validatorType = t.GetGenericTypeDefinition();
+				TagInterface = t.GenericTypeArguments[0];
+			} else {
+				TagInterface = t;
+				validatorType = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Assembly.DefinedTypes.FirstOrDefault(e => e.IsGenericType && e.IsInterface && e.GenericTypeArguments[0].IsInterface);
+			}
 			webRoot = HostingEnvironment.MapPath("/");
 			Directory.CreateDirectory(webRoot + "/Scripts/" + route);
-			SetValidator(new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Assembly);
+			File.WriteAllText($"{webRoot}/Scripts/{route}/{route}.js", Properties.Resources.Map.Replace(nameof(Route), route));
 			Directory.GetFiles(webRoot + Modules, "*.dll")
 				.Select(e => Gods.Him.TryGet(() => Assembly.LoadFrom(e))).ToList()
 				.ForEach(a => {
@@ -37,10 +56,10 @@ namespace Gods.Web {
 					if (c.Length == 0 || c.StartsWith(nameof(Microsoft)) || c.StartsWith(nameof(Gods)) || c.StartsWith(nameof(Newtonsoft))) {
 						return;
 					}
-					foreach (var t in a.ExportedTypes) {
-						if (t.IsInterface && t.GetInterfaces().Any(i => i == TagInterface)) {
-							Append(CSharp, t);
-							cache.Add(new TypeCache(t));
+					foreach (var e in a.ExportedTypes) {
+						if (e.IsInterface && e.GetInterfaces().Any(i => i == TagInterface)) {
+							Append(CSharp, e);
+							cache.Add(new TypeCache(e));
 						}
 					}
 				});
@@ -59,7 +78,7 @@ namespace Gods.Web {
 			item.GetMethods().Where(m => !m.IsSpecialName).ToList().ForEach(m => {
 				var t = new JObject {
 					[nameof(m.Name)] = m.Name,
-					["Key"] = item.GetHashCode() + "." + Gods.Him.SignMethod(m)
+					["Key"] = item.GetHashCode() + "." + Math.Abs(Gods.Him.SignMethod(m))
 				};
 				var Parameters = JArray.FromObject(m.GetParameters().Select(e => e.Name).ToList());
 				if (Parameters.Count > 0) {
@@ -76,10 +95,8 @@ namespace Gods.Web {
 				} else if (rt.GetInterfaces().Any(e => e.IsGenericType && e.GetGenericTypeDefinition() == typeof(IEnumerable<>))) {
 					rt = rt.IsArray ? rt.GetElementType() : rt.GenericTypeArguments[0];
 					v = JArray.FromObject(new[] { Activator.CreateInstance(rt) });
-				} else if (rt != typeof(void)) {
-					v = JToken.FromObject(Activator.CreateInstance(rt));
 				} else {
-					v = null;
+					v = JToken.FromObject(Activator.CreateInstance(rt));
 				}
 				t["Return"] = v;
 				Methods.Add(t);
@@ -93,14 +110,14 @@ namespace Gods.Web {
 
 		private static List<TypeCache> cache = new List<TypeCache>();
 		private class TypeCache {
-			public Type d;
-			public Type i;
+			public Type Declare { get; set; }
+			public Type Implement { get; set; }
 
 			public TypeCache(Type declaration) {
-				d = declaration;
+				Declare = declaration;
 			}
 			public Type GetImplement() {
-				return i ?? (i = Gods.Him.FindInstance(d, Implements)?.GetType()) ?? d;
+				return Implement ?? (Implement = Gods.Him.FindInstance(Declare, webRoot + Implements)?.GetType()) ?? Declare;
 			}
 		}
 	}

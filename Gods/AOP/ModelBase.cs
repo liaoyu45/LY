@@ -19,8 +19,8 @@ namespace Gods.AOP {
 				.MakeGenericMethod(GetType())
 				.Invoke(null, new[] { Activator.CreateInstance(typeof(GenericValidator<>).MakeGenericType(t)) });
 		}
-		protected internal virtual MethodInfo GetValidator(Type type, MethodBase name) {
-			return type.GetMethod(Him.GetAllAttributes<TargetMethodAttribute>(name).FirstOrDefault()?.Name ?? string.Empty);
+		protected internal virtual MethodInfo GetValidator(Type type, MethodInfo method) {
+			return type.GetMethod(Him.GetAllAttributes<TargetMethodAttribute>(method).FirstOrDefault()?.Name ?? string.Empty);
 		}
 
 		protected virtual Type ValidatorType {

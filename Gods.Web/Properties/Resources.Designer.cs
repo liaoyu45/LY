@@ -61,7 +61,7 @@ namespace Gods.Web.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (function (url, key, obj) {
+        ///   Looks up a localized string similar to function Route(url, key, obj) {
         ///	&quot;user strict&quot;;
         ///	var baseURL = &quot;&quot;;
         ///	function makeClass(n, i) {
@@ -72,51 +72,50 @@ namespace Gods.Web.Properties {
         ///			}
         ///		};
         ///		oi.Methods.forEach(m=&gt; {
-        ///			var r;
-        ///			function then(m, u, a, t) {//method,url,data,onload
-        ///				r = r || new XMLHttpRequest();
-        ///				r.open(m, url + u);
-        ///				r.onload = t;
-        ///				r.send(a);
-        ///				return r;
-        ///			}
-        ///			if (typeof m[&quot;Return&quot;] === &quot;object&quot;) {
-        ///				/// &lt;summary&gt;get&lt;/summary&gt;
-        ///				n[i].prototy [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string CSharp {
-            get {
-                return ResourceManager.GetString("CSharp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (function (url, key, obj) {
-        ///	&quot;user strict&quot;;
-        ///	var baseURL = &quot;&quot;;
-        ///	function makeClass(n, i) {
-        ///		var oi = n[i];
-        ///		n[i] = function (data) {
-        ///			for (var i in data || {}) {
-        ///				this[i] = data[i];
-        ///			}
-        ///		};
-        ///		oi.Methods.forEach(m=&gt; {
-        ///			var r;
-        ///			function then(m, u, a, t) {//method,url,data,onload
-        ///				r = r || new XMLHttpRequest();
-        ///				r.open(m, url + u);
-        ///				r.onload = t;
-        ///				r.send(a);
-        ///				return r;
-        ///			}
-        ///			if (typeof m[&quot;Return&quot;] === &quot;object&quot;) {
-        ///				/// &lt;summary&gt;get&lt;/summary&gt;
-        ///				n[i].prototy [rest of string was truncated]&quot;;.
+        ///			n[i].prototype[m.Name] = function () {
+        ///				var method = arguments[0] instanceof HTMLFormElement,
+        ///					data = null,
+        ///					u = url;
+        ///				if (method) {
+        ///					method = &quot;post&quot;;
+        ///					data = new FormData(arguments[0]);
+        ///					data.append(key, m.Key);
+        ///					for (var i in th [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Map {
             get {
                 return ResourceManager.GetString("Map", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to if (typeof AjaxRoute === &quot;function&quot;) {//HashCode//GetHashCode
+        ///	AjaxRoute(&quot;/AjaxRoute&quot;, &quot;AjaxKey&quot;, Value);
+        ///}
+        ///function FillFunc(from, to) {
+        ///	for (var i in from) {
+        ///		var ti = to[i];
+        ///		var fi = from[i];
+        ///		if (typeof ti === &quot;function&quot;) {
+        ///			if (typeof fi !== &quot;object&quot;) {
+        ///				return;
+        ///			}
+        ///			if (i in ti.prototype) {
+        ///				ti.prototype[i].Callback = fi;
+        ///			}
+        ///		} else if (typeof ti === &quot;object&quot;) {
+        ///			if (typeof fi !== &quot;object&quot;) {
+        ///				return;
+        ///			}
+        ///			FillFunc(fi, ti);
+        ///		}
+        ///	}
+        ///}
+        ///FillFunc(Namespace,  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Map1 {
+            get {
+                return ResourceManager.GetString("Map1", resourceCulture);
             }
         }
     }

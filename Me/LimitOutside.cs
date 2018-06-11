@@ -1,7 +1,10 @@
-﻿namespace Me {
+﻿using System.ComponentModel.Composition;
+
+namespace Me {
+	[Export(typeof(Limit<Soul>))]
 	public class SoulLimit : Limit<Soul> {
-		public int Desire(string t) {
-			return 1;
+		public object Desire(string t) {
+			return new[] { "oweruwoipruqoieu" };
 		}
 	}
 }

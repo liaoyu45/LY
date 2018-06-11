@@ -31,7 +31,7 @@ namespace Gods.Web {
 			}
 			var path = Context.Request.MapPath($"/Scripts/{Him.AjaxRoute}/{n}.js");
 			if (System.IO.File.Exists(path)) {
-				if (Context.Request[n] != "recreate") {
+				if (System.IO.File.ReadLines(path).FirstOrDefault().Split('/').LastOrDefault() == Him.CSharp.GetHashCode().ToString()) {
 					return;
 				}
 			}
@@ -39,7 +39,7 @@ namespace Gods.Web {
 			if (v != null) {
 				Context.Response.Write(v);
 				if (Him.AllowCache) {
-					System.IO.File.WriteAllText(path, v); 
+					System.IO.File.WriteAllText(path, v);
 				}
 			}
 		}
