@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.Data.Entity;
 using System.Linq;
 
 namespace Me.World {
