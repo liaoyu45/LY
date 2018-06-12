@@ -70,5 +70,10 @@ namespace Me.World {
 		int Soul.MyAverageFeeling() {
 			return avgFeeling;
 		}
+
+		void Soul.Suicide() {
+			Db.Instance.Database.Delete();
+			Db.Instance.Database.Create();
+		}
 	}
 }

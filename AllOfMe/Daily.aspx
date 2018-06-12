@@ -14,6 +14,19 @@
 
 					step1.need.max = e;
 				},
+				Arrange: function (ee) {
+					ee[0].Content
+				},
+				Suicide: function () {
+					location.reload();
+				}
+			},
+			TestNamespace: {
+				TestI: {
+					GGGGG: function (i) {
+						console.log(i + "wlkerjwlekjrwklrjrjr");
+					}
+				}
 			}
 		};
 	</script>
@@ -67,9 +80,14 @@
 		<!--/ko-->
 	</dl>
 	<dl>
-		<dt>I have payed:</dt>
+		<dt onclick="myfunction();">I have payed:</dt>
 		<dd></dd>
 	</dl>
+	<script type="text/javascript">
+		function myfunction() {
+			new TestNamespace.TestI().GGGGG(1);
+		}
+	</script>
 </body>
 </html>
 i

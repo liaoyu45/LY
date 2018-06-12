@@ -3,9 +3,10 @@ using System.Linq;
 
 namespace Gods.Web {
 	public static partial class Him {
-		public static ICacheManager CacheManager = new CacheManager();
+		public static ICacheManager CacheManager { get; set; } = new CacheManager();
+		public static IMapper Mapper;
 		internal static object Invoke(int typeHash, int methodSign, Func<string, object> valueMap) {
-			var type = cache.FirstOrDefault(e => e.Declare.GetHashCode() == typeHash).GetImplement();
+			var type = cache.FirstOrDefault(e => e.Declare.GetHashCode() == typeHash)?.GetImplement();
 			if (type == null) {
 				throw new DllNotFoundException();
 			}
@@ -31,7 +32,7 @@ namespace Gods.Web {
 					p.SetValue(ins, v);
 				}
 			});
-			var ps = method.GetParameters().Select(p => MapObject(p.ParameterType, valueMap(p.Name))).ToArray(); ;
+			var ps = method.GetParameters().Select(p => MapObject(p.ParameterType, valueMap(p.Name))).ToArray();
 			var newPs = Validate(ins, method, ps);
 			if (newPs != null && ps.Any()) {
 				var e = (newPs as object[] ?? new object[0]).Select(p => p?.GetType());

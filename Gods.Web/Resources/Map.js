@@ -1,13 +1,26 @@
-function Route(url, key, obj) {
+function AjaxRoute(url, key, obj) {
 	"user strict";
 	var baseURL = "";
 	function makeClass(obj, i) {
 		var oi = obj[i];
+		var ps = (oi.Properties || []).map(e=> { return { Name: e.Name, Value: null }; });
 		obj[i] = function (data) {
+			for (var i of ps) {
+				i.Value = data[i.Name] || null;
+			}
 			for (var i in data || {}) {
-				this[i] = data[i];
+				if (!ps.some(e=>e.Name === i)) {
+					this[i] = data[i];
+				}
 			}
 		};
+		ps.forEach(p=>
+			Object.defineProperty(n[i].prototype, p.Name, {
+				get: () => p.Value,
+				set: v=>p.Value = v,
+				enumerable: true
+			}));
+		obj[i].prototype[key] = oi;
 		oi.Methods.forEach(m=> {
 			obj[i].prototype[m.Name] = function () {
 				var method = arguments[0] instanceof HTMLFormElement,
@@ -18,7 +31,7 @@ function Route(url, key, obj) {
 					data = new FormData(arguments[0]);
 					data.append(key, m.Key);
 					for (var i in this) {
-						if (typeof this[i] === "object" && !(i in arguments[0])) {
+						if (i !== key && typeof this[i] === "object" && !(i in arguments[0])) {
 							data.append(i, this[i]);
 						}
 					}
@@ -44,7 +57,9 @@ function Route(url, key, obj) {
 				var r = new XMLHttpRequest();
 				r.open(method, u);
 				r.onload = e=> {
-					cb(JSON.parse(e.currentTarget.responseText));
+					if (e.currentTarget.responseText) {
+						cb(JSON.parse(e.currentTarget.responseText));
+					}
 				};
 				r.send(data);
 				return r;

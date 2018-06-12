@@ -1,35 +1,16 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 
 namespace Gods.Web {
 	public partial class Him {
-		private static object[] MapParameters(MethodInfo method, Func<string, object> value) {
-			return method.GetParameters().Select(p => MapObject(p.ParameterType, value(p.Name))).ToArray();
-		}
-
-		private static object MapObject(Type type, Func<string, object> value) {
-			var ins = type.IsAbstract ? null : Activator.CreateInstance(type);
-			type.GetProperties().Where(p => p.CanWrite).ToList().ForEach(p => {
-				var v = MapObject(p.PropertyType, value(p.Name));
-				if (v != null) {
-					p.SetValue(ins, v);
-				}
-			});
-			return ins;
-		}
-
 		private static object MapObject(Type type, object value) {
-			if (value == null) {
-				return null;
-			}
 			if (type == typeof(string)) {
-				return value + string.Empty;
+				return value?.ToString().Trim();
 			}
 			if (type.IsValueType) {
 				var pv = value?.ToString().Trim() ?? string.Empty;
 				if (pv.Length == 0) {
-					return null;
+					return Activator.CreateInstance(type);
 				}
 				if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)) {
 					type = type.GenericTypeArguments[0];
@@ -60,7 +41,7 @@ namespace Gods.Web {
 					}
 				}
 			}
-			return value;
+			return Mapper?.MapObject(type, value);
 		}
 	}
 }

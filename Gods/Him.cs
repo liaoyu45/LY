@@ -159,10 +159,6 @@ namespace Gods {
 				});
 			return r;
 		}
-		public static bool HasOwnProperty(this object self, string prop) {
-			var t = self?.GetType();
-			return t?.GetProperties().Any(p => p.DeclaringType == t && p.Name == prop) == true;
-		}
 		private class F<T> {
 			[Import]
 			public T Ti { get; set; }

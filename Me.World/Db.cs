@@ -3,7 +3,7 @@
 namespace Me.World {
 	public class Db : DbContext {
 		static Db() {
-			Database.SetInitializer(new DropCreateDatabaseIfModelChanges<Db>());
+			Database.SetInitializer(new DbSeed());
 		}
 
 		public static Db Instance { get; set; } = new Db();

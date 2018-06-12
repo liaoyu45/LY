@@ -1,15 +1,28 @@
 function Gods(url, key, obj) {
 	"user strict";
 	var baseURL = "";
-	function makeClass(n, i) {
-		var oi = n[i];
-		n[i] = function (data) {
+	function makeClass(obj, i) {
+		var oi = obj[i];
+		var ps = (oi.Properties || []).map(e=> { return { Name: e.Name, Value: null }; });
+		obj[i] = function (data) {
+			for (var i of ps) {
+				i.Value = data[i.Name] || null;
+			}
 			for (var i in data || {}) {
-				this[i] = data[i];
+				if (!ps.some(e=>e.Name === i)) {
+					this[i] = data[i];
+				}
 			}
 		};
+		ps.forEach(p=>
+			Object.defineProperty(n[i].prototype, p.Name, {
+				get: () => p.Value,
+				set: v=>p.Value = v,
+				enumerable: true
+			}));
+		obj[i].prototype[key] = oi;
 		oi.Methods.forEach(m=> {
-			n[i].prototype[m.Name] = function () {
+			obj[i].prototype[m.Name] = function () {
 				var method = arguments[0] instanceof HTMLFormElement,
 					data = null,
 					u = url;
@@ -18,7 +31,7 @@ function Gods(url, key, obj) {
 					data = new FormData(arguments[0]);
 					data.append(key, m.Key);
 					for (var i in this) {
-						if (!(i in arguments[0])) {
+						if (i !== key && typeof this[i] === "object" && !(i in arguments[0])) {
 							data.append(i, this[i]);
 						}
 					}
@@ -44,7 +57,9 @@ function Gods(url, key, obj) {
 				var r = new XMLHttpRequest();
 				r.open(method, u);
 				r.onload = e=> {
-					cb(JSON.parse(e.currentTarget.responseText));
+					if (e.currentTarget.responseText) {
+						cb(JSON.parse(e.currentTarget.responseText));
+					}
 				};
 				r.send(data);
 				return r;
@@ -68,19 +83,6 @@ function Gods(url, key, obj) {
 }
 addEventListener("load", function () {
 	[...document.querySelectorAll("input[type=button]")].filter(e=>e.dataset.god).forEach(e=> {
-		var d = {},
-			lt = Symbol("use this to fill d's properties");
-		e.dataset.god.split(/:|,/).forEach(e=> {
-			if (d[lt]) {
-				d[d[lt]] = e.trim();
-				d[lt] = "";
-			} else {
-				d[lt] = e;
-			}
-		});
-		if (!d.form) {
-			return;
-		}
 		e.onclick = () => {
 			var form = e.parentElement;
 			while (!(form instanceof HTMLFormElement)) {
@@ -88,16 +90,10 @@ addEventListener("load", function () {
 			}
 			var t = window,
 				ev = false;
-			[...d.form.split('.')].forEach(e=> {
+			[...e.dataset.god.split('.')].forEach(e=> {
 				if (typeof t[e] === "function") {
 					if (ev) {
-						var later = window;
-						(d.later || "").split('.').forEach(e=> {
-							if (later[e]) {
-								later = later[e];
-							}
-						});
-						t[e](form, later);
+						t[e](form);
 					} else {
 						ev = t = new t[e]();
 					}
