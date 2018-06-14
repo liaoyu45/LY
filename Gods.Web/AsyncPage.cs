@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -18,7 +17,6 @@ namespace Gods.Web {
 		public override void ProcessRequest(HttpContext context) {
 			var key = context.Request[Him.his.AjaxKey]?.Trim() ?? string.Empty;
 			var action =
-				GetType() == typeof(Me) && key.Length == 0 ? nameof(WriteJs) :
 				Regex.IsMatch(key, @"^-?\d+\.-?\d+$") ? nameof(MatchHashCode) :
 				Regex.IsMatch(key, "[a-zA-Z_][a-zA-Z_0-9]*") ? nameof(MatchThis) : nameof(ProcessRequest);
 			object result;
@@ -33,26 +31,6 @@ namespace Gods.Web {
 				result = Newtonsoft.Json.JsonConvert.SerializeObject(result);
 			}
 			context.Response.Write(result);
-		}
-
-		private void WriteJs(string key) {
-			var n = (Context.Request.Url.Query.Split('&', '?', '=').FirstOrDefault(e => e.Any()) ?? string.Empty).Trim();
-			if (n.Length == 0) {
-				return;
-			}
-			var path = Context.Request.MapPath($"/Scripts/{Him.his.AjaxRoute}/{n}.js");
-			if (System.IO.File.Exists(path)) {
-				if (System.IO.File.ReadLines(path).FirstOrDefault().Split('/').LastOrDefault() == Him.HashCode.ToString()) {
-					return;
-				}
-			}
-			var v = Him.LoadJavascript(n);
-			if (v != null) {
-				Context.Response.Write(v);
-				if (Him.his.AllowCache) {
-					System.IO.File.WriteAllText(path, v);
-				}
-			}
 		}
 
 		private void ProcessRequest(string key) {

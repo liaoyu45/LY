@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{99B2FC48-1F37-4A72-9EE4-884966B212B7}</ProjectGuid>
+    <ProjectGuid>{096010E6-CCB0-4474-B7AD-51E590413477}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Me.Basic.World</RootNamespace>
-    <AssemblyName>Me.Basic.World</AssemblyName>
+    <RootNamespace>Me.Limit</RootNamespace>
+    <AssemblyName>Me.Limit</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,16 +31,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="LimitOutside.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Me\Me.csproj">
-      <Project>{0814B016-8C60-453B-B68C-BFDDF892C1E4}</Project>
+      <Project>{0814b016-8c60-453b-b68c-bfddf892c1e4}</Project>
       <Name>Me</Name>
     </ProjectReference>
+    <ProjectReference Include="..\World\World.csproj">
+      <Project>{5cefe024-dfcf-4234-8a9e-415d0cda4429}</Project>
+      <Name>World</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

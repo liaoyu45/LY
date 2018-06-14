@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.Composition;
 
-namespace Me {
-	[Export(typeof(Limit<Soul>))]
-	public class SoulLimit : Limit<Soul> {
+namespace Me.World {
+	[Export(typeof(World.World<Soul>))]
+	public class SoulLimit : Who.World<Soul> {
 		Soul s;
 		public object Desire(string t) {
 			var v = (s?.GetHashCode() ?? 0);

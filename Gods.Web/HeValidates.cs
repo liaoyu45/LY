@@ -12,7 +12,7 @@ namespace Gods.Web {
 			if (validators.ContainsKey(c)) {
 				return validators[c](obj, ps);
 			}
-			var fi = obj.GetType().GetInterfaces().First(i => i.GetInterfaces().Any(ii => ii == tagInterface));
+			var fi = obj.GetType().GetInterfaces().FirstOrDefault(i => i.GetInterfaces().Any(ii => ii == tagInterface)) ?? obj.GetType();
 			var vt = Gods.Him.FindInstance(validatorType.MakeGenericType(fi), his.Validators)?.GetType();
 			var mapped = Gods.Him.GetMappedMethod(vt, m) ?? vt?.GetMethods().FirstOrDefault(mm => mm.Name == m.Name && mm.GetParameters().Length == 0);
 			if (mapped == null) {

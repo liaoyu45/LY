@@ -1,4 +1,4 @@
-function AjaxRoute(url, key, obj) {
+function CSharp(url, key, obj) {
 	"user strict";
 	var baseURL = "";
 	function makeClass(obj, i) {

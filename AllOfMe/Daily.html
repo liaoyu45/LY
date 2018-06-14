@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+	<title></title>
+
+	<link href="Content/metro-all.min.css" rel="stylesheet" />
+	<script src="Scripts/jquery-3.3.1.min.js"></script>
+	<script src="Scripts/metro.min.js"></script>
+
+	<script src="/Scripts/Gods/Him.js"></script>
+	<script src="/Scripts/Gods/CSharp/Me.js"></script>
+	<script src="/Scripts/Gods/Javascript/Me.js"></script>
+	<script type="text/javascript">
+		Him.Javascript.I.Arrange = e=> { e[0].AppearTime };
+	</script>
+	<script src="/Scripts/Gods/His.js"></script>
+	<style type="text/css">
+		form + form {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<form class="dialog" data-role="dialog">
+		<div class="dialog-title">Who are you?</div>
+		<div class="dialog-content">
+			<input type="text" name="name" required data-role="input" placeholder="Your name decides your luck here." />
+		</div>
+		<div class="dialog-actions text-right">
+			<input type="button" value="It's me!" class="button right" data-god="I.Awake" />
+			<script type="text/javascript">
+				addEventListener("load", () => {
+					Metro.dialog.open(document.forms[0]);
+				});
+			</script>
+		</div>
+	</form>
+	<form id="step0">
+		<label>
+			I want:
+			<input type="text" name="thing" value="12839" />
+		</label>
+		<input type="button" data-god="Soul.Desire" value="confirm" />
+	</form>
+	<form id="step1">
+		<fieldset id="eee">
+			<legend id="thing"></legend>
+			<label>
+				I need to pay at least:
+				<input type="range" name="need" value="0" max="" disabled />
+			</label>
+			<br />
+			<label>
+				This time I will pay:
+				<input type="range" min="1" max="111" name="effort" />
+			</label>
+			<input type="button" value="confirm" data-god="I.Pay" />
+			<input type="button" value="give up" data-god="I.GiveUp" />
+		</fieldset>
+	</form>
+	<form>
+		<label>
+			Then I got:<span></span>
+		</label>
+	</form>
+	<dl>
+		<dt>My plans:</dt>
+		<!--ko foreach:plans-->
+		<dd>
+			<dl>
+				<dt data-bind="text: Content"></dt>
+				<!--ko foreach:Efforts-->
+				<dd data-bind="text: Content"></dd>
+				<!--/ko-->
+			</dl>
+		</dd>
+		<!--/ko-->
+	</dl>
+	<dl>
+		<dt onclick="myfunction();">I have payed:</dt>
+		<dd></dd>
+	</dl>
+	<script type="text/javascript">
+		function myfunction() {
+			new TestNamespace.TestI().GGGGG(1);
+		}
+	</script>
+</body>
+</html>

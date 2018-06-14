@@ -10,6 +10,7 @@ using System.Web.Routing;
 namespace Gods.Web {
 	public partial class Him {
 		private static readonly JObject CSharp = new JObject();
+		private static readonly JObject Javascript = new JObject();
 		private static Type tagInterface;
 		private static Type validatorType;
 		private static Dictionary<int, Func<object, object[], object>> validators = new Dictionary<int, Func<object, object[], object>>();
@@ -18,23 +19,13 @@ namespace Gods.Web {
 
 		public static int HashCode => CSharp.GetHashCode();
 
-		public static string LoadJavascript(string name) {
-			return !CSharp.ContainsKey(name) ? null : Properties.Resources.Map1
-				.Replace(nameof(His.AjaxRoute), his.AjaxRoute)
-				.Replace(nameof(His.AjaxKey), his.AjaxKey)
-				.Replace("Value", CSharp.GetValue(name)?.ToString(Newtonsoft.Json.Formatting.Indented))
-				.Replace(nameof(GetHashCode), CSharp.GetHashCode().ToString())
-				.Replace("Filename", name);
-		}
-
 		public static void Create<T>(His his) {
+			if (!System.Text.RegularExpressions.Regex.IsMatch(his.AjaxRoute, "[a-zA-Z_][a-zA-Z_0-9]*")) {
+				throw new ArgumentException("invalid " + nameof(His.AjaxRoute), nameof(his));
+			}
 			var t = typeof(T);
 			if (!t.IsInterface) {
 				throw new ArgumentException("T should be an interface.");
-			}
-			const string pattern = "[a-zA-Z_][a-zA-Z_0-9]*";
-			if (!System.Text.RegularExpressions.Regex.IsMatch(his.AjaxRoute, pattern)) {
-				throw new ArgumentException(nameof(His.AjaxRoute) + " should match " + pattern);
 			}
 			if (t.IsGenericType) {
 				if (t.GenericTypeArguments.Length > 1 || !t.GenericTypeArguments[0].IsInterface) {
@@ -48,29 +39,35 @@ namespace Gods.Web {
 			}
 			Him.his = his;
 			RouteTable.Routes.Add(new Route(his.AjaxRoute, new Me()));
-			his.SetRoot(HostingEnvironment.MapPath("/"));
+			var webRoot = HostingEnvironment.MapPath("/");
+			var c = $"{webRoot}/Scripts/{nameof(Gods)}";
+			his.Implements = webRoot + his.Implements;
+			his.Validators = webRoot + his.Validators;
+			his.Modules = webRoot + his.Modules;
 			Directory.GetFiles(his.Modules, "*.dll").SelectMany(a => {
 				try {
-					return Assembly.LoadFrom(a)?.ExportedTypes.Where(e => e.IsInterface && !e.IsGenericType && e.GetInterfaces().Contains(tagInterface));
+					return Assembly.LoadFrom(a)?.ExportedTypes.Where(e => e.GetInterfaces().Contains(tagInterface) && !e.IsGenericType && (e.IsInterface || !e.IsAbstract && e.GetInterfaces().All(ee => !ee.GetInterfaces().Contains(tagInterface))));
 				} catch {
 					return Enumerable.Empty<Type>();
 				}
 			}).ToList().ForEach(Append);
+			Directory.CreateDirectory(c);
+			foreach (var item in CSharp) {
+				File.WriteAllText($"{c}/{nameof(CSharp)}/{item.Key}.js", $"Him.{nameof(CSharp)} = " + item.Value.ToString(Newtonsoft.Json.Formatting.Indented));
+			}
+			foreach (var item in Javascript) {
+				File.WriteAllText($"{c}/{nameof(Javascript)}/{item.Key}.js", $"Him.{nameof(Javascript)} = " + item.Value.ToString(Newtonsoft.Json.Formatting.Indented));
+			}
+			File.WriteAllText($"{c}/{nameof(His)}.js", $"Him('{his.AjaxRoute}', '{his.AjaxKey}');");
 		}
 
 		private static void Append(Type item) {
-			var j = CSharp;
-			var ns = item.FullName.Split('.');
-			foreach (var n in ns) {
-				if (j.Properties().Any(p => p.Name == n)) {
-					j = j[n] as JObject;
-				} else {
-					j = (j[n] = new JObject()) as JObject;
-				}
-			}
+			var javascript = MapNamespace(item, Javascript);
+			item.GetMethods().Where(m => !m.IsSpecialName).ToList().ForEach(m => javascript[m.Name] = null);
+			var csharp = MapNamespace(item, CSharp);
 			var ps = item.GetProperties().Where(e => e.CanWrite).ToList();
 			if (ps.Count > 0) {
-				j["Properties"] = JArray.FromObject(ps.Select(e => e.Name));
+				csharp["Properties"] = JArray.FromObject(ps.Select(e => e.Name));
 			}
 			var Methods = new JArray();
 			item.GetMethods().Where(m => !m.IsSpecialName).ToList().ForEach(m => {
@@ -100,9 +97,21 @@ namespace Gods.Web {
 				Methods.Add(t);
 			});
 			if (Methods.Count > 0) {
-				j[nameof(Methods)] = Methods;
+				csharp[nameof(Methods)] = Methods;
 			}
 			cache.Add(new TypeCache(item));
+		}
+
+		private static JObject MapNamespace(Type item, JObject j) {
+			var ns = item.FullName.Split('.');
+			foreach (var n in ns) {
+				if (j.Properties().Any(p => p.Name == n)) {
+					j = j[n] as JObject;
+				} else {
+					j = (j[n] = new JObject()) as JObject;
+				}
+			}
+			return j;
 		}
 
 		private class TypeCache {
@@ -111,6 +120,9 @@ namespace Gods.Web {
 
 			public TypeCache(Type declaration) {
 				Declare = declaration;
+				if (!declaration.IsAbstract) {
+					Implement = declaration;
+				}
 			}
 			public Type GetImplement() {
 				return Implement ?? (Implement = Gods.Him.FindInstance(Declare, his.Implements)?.GetType()) ?? Declare;
