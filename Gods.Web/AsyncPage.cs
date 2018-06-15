@@ -8,7 +8,7 @@ using System.Web.UI;
 
 namespace Gods.Web {
 	public class Me : You, IRequiresSessionState, IRouteHandler {
-		IHttpHandler IRouteHandler.GetHttpHandler(RequestContext requestContext) => this;
+		public IHttpHandler GetHttpHandler(RequestContext requestContext) => this;
 	}
 
 	public partial class You : Page, IHttpHandler {
@@ -44,7 +44,7 @@ namespace Gods.Web {
 
 		private object MatchHashCode(string key) {
 			var args = key.Split('.').Select(int.Parse).ToArray();
-			return Him.Invoke(args[0], args[1], s => Context.Request[s]);
+			return Him.Invoke(args[0], args[1]);
 		}
 	}
 }

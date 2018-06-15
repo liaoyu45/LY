@@ -65,10 +65,6 @@ namespace Gods.Web {
 			var javascript = MapNamespace(item, Javascript);
 			item.GetMethods().Where(m => !m.IsSpecialName).ToList().ForEach(m => javascript[m.Name] = null);
 			var csharp = MapNamespace(item, CSharp);
-			var ps = item.GetProperties().Where(e => e.CanWrite).ToList();
-			if (ps.Count > 0) {
-				csharp["Properties"] = JArray.FromObject(ps.Select(e => e.Name));
-			}
 			var Methods = new JArray();
 			item.GetMethods().Where(m => !m.IsSpecialName).ToList().ForEach(m => {
 				var t = new JObject {

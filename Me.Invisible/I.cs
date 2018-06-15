@@ -7,31 +7,44 @@ namespace Me.Invisible {
 	public class I : Me.I {
 		private static Random r = new Random();
 
-		private static int avgFeeling = -1;
+		private int avgFeeling = -1;
 		public I() {
 			if (avgFeeling == -1) {
 				avgFeeling = Db.Using(e => e.Mines.Any() ? (int)e.Mines.Average(ee => ee.Value) : 0);
 			}
 		}
 
+		public int Id { get; set; }
+
 		int Me.I.Pay(int planId, int some) {
-			var plan = Db.Instance.Plans.Find(planId);
-			if (plan.Done) {
+			if (some < 1) {
 				return 0;
 			}
-			Effort e;
-			plan.Efforts.Add(e = new Effort { Payed = some });
-			Db.Instance.SaveChanges();
-			e.Real = r.Next(some);
-			for (int i = 0; i < avgFeeling; i++) {
-				e.Real = r.Next(e.Real, some);
-			}
-			Db.Instance.SaveChanges();
-			return e.Real;
+			return Db.Using(d => {
+				var p = d.Plans.Find(planId);
+				if (p == null || p.GodId != Id) {
+					return -2;
+				}
+				if (p.Done) {
+					return -1;
+				}
+				Effort e;
+				p.Efforts.Add(e = new Effort { });
+				e.Real = r.Next(some);
+				for (int i = 0; i < avgFeeling; i++) {
+					e.Real = r.Next(e.Real, some);
+				}
+				if (p.Efforts.Sum(ee => ee.Real) >= p.Required) {
+					p.Done = true;
+					return -1;
+				}
+				return e.Real;
+			});
 		}
 
 		int Me.I.Desire(string thing) {
 			return Db.Using(d => d.Plans.Add(new Plan {
+				GodId = Id,
 				Content = thing,
 				Required = r.Next(thing.GetHashCode(), int.MaxValue),
 			})).Required;
@@ -57,12 +70,31 @@ namespace Me.Invisible {
 		}
 
 		int Me.I.MyAverageFeeling() {
-			return avgFeeling;
+			return Db.Using(e => e.Mines.Any() ? (int)e.Mines.Average(ee => ee.Value) : 0);
 		}
 
-		int Me.I.Awake(string name) {
-			Db.Using(d => d.Gods.Add(new God { Name = name, Luck = name.GetHashCode() }));
-			return name.GetHashCode();
+		int Me.I.FindMyself(string name) {
+			if (Id > 0) {
+				return 0;
+			}
+			return Db.Using(d => {
+				if (d.Gods.Any(e => e.Name == name)) {
+					return 0;
+				}
+				return d.Gods.Add(new God { Name = name, Luck = name.GetHashCode() }).Luck;
+			});
+		}
+
+		int Me.I.Awake(string name, int luck, string dailyContent) {
+			return Db.Using(d => {
+				var g = d.Gods.FirstOrDefault(e => e.Name == name && e.Luck == luck);
+				if (g == null) {
+					return 0;
+				}
+				DailyState s;
+				g.DailyStates.Add(s = new DailyState { Content = dailyContent, Energy = r.Next(dailyContent.GetHashCode()) });
+				return s.Energy;
+			});
 		}
 	}
 }

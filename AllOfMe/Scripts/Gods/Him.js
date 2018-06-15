@@ -2,23 +2,11 @@ function Him(url, key) {
 	"user strict";
 	function makeClass(obj, i, js) {
 		var oi = obj[i];
-		var ps = (oi.Properties || []).map(e=> { return { Name: e.Name, Value: null }; });
 		obj[i] = function (data) {
-			for (var i of ps) {
-				i.Value = data[i.Name] || null;
-			}
 			for (var i in data || {}) {
-				if (!ps.some(e=>e.Name === i)) {
-					this[i] = data[i];
-				}
+				this[i] = data[i];
 			}
 		};
-		ps.forEach(p=>
-			Object.defineProperty(n[i].prototype, p.Name, {
-				get: () => p.Value,
-				set: v=>p.Value = v,
-				enumerable: true
-			}));
 		oi.Methods.forEach(m=> {
 			if (location.href.length === 11) {
 				js[m.Name](m["Return"]);

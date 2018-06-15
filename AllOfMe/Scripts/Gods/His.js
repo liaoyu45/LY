@@ -1,6 +1,7 @@
-/// <reference path="Him.js" />
-/// <reference path="CSharp/Me.js" />
-/// <reference path="Javascript/Me.js" />
-addEventListener("load", () => {
-	Him('Gods', 'Him1344150689');
-});
+(function () {
+	function load() {
+		Him('Gods', 'Him1344150689');
+		removeEventListener("load", load);
+	}
+	addEventListener("load", load);
+})();

@@ -41,7 +41,7 @@ namespace Gods.Web {
 					}
 				}
 			}
-			return Mapper?.MapObject(type, value);
+			return Mapper?.MapObject(type, value) ?? Activator.CreateInstance(type);
 		}
 	}
 }
