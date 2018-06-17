@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -159,34 +159,46 @@ namespace Gods {
 				});
 			return r;
 		}
-		private class F<T> {
-			[Import]
-			public T Ti { get; set; }
-			public F(string path) {
-				try {
-					new CompositionContainer(new DirectoryCatalog(path)).ComposeParts(this);
-				} catch {
-				}
-			}
-		}
 		/// <summary>
-		/// 在 <paramref name="folder"/> 中找到一个接口（<typeparamref name="T"/>）的实现类，并返回它的实例。
+		/// 在 <paramref name="folder"/> 中找到一个接口（<typeparamref name="T"/>）的实现类。
 		/// </summary>
 		/// <typeparam name="T">一个接口类型。</typeparam>
 		/// <param name="folder">实现类的程序集所在的文件夹。</param>
 		/// <returns>一个实现了指定接口类型的实例。</returns>
-		public static T FindInstance<T>(string folder) {
-			return (T)FindInstance(typeof(T), folder);
+		public static IEnumerable<Type> FindImplements<T>(string folder) {
+			return FindImplements(typeof(T), folder);
 		}
+
 		/// <summary>
-		/// 在 <paramref name="folder"/> 中找到一个接口（<paramref name="type"/>）的实现类，并返回它的实例。
+		/// 在 <paramref name="folder"/> 中找到一个接口（<paramref name="type"/>）的实现类。
 		/// </summary>
 		/// <param name="type">一个接口类型。</param>
 		/// <param name="folder">实现类的程序集所在的文件夹。</param>
 		/// <returns>一个实现了指定接口类型的实例。</returns>
-		public static object FindInstance(Type type, string folder) {
-			var t = typeof(F<>).MakeGenericType(type);
-			return t.GetProperty(nameof(F<object>.Ti)).GetValue(Activator.CreateInstance(t, folder));
+		public static IEnumerable<Type> FindImplements(Type tagInterface, string folder) {
+			return Directory.GetFiles(folder, "*.dll").SelectMany(a => {
+				try {
+					return Assembly.LoadFrom(a)?.ExportedTypes.Where(e => e.GetInterfaces().Contains(tagInterface) && !e.IsGenericType && (e.IsInterface || !e.IsAbstract && e.GetInterfaces().All(ee => !ee.GetInterfaces().Contains(tagInterface))));
+				} catch {
+					return Enumerable.Empty<Type>();
+				}
+			});
+		}
+
+		public static bool SameQueue(IEnumerable a, IEnumerable b) {
+			if (a == null) {
+				return b == null;
+			} else if (b == null) {
+				return false;
+			}
+			var aa = a.GetEnumerator();
+			var bb = b.GetEnumerator();
+			while (aa.MoveNext()) {
+				if (!bb.MoveNext() || aa.Current != bb.Current) {
+					return false;
+				}
+			}
+			return !bb.MoveNext();
 		}
 	}
 }

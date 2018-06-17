@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
+<head>
 	<title></title>
 
 	<link href="Content/metro-all.min.css" rel="stylesheet" />
@@ -13,11 +13,6 @@
 	<script src="/Scripts/Gods/Javascript/Me.js"></script>
 	<script src="/Scripts/Gods/His.js"></script>
 	<script src="/Scripts/AllOfMe/Daily.js"></script>
-	<style type="text/css">
-		form + form {
-			display: none;
-		}
-	</style>
 </head>
 <body>
 	<form class="dialog" data-role="dialog">
@@ -26,7 +21,7 @@
 			<input type="text" name="name" required data-role="input" placeholder="Your name decides your luck here." />
 		</div>
 		<div class="dialog-actions text-right">
-			<input type="button" value="It's me!" class="button right" data-god="I.Awake" />
+			<input type="button" value="It's me!" class="button right" data-god="I.FindMyself" />
 			<script type="text/javascript">
 				addEventListener("load", () => {
 					Metro.dialog.open(document.forms[0]);

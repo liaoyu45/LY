@@ -4,7 +4,7 @@ namespace Me {
 	public interface I : World.I {
 		int Id { get; set; }
 		int FindMyself(string name);
-		int Awake(string name, int luck, string dailyContent);
+		int Awake(string name, string dailyContent);
 		int MyAverageFeeling();
 		int Pay(int planId, int some);
 		int Desire(string thing);

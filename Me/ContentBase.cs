@@ -1,5 +1,5 @@
 ﻿namespace Me {
-	public abstract class ContentBase : ID {
+	public abstract class ContentBase : IdAndTime {
 		public string Content { get; set; }
 	}
 }

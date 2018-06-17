@@ -35,18 +35,14 @@ namespace Gods.Web {
 					if (v != null) {
 						item.SetValue(ins, v);
 					}
-				} 
+				}
 			}
 			var ps = method.GetParameters().Select(p => MapObject(p.ParameterType, HttpContext.Current.Request[p.Name])).ToArray();
 			var newPs = Validate(ins, method, ps);
-			if (newPs != null && ps.Any()) {
-				var e = (newPs as object[] ?? new object[0]).Select(p => p?.GetType());
-				var ee = ps.Select(p => p.GetType());
-				if (e.Except(ee).Any() || ee.Except(e).Any()) {
-					(ins as IDisposable)?.Dispose();
-					return newPs;
-				}
+			if (Gods.Him.SameQueue(newPs as object[], method.GetParameters().Select(e => e.ParameterType))) {
 				ps = newPs as object[];
+			} else if (newPs != ps) {
+				return newPs;
 			}
 			r = method.Invoke(ins, ps);
 			if (hasSession) {

@@ -1,7 +1,8 @@
+
 (function () {
 	function load() {
 		Him('Gods', 'Him1344150689');
-		removeEventListener("load", load);
+		removeEventListener('load', load);
 	}
-	addEventListener("load", load);
+	addEventListener('load', load);
 })();

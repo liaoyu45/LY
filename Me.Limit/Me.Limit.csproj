@@ -30,10 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="LimitOutside.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.ComponentModel.Composition" />
+    <Compile Include="LimitIDo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Me\Me.csproj">

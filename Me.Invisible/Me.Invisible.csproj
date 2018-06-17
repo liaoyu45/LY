@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Db.cs" />
+    <Compile Include="Universe.cs" />
     <Compile Include="DbSeed.cs" />
     <Compile Include="I.cs" />
   </ItemGroup>
@@ -44,7 +44,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Me\Me.csproj">

@@ -13,7 +13,7 @@ namespace Gods.Web {
 		private static readonly JObject Javascript = new JObject();
 		private static Type tagInterface;
 		private static Type validatorType;
-		private static Dictionary<int, Func<object, object[], object>> validators = new Dictionary<int, Func<object, object[], object>>();
+		private static Dictionary<int, Func<object, MethodInfo, object[], object>> validators = new Dictionary<int, Func<object, MethodInfo, object[], object>>();
 		private static List<TypeCache> cache = new List<TypeCache>();
 		internal static His his;
 
@@ -56,9 +56,16 @@ namespace Gods.Web {
 				File.WriteAllText($"{c}/{nameof(CSharp)}/{item.Key}.js", $"Him.{nameof(CSharp)} = " + item.Value.ToString(Newtonsoft.Json.Formatting.Indented));
 			}
 			foreach (var item in Javascript) {
-				File.WriteAllText($"{c}/{nameof(Javascript)}/{item.Key}.js", $"Him.{nameof(Javascript)} = " + item.Value.ToString(Newtonsoft.Json.Formatting.Indented));
+				File.WriteAllText($"{c}/{nameof(Javascript)}/{item.Key}.js", $"window.{item.Key} = Him.{nameof(Javascript)} = " + item.Value.ToString(Newtonsoft.Json.Formatting.Indented));
 			}
-			File.WriteAllText($"{c}/{nameof(His)}.js", $"Him('{his.AjaxRoute}', '{his.AjaxKey}');");
+			File.WriteAllText($"{c}/{nameof(His)}.js", $@"
+(function () {{
+	function load() {{
+		Him('{his.AjaxRoute}', '{his.AjaxKey}');
+		removeEventListener('load', load);
+	}}
+	addEventListener('load', load);
+}})();");
 		}
 
 		private static void Append(Type item) {
@@ -113,6 +120,7 @@ namespace Gods.Web {
 		private class TypeCache {
 			public Type Declare { get; set; }
 			public Type Implement { get; set; }
+			public bool Ever { get; set; }//TODO:reload maybe
 
 			public TypeCache(Type declaration) {
 				Declare = declaration;
@@ -121,7 +129,11 @@ namespace Gods.Web {
 				}
 			}
 			public Type GetImplement() {
-				return Implement ?? (Implement = Gods.Him.FindInstance(Declare, his.Implements)?.GetType()) ?? Declare;
+				if (Ever) {
+					return Implement;
+				}
+				Ever = true;
+				return Implement ?? (Implement = Gods.Him.FindImplements(Declare, his.Implements).FirstOrDefault(e => e.GetInterfaces().All(ee => !ee.IsGenericType || ee.GetGenericTypeDefinition() != validatorType))) ?? Declare;
 			}
 		}
 	}

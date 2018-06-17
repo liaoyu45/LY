@@ -2,13 +2,30 @@ Him.CSharp = {
   "I": {
     "Methods": [
       {
+        "Name": "FindMyself",
+        "Key": "20084682.1367500716",
+        "Parameters": [
+          "name"
+        ],
+        "Return": 0
+      },
+      {
+        "Name": "Awake",
+        "Key": "20084682.1080226591",
+        "Parameters": [
+          "name",
+          "dailyContent"
+        ],
+        "Return": 0
+      },
+      {
         "Name": "MyAverageFeeling",
-        "Key": "54848996.1703672582",
+        "Key": "20084682.1703672582",
         "Return": 0
       },
       {
         "Name": "Pay",
-        "Key": "54848996.1622356561",
+        "Key": "20084682.1622356561",
         "Parameters": [
           "planId",
           "some"
@@ -17,7 +34,7 @@ Him.CSharp = {
       },
       {
         "Name": "Desire",
-        "Key": "54848996.314836140",
+        "Key": "20084682.314836140",
         "Parameters": [
           "thing"
         ],
@@ -25,7 +42,7 @@ Him.CSharp = {
       },
       {
         "Name": "Feel",
-        "Key": "54848996.150982569",
+        "Key": "20084682.193956226",
         "Parameters": [
           "content",
           "tag",
@@ -37,23 +54,15 @@ Him.CSharp = {
       },
       {
         "Name": "GiveUp",
-        "Key": "54848996.1297976969",
+        "Key": "20084682.1297976969",
         "Parameters": [
           "planId"
         ],
         "Return": 0
       },
       {
-        "Name": "Awake",
-        "Key": "54848996.1123722116",
-        "Parameters": [
-          "name"
-        ],
-        "Return": 0
-      },
-      {
         "Name": "Arrange",
-        "Key": "54848996.807085193",
+        "Key": "20084682.987779331",
         "Parameters": [
           "start",
           "end",
@@ -68,10 +77,12 @@ Him.CSharp = {
             "Required": 0,
             "Done": false,
             "Tag": null,
+            "GodId": 0,
+            "God": null,
             "Efforts": [],
             "Content": null,
             "Id": 0,
-            "AppearTime": "0001-01-01T00:00:00"
+            "AppearTime": "2018-06-17T15:51:47.6288419+08:00"
           }
         ]
       }

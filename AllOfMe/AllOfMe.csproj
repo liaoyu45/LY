@@ -125,6 +125,10 @@
       <Project>{c59ed18d-c079-4b3e-9a6d-5ead962d07d5}</Project>
       <Name>Me.Invisible</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Me.Limit\Me.Limit.csproj">
+      <Project>{096010e6-ccb0-4474-b7ad-51e590413477}</Project>
+      <Name>Me.Limit</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Me\Me.csproj">
       <Project>{0814b016-8c60-453b-b68c-bfddf892c1e4}</Project>
       <Name>Me</Name>

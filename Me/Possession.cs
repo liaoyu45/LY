@@ -1,5 +1,5 @@
 ﻿namespace Me {
-	public class Mine : ContentBase {
+	public class Possession : ContentBase {
 		public double Value { get; set; }
 		public string Tag { get; set; }
 		public int? PlanId { get; set; }

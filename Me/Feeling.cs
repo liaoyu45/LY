@@ -2,6 +2,6 @@
 
 namespace Me {
 	public class Feeling : NameBase {
-		public List<Mine> Mines { get; set; } = new List<Mine>();
+		public List<Possession> Mines { get; set; } = new List<Possession>();
 	}
 }

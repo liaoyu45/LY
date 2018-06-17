@@ -2,48 +2,33 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 
 namespace Gods.Web {
 	public partial class Him {
-		public static object Validate(object obj, MethodInfo m, params object[] ps) {
+		public static object Validate(object obj, MethodInfo calling, params object[] parameters) {
 			if (validatorType == null) {
 				return null;
 			}
-			var s = Gods.Him.SignMethod(m);
+			var s = Gods.Him.SignMethod(calling);
 			if (validators.ContainsKey(s)) {
-				return validators[s](obj, ps);
+				return validators[s](obj, calling, parameters);
 			}
-			var fi = obj.GetType().GetInterfaces().FirstOrDefault(i => i.GetInterfaces().Any(ii => ii == tagInterface)) ?? obj.GetType();
-			var vt = Gods.Him.FindInstance(validatorType.MakeGenericType(fi), his.Validators)?.GetType();
-			if (vt == null) {
-				return null;
-			}
-			var mapped = Gods.Him.GetMappedMethod(vt, m) ?? vt.GetMethods().FirstOrDefault(mm => mm.Name == m.Name && mm.GetParameters().Length == 0);
-			if (mapped == null) {//TODO:continue here
-				var c = vt.GetConstructors().OrderByDescending(e => e.GetParameters().Length).FirstOrDefault();
-				var p = c?.GetParameters().Select(e => e.ParameterType);
-				if (c == null || p.Except(new[] { typeof(object[]), obj.GetType(), typeof(MethodInfo) }).Any()) {
-					throw new NotSupportedException("");
+			var ot = obj.GetType();
+			var vi = ot.GetInterfaces().FirstOrDefault(i => i.GetInterfaces().Contains(tagInterface)) ?? ot;
+			var vt = Gods.Him.FindImplements(validatorType.MakeGenericType(vi), his.Validators).FirstOrDefault();
+			var method = Gods.Him.GetMappedMethod(vt, calling) ?? vt.GetMethods().FirstOrDefault(e => e.Name == calling.Name);
+			return (validators[s] = (o, m, ps) => {
+				if (method == null) {
+					return ps;
 				}
-				var ars = new List<object>();
-				if (p.Contains(typeof(object[]))) {
-					ars.Add(ps);
+				var cps = vt.GetConstructors().OrderBy(e => e.GetParameters().Length).LastOrDefault().GetParameters().Select(e => e.ParameterType);
+				if (cps.Except(new[] { vi, typeof(MethodInfo), typeof(HttpContext) }).Any()) {
+					throw new NotSupportedException($"Only {ot} and {typeof(MethodInfo)} are supported in limiter's constructor. Invalid limiter' type: {vt}.");
 				}
-				if (p.Contains(typeof(MethodInfo))) {
-					ars.Add(m);
-				}
-				if (p.Contains(obj.GetType())) {
-					ars.Add(obj);
-				}
-				Activator.CreateInstance(vt, ars.ToArray());
-				return ps;
-			}
-			return (validators[s] = (objj, pss) => {
-				var ins = Activator.CreateInstance(vt);
-				vt.GetFields((BindingFlags)36).FirstOrDefault(f => f.DeclaringType == fi)?.SetValue(ins, objj);
-				vt.GetProperties((BindingFlags)36).FirstOrDefault(f => f.DeclaringType == fi && f.CanWrite)?.SetValue(ins, objj);
-				return mapped.Invoke(ins, mapped.GetParameters().Any() ? pss : null);
-			})(obj, ps);
+				var r = method.Invoke(Activator.CreateInstance(vt, cps.Select(e => e == vi ? o : e == typeof(MethodInfo) ? (object)m : HttpContext.Current).ToArray()), method.GetParameters().Length > 0 ? ps : null);
+				return method.ReturnType == typeof(void) ? ps : r;
+			})(obj, calling, parameters);
 		}
 	}
 }
