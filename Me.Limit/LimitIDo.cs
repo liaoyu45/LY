@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Me.Limit {
@@ -29,7 +30,12 @@ namespace Me.Limit {
 			return null;
 		}
 
-		public void Awake() {
+		public void Awake(string name, string password, int luck) {
+			DateTime p;
+			var isPassword = DateTime.TryParse(password.Insert(6, "-").Insert(4, "-"), out p);
+			if(!Universe.Using(d => d.Gods.Any(e => isPassword || e.Password == p || e.Luck == luck))) {
+				throw new System.Security.Authentication.InvalidCredentialException();
+			}
 		}
 
 		public int Desire(string t) {

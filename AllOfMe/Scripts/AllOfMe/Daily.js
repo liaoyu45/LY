@@ -3,10 +3,12 @@
 /// <reference path="../Gods/Javascript/Me.js" />
 /// <reference path="../Gods/His.js" />
 Me.I.Arrange = e=> {
-	alert(e[-0].AppearTime);
+	alert(e[0].AppearTime);
 };
 Me.I.FindMyself = e=> {
-alert(e)
+	if (!e) {
+		return alert("另有人使用了这个名字");
+	}
 };
 Him.Javascript.I.Awake = e=> {
 	alert(e);

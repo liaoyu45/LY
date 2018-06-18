@@ -13,7 +13,7 @@ namespace Gods.Web {
 		private static readonly JObject Javascript = new JObject();
 		private static Type tagInterface;
 		private static Type validatorType;
-		private static Dictionary<int, Func<object, MethodInfo, object[], object>> validators = new Dictionary<int, Func<object, MethodInfo, object[], object>>();
+		private static Dictionary<int, Func<object, object>> validators = new Dictionary<int, Func<object, object>>();
 		private static List<TypeCache> cache = new List<TypeCache>();
 		internal static His his;
 

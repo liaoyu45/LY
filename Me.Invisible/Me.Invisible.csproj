@@ -7,8 +7,8 @@
     <ProjectGuid>{C59ED18D-C079-4B3E-9A6D-5EAD962D07D5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Me.Basic.Invisible</RootNamespace>
-    <AssemblyName>Me.Basic.Invisible</AssemblyName>
+    <RootNamespace>Me.Invisible</RootNamespace>
+    <AssemblyName>Me.Invisible</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,8 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Universe.cs" />
-    <Compile Include="DbSeed.cs" />
     <Compile Include="I.cs" />
   </ItemGroup>
   <ItemGroup>

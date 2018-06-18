@@ -37,14 +37,11 @@ namespace Gods.Web {
 					}
 				}
 			}
-			var ps = method.GetParameters().Select(p => MapObject(p.ParameterType, HttpContext.Current.Request[p.Name])).ToArray();
-			var newPs = Validate(ins, method, ps);
-			if (Gods.Him.SameQueue(newPs as object[], method.GetParameters().Select(e => e.ParameterType))) {
-				ps = newPs as object[];
-			} else if (newPs != ps) {
+			var newPs = Validate(ins, method);
+			if (newPs != null) {
 				return newPs;
 			}
-			r = method.Invoke(ins, ps);
+			r = method.Invoke(ins, method.GetParameters().Select(p => MapObject(p.ParameterType, HttpContext.Current.Request[p.Name])).ToArray());
 			if (hasSession) {
 				foreach (var item in prs.Where(e => e.CanRead)) {
 					HttpContext.Current.Session[item.Name] = item.GetValue(ins);

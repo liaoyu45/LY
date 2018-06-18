@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 
 namespace Me.Invisible {
 	public class I : Me.I {
 		private static Random r = new Random();
-		private static int Random(int n) {
-			return r.Next(Math.Abs(n));
+		private static int Random(object n) {
+			return r.Next(Math.Abs(n.GetHashCode()));
 		}
 
 		public int Id { get; set; }
 
 		int Me.I.Pay(int planId, int some) {
-			if (some < 1) {
-				return 0;
-			}
 			return Universe.Using(d => {
 				var p = d.Plans.Find(planId);
 				if (p == null || p.GodId != Id) {
@@ -65,7 +63,7 @@ namespace Me.Invisible {
 		}
 
 		public int MyAverageFeeling() {
-			return Universe.Using(e => e.Possessions.Any() ? (int)e.Possessions.Average(ee => ee.Value) : 0);
+			return Universe.Using(d => d.Possessions.Any(e => e.GodId == Id) ? (int)d.Possessions.Where(e => e.GodId == Id).Average(ee => ee.Value) : 0);
 		}
 
 		int Me.I.FindMyself(string name) {
@@ -73,7 +71,13 @@ namespace Me.Invisible {
 				if (d.Gods.Any(e => e.Name == name)) {
 					return 0;
 				}
-				return d.Gods.Add(new God { Name = name, Luck = Random(Math.Abs(name.GetHashCode())) }).Luck;
+				var luck = Random(name);
+				d.Gods.Add(new God { Name = name, Luck = luck });
+				new Thread(() => {
+					Thread.Sleep(11111);
+					Universe.Using(dd => dd.Gods.Remove(dd.Gods.First(e => e.Luck == luck)));
+				}).Start();
+				return luck;
 			});
 		}
 
@@ -85,7 +89,10 @@ namespace Me.Invisible {
 				}
 				Id = g.Id;
 				DailyState s;
-				g.DailyStates.Add(s = new DailyState { Content = dailyContent, Energy = Random(dailyContent.GetHashCode()) });
+				g.DailyStates.Add(s = new DailyState {
+					Content = dailyContent,
+					Energy = Random(dailyContent)
+				});
 				return s.Energy;
 			});
 		}
