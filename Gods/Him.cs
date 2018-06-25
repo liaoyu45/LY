@@ -159,26 +159,17 @@ namespace Gods {
 				});
 			return r;
 		}
-		/// <summary>
-		/// 在 <paramref name="folder"/> 中找到一个接口（<typeparamref name="T"/>）的实现类。
-		/// </summary>
-		/// <typeparam name="T">一个接口类型。</typeparam>
-		/// <param name="folder">实现类的程序集所在的文件夹。</param>
-		/// <returns>一个实现了指定接口类型的实例。</returns>
-		public static IEnumerable<Type> FindImplements<T>(string folder) {
-			return FindImplements(typeof(T), folder);
-		}
 
 		/// <summary>
 		/// 在 <paramref name="folder"/> 中找到一个接口（<paramref name="type"/>）的实现类。
 		/// </summary>
 		/// <param name="type">一个接口类型。</param>
 		/// <param name="folder">实现类的程序集所在的文件夹。</param>
-		/// <returns>一个实现了指定接口类型的实例。</returns>
+		/// <returns>一个实现了指定接口类型的实例类型列表。</returns>
 		public static IEnumerable<Type> FindImplements(Type tagInterface, string folder) {
 			return Directory.GetFiles(folder, "*.dll").SelectMany(a => {
 				try {
-					return Assembly.LoadFrom(a)?.ExportedTypes.Where(e => e.GetInterfaces().Contains(tagInterface) && !e.IsGenericType && (e.IsInterface || !e.IsAbstract && e.GetInterfaces().All(ee => !ee.GetInterfaces().Contains(tagInterface))));
+					return Assembly.LoadFrom(a)?.ExportedTypes.Where(e => e.GetInterfaces().Contains(tagInterface));
 				} catch {
 					return Enumerable.Empty<Type>();
 				}

@@ -30,19 +30,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ContentBase.cs" />
+    <Compile Include="Base\ContentBase.cs" />
     <Compile Include="DailyState.cs" />
-    <Compile Include="TheBigBang.cs" />
     <Compile Include="Effort.cs" />
-    <Compile Include="Feeling.cs" />
     <Compile Include="God.cs" />
-    <Compile Include="IdAndTime.cs" />
-    <Compile Include="LoginAttribute.cs" />
+    <Compile Include="Base\IdAndTime.cs" />
     <Compile Include="Possession.cs" />
-    <Compile Include="NameBase.cs" />
+    <Compile Include="Base\NameBase.cs" />
     <Compile Include="Plan.cs" />
     <Compile Include="I.cs" />
-    <Compile Include="Universe.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\World\World.csproj">
@@ -54,20 +50,10 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

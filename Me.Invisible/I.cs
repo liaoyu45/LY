@@ -35,12 +35,25 @@ namespace Me.Invisible {
 			});
 		}
 
-		int Me.I.Desire(string thing) {
-			return Universe.Using(d => d.Plans.Add(new Plan {
+		int Me.I.Desire(string thing, bool test) {
+			var h = thing?.GetHashCode() ?? 0;
+			if (test) {
+				return h;
+			}
+			var a = Awake(null);
+			if (a == null) {
+				return 0;
+			}
+			h = (int)(h / (Math.Log(a.Content.Length) / Math.Log(2)));
+			for (var i = 0; i < a.Content.Length; i++) {
+				h = r.Next(h);
+			}
+			Universe.Using(d => d.Plans.Add(new Plan {
 				GodId = Id,
 				Content = thing,
-				Required = r.Next(thing.GetHashCode(), int.MaxValue),
-			})).Required;
+				Required = h,
+			}));
+			return h;
 		}
 
 		int Me.I.Feel(string content, string tag, double value, DateTime? appearTime, int? planId) {
@@ -66,34 +79,47 @@ namespace Me.Invisible {
 			return Universe.Using(d => d.Possessions.Any(e => e.GodId == Id) ? (int)d.Possessions.Where(e => e.GodId == Id).Average(ee => ee.Value) : 0);
 		}
 
-		int Me.I.FindMyself(string name) {
-			return Universe.Using(d => {
-				if (d.Gods.Any(e => e.Name == name)) {
-					return 0;
-				}
-				var luck = Random(name);
-				d.Gods.Add(new God { Name = name, Luck = luck });
-				new Thread(() => {
-					Thread.Sleep(11111);
-					Universe.Using(dd => dd.Gods.Remove(dd.Gods.First(e => e.Luck == luck)));
-				}).Start();
-				return luck;
-			});
-		}
-
-		int Me.I.Awake(string name, string dailyContent) {
+		string Me.I.FindMyself(string name, string password) {
+			if (Id > 0) {
+				return Universe.Using(d => d.Gods.Find(Id)?.Name);
+			} else if (name?.Trim().Any() != true || password?.Trim().Any() != true) {
+				return null;
+			}
 			return Universe.Using(d => {
 				var g = d.Gods.FirstOrDefault(e => e.Name == name);
 				if (g == null) {
-					return 0;
+					d.Gods.Add(g = new God { Name = name, Password = password });
+					d.SaveChanges();
+					return name;
+				}
+				if (g.Password != password) {
+					return null;
 				}
 				Id = g.Id;
-				DailyState s;
-				g.DailyStates.Add(s = new DailyState {
-					Content = dailyContent,
-					Energy = Random(dailyContent)
-				});
-				return s.Energy;
+				return name;
+			});
+		}
+
+		void Me.I.Leave() {
+			Id = 0;
+		}
+
+		public DailyState Awake(string dailyContent) {
+			return Universe.Using(d => {
+				var god = d.Gods.Find(Id);
+				var today = DateTime.Now.Date;
+				var tomorrow = DateTime.Now.AddDays(1).Date;
+				var s = d.DailyStates.FirstOrDefault(e => e.GodId == Id && e.AppearTime >= today && e.AppearTime < tomorrow);
+				if (dailyContent == null) {
+					return s;
+				}
+				if (s == null) {
+					god.DailyStates.Add(s = new DailyState {
+						Content = dailyContent,
+						Energy = Random(dailyContent)
+					});
+				}
+				return s;
 			});
 		}
 	}

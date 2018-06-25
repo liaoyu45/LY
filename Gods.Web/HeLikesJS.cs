@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Web.Hosting;
 using System.Web.Routing;
 
@@ -28,14 +27,13 @@ namespace Gods.Web {
 				throw new ArgumentException("T should be an interface.");
 			}
 			if (t.IsGenericType) {
-				if (t.GenericTypeArguments.Length > 1 || !t.GenericTypeArguments[0].IsInterface) {
-					throw new ArgumentException("If T is generic, T should have only one type argument 'X' and 'X' should be an interface too.");
+				if (t.GenericTypeArguments.Length > 1 || !t.GenericTypeArguments[0].IsInterface || t.GenericTypeArguments[0].IsGenericType) {
+					throw new ArgumentException("If T is generic, T should have only one type argument 'X', 'X' should be an interface, 'X' can't be generic.");
 				}
 				validatorType = t.GetGenericTypeDefinition();
 				tagInterface = t.GenericTypeArguments[0];
 			} else {
 				tagInterface = t;
-				validatorType = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType.Assembly.DefinedTypes.FirstOrDefault(e => e.IsGenericType && e.IsInterface && e.GenericTypeArguments[0].IsInterface);
 			}
 			Him.his = his;
 			RouteTable.Routes.Add(new Route(his.AjaxRoute, new Me()));
@@ -44,13 +42,7 @@ namespace Gods.Web {
 			his.Implements = webRoot + his.Implements;
 			his.Validators = webRoot + his.Validators;
 			his.Modules = webRoot + his.Modules;
-			Directory.GetFiles(his.Modules, "*.dll").SelectMany(a => {
-				try {
-					return Assembly.LoadFrom(a)?.ExportedTypes.Where(e => e.GetInterfaces().Contains(tagInterface) && !e.IsGenericType && (e.IsInterface || !e.IsAbstract && e.GetInterfaces().All(ee => !ee.GetInterfaces().Contains(tagInterface))));
-				} catch {
-					return Enumerable.Empty<Type>();
-				}
-			}).ToList().ForEach(Append);
+			Gods.Him.FindImplements(tagInterface, his.Modules).Where(e => e.IsInterface).ToList().ForEach(Append);
 			Directory.CreateDirectory(c);
 			foreach (var item in CSharp) {
 				File.WriteAllText($"{c}/{nameof(CSharp)}/{item.Key}.js", $"Him.{nameof(CSharp)} = " + item.Value.ToString(Newtonsoft.Json.Formatting.Indented));
@@ -65,11 +57,11 @@ namespace Gods.Web {
 		removeEventListener('load', load);
 	}}
 	addEventListener('load', load);
-}})();");
+}})();".Trim());
 		}
 
 		private static void Append(Type item) {
-			var javascript = MapNamespace(item, Javascript);
+			var javascript = MapNamespace(item, Javascript)[item.Name] = new JObject();
 			item.GetMethods().Where(m => !m.IsSpecialName).ToList().ForEach(m => javascript[m.Name] = null);
 			var csharp = MapNamespace(item, CSharp);
 			var Methods = new JArray();
@@ -100,13 +92,13 @@ namespace Gods.Web {
 				Methods.Add(t);
 			});
 			if (Methods.Count > 0) {
-				csharp[nameof(Methods)] = Methods;
+				csharp[item.Name] = Methods;
 			}
 			cache.Add(new TypeCache(item));
 		}
 
 		private static JObject MapNamespace(Type item, JObject j) {
-			var ns = item.FullName.Split('.');
+			var ns = item.FullName.Split('.').Reverse().Skip(1).Reverse();
 			foreach (var n in ns) {
 				if (j.Properties().Any(p => p.Name == n)) {
 					j = j[n] as JObject;
@@ -118,22 +110,26 @@ namespace Gods.Web {
 		}
 
 		private class TypeCache {
-			public Type Declare { get; set; }
-			public Type Implement { get; set; }
-			public bool Ever { get; set; }//TODO:reload maybe
+			private Type declare;
+			private Type implement;
+			private bool ever;//TODO:reload maybe
 
-			public TypeCache(Type declaration) {
-				Declare = declaration;
-				if (!declaration.IsAbstract) {
-					Implement = declaration;
+			public TypeCache(Type declare) {
+				this.declare = declare;
+				if (!declare.IsAbstract) {
+					implement = declare;
 				}
 			}
 			public Type GetImplement() {
-				if (Ever) {
-					return Implement;
+				if (ever) {
+					return implement;
 				}
-				Ever = true;
-				return Implement ?? (Implement = Gods.Him.FindImplements(Declare, his.Implements).FirstOrDefault(e => e.GetInterfaces().All(ee => !ee.IsGenericType || ee.GetGenericTypeDefinition() != validatorType))) ?? Declare;
+				ever = true;
+				return implement = Gods.Him.FindImplements(declare, his.Implements).FirstOrDefault(e => !e.IsAbstract && e.GetConstructors().Any(ee => ee.GetParameters().Length == 0)) ?? declare;
+			}
+
+			public override int GetHashCode() {
+				return declare.GetHashCode();
 			}
 		}
 	}

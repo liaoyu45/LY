@@ -19,19 +19,32 @@ namespace Gods.Web {
 			if (type == null) {
 				return validators[s] = null;
 			}
-			var method = type.GetMethods().FirstOrDefault(e => e.Name == calling.Name);
 			var types = new[] { validatingType, typeof(MethodInfo), typeof(HttpContext) };
-			var construcor = (from c in method.DeclaringType.GetConstructors()
-					   let ps = c.GetParameters().Select(ee => ee.ParameterType)
-					   where !ps.Except(types).Any()
-					   orderby ps.Count() descending
-					   select c).FirstOrDefault();
+			var construcor = (from c in type.GetConstructors()
+							  let ps = c.GetParameters().Select(ee => ee.ParameterType)
+							  where !ps.Except(types).Any()
+							  orderby ps.Count() descending
+							  select c).FirstOrDefault();
 			if (construcor == null) {
-				throw new NotSupportedException($"Only {types.Aggregate(string.Empty, (str, k) => str + k + ',')} are supported in limiter's constructor. Invalid limiter' type: {method.DeclaringType}.");
+				throw new NotSupportedException($"Only {types.Aggregate(string.Empty, (str, k) => str + k + ',')} are supported in limiter's constructor. Invalid limiter' type: {type}.");
 			}
+			var method = type.GetMethods().FirstOrDefault(e => e.Name == calling.Name);
+			var vps = type.GetProperties();
 			return (validators[s] = o => {
 				var ins = construcor.Invoke(construcor.GetParameters().Select(e => e.ParameterType == validatingType ? o : e.ParameterType == typeof(MethodInfo) ? (object)method : HttpContext.Current).ToArray());
-				return method?.Invoke(ins, method.GetParameters().Select(p => MapObject(p.ParameterType, HttpContext.Current.Request[p.Name])).ToArray());
+				var hasSession = method != null && HttpContext.Current.Session != null;
+				if (hasSession) {
+					foreach (var item in vps.Where(e => e.CanWrite)) {
+						item.SetValue(ins, HttpContext.Current.Session[item.Name]);
+					}
+				}
+				var r = method?.Invoke(ins, method.GetParameters().Select(p => MapObject(p.ParameterType, HttpContext.Current.Request[p.Name])).ToArray());
+				if (hasSession) {
+					foreach (var item in vps.Where(e => e.CanRead)) {
+						HttpContext.Current.Session[item.Name] = item.GetValue(ins);
+					}
+				}
+				return r;
 			})(obj);
 		}
 	}

@@ -59,6 +59,9 @@
     <Content Include="mif\metro.svg" />
     <Content Include="packages.config" />
     <Content Include="Scripts\AllOfMe\Daily.js" />
+    <Content Include="Scripts\AllOfMe\DailyViewModel.js" />
+    <Content Include="Scripts\knockout-3.4.2.debug.js" />
+    <Content Include="Scripts\knockout-3.4.2.js" />
     <Content Include="WebForm1.aspx" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />

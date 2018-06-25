@@ -2,51 +2,20 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>html5表单验证测试</title>
+
+	<link href="Content/metro-all.css" rel="stylesheet" />	<title>html5表单验证测试</title>
 </head>
 <body>
 	<div>
-		<form id="a">
-			<!-- 第一种方式 定义了一个validatelt函数-->
-			<!--<p>姓名：<label><input type="text" name="" required="required" pattern="[\u4e00-\u9fa5]{2,4}" placeholder="请输入姓名" oninvalid="validatelt(this,'真实姓名必须是中文，且长度不小于2，不大于4')"></label></p> <p>手机号码：<label><input type="tel" name="" required="required" maxlength="11" pattern="^(0|86|17951)?1[0-9]{10}" placeholder="请输入手机号" oninvalid="validatelt(this,'请输入11位手机号码')"></label></p>-->
-			<!-- 第二种调用html5自带的验证 -->
-			----------------
-			<p>
-				姓名：<label>
-					<input type="text" name="" required="required" pattern="[\u4e00-\u9fa5]{2,4}" placeholder="请输入姓名" oninvalid="setCustomValidity('真实姓名必须是中文，且长度不小于2，不大于4')" oninput="setCustomValidity('')">
-				</label>
-			</p>
- <input type="submit" name="提交">
-		</form>
+		<div><a id="d"></a></div>
 	</div>
-	<button onclick="sssssss();">12341243</button>
 	<script type="text/javascript">
-		var i = 0;
-		var sss = function (e) {
-			e.preventDefault();
-		};
-		function sssssss() {
-			a.addEventListener("submit", sss);
-			i = 1;
-			var s = document.createElement("input");
-			s.type = "submit";
-			s.style.display = "none";
-			a.appendChild(s);
-			s.click();
-			s.remove();
-			a.removeEventListener("submit", sss);
-		};
-		// 第一种方式 对悬浮窗的设置
-		function validatelt(inputelement, err) {
-			if (inputelement.validity.patternMismatch) {
-				inputelement.setCustomValidity(err);
-			} else {
-				inputelement.setCustomValidity("");
-				return true;
-			}
-		} </script>
+		alert(d.parentElement.parentElement.parentElement == document.body)
+		var a = d.parentElement;
+		while (a && !(a instanceof HTMLFormElement)) {
+			a = a.parentElement;
+		}
+		alert(a);
+	</script>
 </body>
 </html>
-作者：
-链接：https://www.imooc.com/article/17449
-来源：慕课网

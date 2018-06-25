@@ -1,4 +1,3 @@
-
 (function () {
 	function load() {
 		Him('Gods', 'Him1344150689');

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Me {
 	public class Plan : ContentBase {
@@ -9,5 +10,7 @@ namespace Me {
 
 		public God God { get; set; }
 		public List<Effort> Efforts { get; set; } = new List<Effort>();
+
+		public int Value => Efforts.Sum(e => e.Real);
 	}
 }

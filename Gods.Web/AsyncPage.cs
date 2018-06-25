@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -26,9 +27,15 @@ namespace Gods.Web {
 				result = typeof(You).GUID;
 				context.Response.StatusCode = 404;
 			}
-			if (result != null && result.GetType() != typeof(string) && result.GetType().IsClass) {
-				context.Response.ContentType = "application/json";
-				result = Newtonsoft.Json.JsonConvert.SerializeObject(result);
+			if (result != null) {
+				if (result is DateTime) {
+					result = ((DateTime)result).ToString("YYYY-MM-DD HH:ss:mm");
+				} else if (result.GetType() != typeof(string) && result.GetType().IsClass) {
+					context.Response.ContentType = "application/json";
+					result = Newtonsoft.Json.JsonConvert.SerializeObject(result, new Newtonsoft.Json.JsonSerializerSettings {
+						ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+					});
+				}
 			}
 			context.Response.Write(result);
 		}
