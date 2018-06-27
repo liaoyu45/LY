@@ -1,52 +1,40 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Linq.Expressions;
 
 namespace Me.Invisible {
 	public class I : Me.I {
-		private static Random r = new Random();
-		private static int Random(object n) {
-			return r.Next(Math.Abs(n.GetHashCode()));
-		}
-
 		public int Id { get; set; }
+		public Dictionary<int, Expression<Func<Plan, bool>>> Query { get; set; } = new Dictionary<int, Expression<Func<Plan, bool>>>();
 
-		int Me.I.Pay(int planId, int some) {
-			return Universe.Using(d => {
+		private DateTime today = DateTime.Now.Date;
+		private DateTime tomorrow = DateTime.Now.AddDays(1).Date;
+
+		void Me.I.Pay(int planId, string content) {
+			Universe.Using(d => {
 				var p = d.Plans.Find(planId);
 				if (p == null || p.GodId != Id) {
-					return -2;
+					return;
 				}
 				if (p.Done) {
-					return -1;
+					return;
 				}
-				Effort e;
-				p.Efforts.Add(e = new Effort { });
-				e.Real = Random(some);
-				var v = MyAverageFeeling();
-				for (int i = 0; i < v; i++) {
-					e.Real = r.Next(e.Real, some);
+				var payed = GetHashCode(content);
+				var s = TodayState(d);
+				if (s == null || s.Energy < payed) {
+					return;
 				}
-				if (p.Efforts.Sum(ee => ee.Real) >= p.Required) {
-					p.Done = true;
-					return -1;
-				}
-				return e.Real;
+				s.Energy -= payed;
+				p.Efforts.Add(new Effort { Content = content });
+				p.Value += payed;
 			});
 		}
 
 		int Me.I.Desire(string thing, bool test) {
-			var h = thing?.GetHashCode() ?? 0;
+			var h = GetHashCode(thing);
 			if (test) {
 				return h;
-			}
-			var a = Awake(null);
-			if (a == null) {
-				return 0;
-			}
-			h = (int)(h / (Math.Log(a.Content.Length) / Math.Log(2)));
-			for (var i = 0; i < a.Content.Length; i++) {
-				h = r.Next(h);
 			}
 			Universe.Using(d => d.Plans.Add(new Plan {
 				GodId = Id,
@@ -56,33 +44,68 @@ namespace Me.Invisible {
 			return h;
 		}
 
-		int Me.I.Feel(string content, string tag, double value, DateTime? appearTime, int? planId) {
-			Universe.Using(d => d.Possessions.Add(new Possession {
-				Content = content,
-				AppearTime = appearTime ?? DateTime.Now,
-				Tag = tag,
-				Value = value,
-				PlanId = planId
-			}));
-			return 1;
+		void Me.I.Feel(string content, string tag, int? planId, int value) {
+			Universe.Using(d => {
+				d.Possessions.Add(new Possession {
+					Content = content,
+					Tag = tag,
+					Value = value,
+					PlanId = planId,
+					GodId = Id
+				});
+			});
 		}
 
-		int Me.I.GiveUp(int planId) {
-			throw new NotImplementedException();
+		void Me.I.GiveUp(int planId, bool forever) {
+			Universe.Using(d => {
+				var p = d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId);
+				if (p == null) {
+					return;
+				}
+				if (forever) {
+					d.Plans.Remove(p);
+				} else {
+					p.Abandoned = true;
+				}
+			});
 		}
 
-		Plan[] Me.I.Arrange(DateTime? start, DateTime? end, int? min, int? max, int? pMin, int? pMax, bool done) {
-			return null;
+		QueryData Me.I.ArrangePrepare(DateTime? start, DateTime? end, int? minRequired, int? maxRequired, int? minValue, int? maxValue, bool? done, bool? abandoned) {
+			var id = nameof(Me.I.ArrangePrepare).GetHashCode();
+			Query[id] = e =>
+				e.GodId == Id
+				&& (e.AppearTime > (start ?? DateTime.MinValue))
+				&& (e.AppearTime < (end ?? DateTime.MaxValue))
+				&& e.Required > (minRequired ?? -1)
+				&& e.Required < (maxRequired ?? int.MaxValue)
+				&& e.Value > (minValue ?? -1)
+				&& e.Value < (maxValue ?? int.MaxValue)
+				&& (!done.HasValue || e.Finished.HasValue)
+				&& (!abandoned.HasValue || e.Abandoned == abandoned.Value);
+			return new QueryData {
+				Id = id, Total = Universe.Using(d => {
+					d.Database.Log = ee => Console.WriteLine(ee);
+					return d.Plans.Count(Query[id]);
+				})
+			};
 		}
 
-		public int MyAverageFeeling() {
-			return Universe.Using(d => d.Possessions.Any(e => e.GodId == Id) ? (int)d.Possessions.Where(e => e.GodId == Id).Average(ee => ee.Value) : 0);
+		Plan[] Me.I.ArrangeQuery(int query, int start, int end) {
+			Expression<Func<Plan, bool>> value;
+			if (Query.TryGetValue(query, out value)) {
+				return Universe.Using(d => d.Plans.Where(value).ToArray());
+			}
+			return Array.Empty<Plan>();
+		}
+
+		public int MyFeelingsCount() {
+			return Universe.Using(d => d.Possessions.Count(e => e.GodId == Id));
 		}
 
 		string Me.I.FindMyself(string name, string password) {
 			if (Id > 0) {
 				return Universe.Using(d => d.Gods.Find(Id)?.Name);
-			} else if (name?.Trim().Any() != true || password?.Trim().Any() != true) {
+			} else if (name?.Any() != true || password?.Any() != true) {
 				return null;
 			}
 			return Universe.Using(d => {
@@ -90,7 +113,6 @@ namespace Me.Invisible {
 				if (g == null) {
 					d.Gods.Add(g = new God { Name = name, Password = password });
 					d.SaveChanges();
-					return name;
 				}
 				if (g.Password != password) {
 					return null;
@@ -104,22 +126,46 @@ namespace Me.Invisible {
 			Id = 0;
 		}
 
-		public DailyState Awake(string dailyContent) {
+		public DailyState WakeUp(string dailyContent) {
 			return Universe.Using(d => {
-				var god = d.Gods.Find(Id);
-				var today = DateTime.Now.Date;
-				var tomorrow = DateTime.Now.AddDays(1).Date;
-				var s = d.DailyStates.FirstOrDefault(e => e.GodId == Id && e.AppearTime >= today && e.AppearTime < tomorrow);
+				var god = Id <= 0 ? null : d.Gods.Find(Id);
+				if (god == null) {
+					return null;
+				}
+				var s = TodayState(d);
 				if (dailyContent == null) {
 					return s;
 				}
 				if (s == null) {
+					var r = new Random();
+					var v = r.Next();
+					var fc = Math.Log(dailyContent.Length);
+					for (var i = 0; i < fc; i++) {
+						v = r.Next(v, int.MaxValue);
+					}
 					god.DailyStates.Add(s = new DailyState {
 						Content = dailyContent,
-						Energy = Random(dailyContent)
+						Energy = v
 					});
 				}
 				return s;
+			});
+		}
+
+		private DailyState TodayState(Universe d) {
+			return Id > 0 ? d.DailyStates.FirstOrDefault(e => e.GodId == Id && e.AppearTime >= today && e.AppearTime < tomorrow) : null;
+		}
+
+		private int GetHashCode(object o) {
+			return Math.Abs(o?.GetHashCode() ?? 0);
+		}
+
+		void Me.I.Resume(int planId) {
+			Universe.Using(d => {
+				var p = d.Plans.FirstOrDefault(e => e.Id == planId && e.GodId == Id && e.Abandoned);
+				if (p != null) {
+					p.Abandoned = false;
+				}
 			});
 		}
 	}

@@ -21,7 +21,7 @@
 	<!--ko if:!DailyState.Energy()-->
 	<form>
 		<label>今天：<input type="text" name="dailyContent" data-bind="value: DailyState.Content" placeholder="感觉如何？开心就多写点。" /></label>
-		<input type="button" value="确定" onclick="new I().Awake(this);" />
+		<input type="button" value="确定" onclick="new I().WakeUp(this);" />
 	</form>
 	<!--/ko-->
 	<!--ko if:DailyState.Energy-->
@@ -35,15 +35,32 @@
 		<input type="button" value="确定" onclick="new window.I().FindMyself(this);" />
 	</form>
 	<!--/ko-->
-	<!--ko if:I.FindMyself-->
-	<form>
-		<label>我想要：<input type="text" name="thing" data-bind="value: CurrentPlanContent" /></label>
+	<!--ko if:DailyState.Energy-->
+	<form data-bind="with: PendingPlan">
+		<label>我想要：<input type="text" name="thing" data-bind="value: Content" required /></label>
+		<label>试一试：<input type="checkbox" name="test" /></label>
 		<input type="button" onclick="new I().Desire(this)" value="确定" />
+		<span data-bind="if:Required">这需要 <span data-bind="text:Required"></span> 点能量值</span>
 	</form>
-	<!--/ko-->
-	<!--ko if:Plans().length-->
 	<fieldset>
-		<legend>我的全部计划：<a data-bind="click:function(){CurrentPlan(null);}">新的计划</a></legend>
+		<legend>我的全部计划</legend>
+		<form>
+			<label>开始最早：<input type="datetime" name="start" /></label><br />
+			<label>结束最晚：<input type="datetime" name="end" /></label><br />
+			<label>达成最早：<input type="datetime" name="start" /></label><br />
+			<label>达成最晚：<input type="datetime" name="end" /></label><br />
+			<label>最少需要：<input type="range" name="minRequired" /></label><br />
+			<label>最多需要：<input type="range" name="maxRequired" /></label><br />
+			<label>达成最少：<input type="range" name="minValue" /></label><br />
+			<label>达成最多：<input type="range" name="maxValue" /></label><br />
+			<label>已放弃：<input type="checkbox" value="abandoned" /></label><br />
+			<label>已完成：<input type="checkbox" value="done" /></label><br />
+			<input type="button" value="确定" onclick="new I().ArrangePrepare(this);" />
+		</form>
+		<!--ko if:!Plans().length-->
+		<span>无</span>
+		<!--/ko-->
+		<!--ko if:Plans().length-->
 		<!--ko foreach:Plans-->
 		<dl>
 			<dt><span data-bind="text: Content"></span><a data-bind="click: function(i){$root.CurrentPlan(i);}"></a></dt>
@@ -55,8 +72,8 @@
 			<!--/ko-->
 		</dl>
 		<!--/ko-->
+		<!--/ko-->
 	</fieldset>
-	<!--/ko-->
 	<!--ko if:CurrentPlan-->
 	<form data-bind="with: CurrentPlan">
 		<h2>目标：<span data-bind="text:CurrentPlan().Name"></span></h2>
@@ -68,6 +85,7 @@
 			Then I got:<span></span>
 		</label>
 	</form>
+	<!--/ko-->
 	<!--/ko-->
 </body>
 </html>

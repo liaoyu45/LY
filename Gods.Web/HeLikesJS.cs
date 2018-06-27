@@ -16,8 +16,6 @@ namespace Gods.Web {
 		private static List<TypeCache> cache = new List<TypeCache>();
 		internal static His his;
 
-		public static int HashCode => CSharp.GetHashCode();
-
 		public static void Create<T>(His his) {
 			if (!System.Text.RegularExpressions.Regex.IsMatch(his.AjaxRoute, "[a-zA-Z_][a-zA-Z_0-9]*")) {
 				throw new ArgumentException("invalid " + nameof(His.AjaxRoute), nameof(his));

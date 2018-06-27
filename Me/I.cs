@@ -4,13 +4,15 @@ namespace Me {
 	public interface I : World.I {
 		int Id { get; set; }
 		string FindMyself(string name, string password);
-		DailyState Awake(string dailyContent);
+		DailyState WakeUp(string dailyContent);
 		void Leave();
-		int MyAverageFeeling();
-		int Pay(int planId, int some);
+		int MyFeelingsCount();
+		void Pay(int planId, string content);
 		int Desire(string thing, bool test);
-		int Feel(string content, string tag, double value, DateTime? appearTime, int? planId);
-		int GiveUp(int planId);
-		Plan[] Arrange(DateTime? start, DateTime? end, int? min, int? max, int? pMin, int?pMax, bool done);
+		void Feel(string content, string tag, int? planId, int value);
+		void GiveUp(int planId, bool forever);
+		void Resume(int planId);
+		QueryData ArrangePrepare(DateTime? start, DateTime? end, int? minRequired, int? maxRequired, int? minValue, int?maxValue, bool? done, bool? abandoned);
+		Plan[] ArrangeQuery(int query, int start, int end);
 	}
 }

@@ -34,7 +34,9 @@ namespace Gods.Web {
 			if (hasSession) {
 				foreach (var item in prs.Where(e => e.CanWrite)) {
 					var v = HttpContext.Current.Session[item.Name];
-					item.SetValue(ins, v);
+					if (v != null) {
+						item.SetValue(ins, v); 
+					}
 				}
 			}
 			var newPs = Validate(ins, method);

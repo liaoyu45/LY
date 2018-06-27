@@ -1,5 +1,18 @@
 function Him(url, key) {
 	"user strict";
+	function findForm(a0) {
+		if (a0 instanceof HTMLElement) {
+			if (!(a0 instanceof HTMLFormElement)) {
+				while (!(a0 instanceof HTMLFormElement)) {
+					a0 = a0.parentElement;
+					if (a0 === document.body) {
+						throw "An HTMLFormElement is required outside.";
+					}
+				}
+			}
+		}
+		return a0;
+	}
 	function makeClass(obj, i, js) {
 		var oi = obj[i];
 		obj[i] = function (data) {
@@ -9,15 +22,7 @@ function Him(url, key) {
 		};
 		oi.forEach(m=> {
 			obj[i].prototype[m.Name] = function () {
-				var a0 = arguments[0];
-				if (a0 instanceof HTMLElement && !(a0 instanceof HTMLFormElement)) {
-					while (!(a0 instanceof HTMLFormElement)) {
-						a0 = a0.parentElement;
-						if (a0 === document.body) {
-							throw "An HTMLFormElement is required outside.";
-						}
-					}
-				}
+				var a0 = findForm(arguments[0]) || findForm(this[m.Name].RelatedForm);
 				var method = a0 instanceof HTMLFormElement,
 					data = null,
 					u = url;
@@ -48,7 +53,6 @@ function Him(url, key) {
 							if (m.Parameters.some(e=>e === i)) {
 								p[i] = this[i];
 							}
-
 						}
 					}
 					[...arguments].slice(0, arguments.length - 1).forEach((a, i) => p[m.Parameters[i]] = a);
@@ -58,7 +62,7 @@ function Him(url, key) {
 				}
 				var cb = [[...arguments].reverse()[0], js[m.Name], function () { }].filter(e=>typeof e === "function")[0];
 				if (location.href.length === 11) {
-					cb(m["Return"]);
+					cb.call(this, m["Return"]);
 				}
 				var r = new XMLHttpRequest();
 				r.open(method, u);
@@ -70,7 +74,7 @@ function Him(url, key) {
 						s = true;
 					} else if (s.length && !isNaN(s)) {
 						s = (s.indexOf('.') > -1 ? parseFloat : parseInt)(s);
-					} else if (new RegExp(/^[{\]].+[}\]]$/).test(s)) {
+					} else if (new RegExp(/^[{\[].+[}\]]$/).test(s)) {
 						try {
 							s = JSON.parse(s);
 						} catch (e) {
@@ -79,7 +83,7 @@ function Him(url, key) {
 					} else if (new RegExp(/^\d+-(1[012]|0?[1-9])-([12][0-9]|0?[1-9])$/).test(s)) {
 						s = new Date(Date.parse(s));
 					}
-					cb(s);
+					cb.call(this, s);
 				};
 				r.send(data);
 				return r;

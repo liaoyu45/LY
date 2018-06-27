@@ -10,8 +10,8 @@ Him.CSharp = {
       "Return": ""
     },
     {
-      "Name": "Awake",
-      "Key": "18475057.1123722116",
+      "Name": "WakeUp",
+      "Key": "18475057.2049745300",
       "Parameters": [
         "dailyContent"
       ],
@@ -21,7 +21,7 @@ Him.CSharp = {
         "God": null,
         "Content": null,
         "Id": 0,
-        "AppearTime": "2018-06-25T13:25:34.1425075+08:00"
+        "AppearTime": "2018-06-27T17:11:41.775363+08:00"
       }
     },
     {
@@ -30,71 +30,96 @@ Him.CSharp = {
       "Return": 0
     },
     {
-      "Name": "MyAverageFeeling",
-      "Key": "18475057.1703672582",
+      "Name": "MyFeelingsCount",
+      "Key": "18475057.1941835107",
       "Return": 0
     },
     {
       "Name": "Pay",
-      "Key": "18475057.1622356561",
+      "Key": "18475057.1614899325",
       "Parameters": [
         "planId",
-        "some"
+        "content"
       ],
       "Return": 0
     },
     {
       "Name": "Desire",
-      "Key": "18475057.314836140",
+      "Key": "18475057.295260549",
       "Parameters": [
-        "thing"
+        "thing",
+        "test"
       ],
       "Return": 0
     },
     {
       "Name": "Feel",
-      "Key": "18475057.228159243",
+      "Key": "18475057.147331922",
       "Parameters": [
         "content",
         "tag",
-        "value",
-        "appearTime",
-        "planId"
+        "planId",
+        "value"
       ],
       "Return": 0
     },
     {
       "Name": "GiveUp",
-      "Key": "18475057.1297976969",
+      "Key": "18475057.1317552560",
+      "Parameters": [
+        "planId",
+        "forever"
+      ],
+      "Return": 0
+    },
+    {
+      "Name": "Resume",
+      "Key": "18475057.442381339",
       "Parameters": [
         "planId"
       ],
       "Return": 0
     },
     {
-      "Name": "Arrange",
-      "Key": "18475057.1004182937",
+      "Name": "ArrangePrepare",
+      "Key": "18475057.1781447872",
       "Parameters": [
         "start",
         "end",
-        "min",
-        "max",
-        "pMin",
-        "pMax",
-        "done"
+        "minRequired",
+        "maxRequired",
+        "minValue",
+        "maxValue",
+        "done",
+        "abandoned"
+      ],
+      "Return": {
+        "Total": 0,
+        "Id": 0
+      }
+    },
+    {
+      "Name": "ArrangeQuery",
+      "Key": "18475057.1065803883",
+      "Parameters": [
+        "query",
+        "start",
+        "end"
       ],
       "Return": [
         {
           "Required": 0,
-          "Done": false,
           "Tag": null,
           "GodId": 0,
+          "Value": 0,
+          "Abandoned": false,
+          "Finished": null,
           "God": null,
           "Efforts": [],
-          "Value": 0,
+          "Done": false,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-06-25T13:25:34.1855476+08:00"
+          "AppearTime": "2018-06-27T17:11:41.8174226+08:00"
         }
       ]
     }

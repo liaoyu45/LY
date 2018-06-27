@@ -1,13 +1,15 @@
 window.Me = Him.Javascript = {
   "I": {
     "FindMyself": null,
-    "Awake": null,
+    "WakeUp": null,
     "Leave": null,
-    "MyAverageFeeling": null,
+    "MyFeelingsCount": null,
     "Pay": null,
     "Desire": null,
     "Feel": null,
     "GiveUp": null,
-    "Arrange": null
+    "Resume": null,
+    "ArrangePrepare": null,
+    "ArrangeQuery": null
   }
 }

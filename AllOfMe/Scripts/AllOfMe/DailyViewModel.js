@@ -9,8 +9,19 @@ var vm = {
 		Content: ko.observable()
 	},
 	Plans: ko.observableArray(),
+	PlansSetting: {
+		Start: ko.observable(0),
+		End: ko.observable(10),
+		Size: ko.computed(function () { return vm && vm.PlansSetting.End() - vm.PlansSetting.Start(); }),
+		Id: ko.observable(),
+		Total: ko.observable(0)
+	},
 	CurrentPlan: ko.observable(),
-	CurrentPlanContent: ko.observable()
+	PendingPlan: {
+		Content: ko.observable(),
+		Required: ko.observable(),
+		Testing: ko.observable()
+	}
 };
 addEventListener("load", function () {
 	ko.applyBindings(vm);
