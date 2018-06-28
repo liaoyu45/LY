@@ -7,7 +7,7 @@ namespace Me {
 		DailyState WakeUp(string dailyContent);
 		void Leave();
 		int MyFeelingsCount();
-		void Pay(int planId, string content);
+		int Pay(int planId, string content);
 		int Desire(string thing, bool test);
 		void Feel(string content, string tag, int? planId, int value);
 		void GiveUp(int planId, bool forever);

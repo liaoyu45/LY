@@ -2,20 +2,17 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-
-	<link href="Content/metro-all.css" rel="stylesheet" />	<title>html5表单验证测试</title>
+	<script src="JavaScript.js"></script>
 </head>
 <body>
 	<div>
 		<div><a id="d"></a></div>
 	</div>
 	<script type="text/javascript">
-		alert(d.parentElement.parentElement.parentElement == document.body)
-		var a = d.parentElement;
-		while (a && !(a instanceof HTMLFormElement)) {
-			a = a.parentElement;
-		}
-		alert(a);
+		o.awer = function () { alert(1); };
+		o.awer = function () { alert(2); this.awer.ol};
+		o.awer = function () { alert(3); };
+		o.awer
 	</script>
 </body>
 </html>

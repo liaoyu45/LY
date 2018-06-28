@@ -56,6 +56,7 @@
     <Content Include="HtmlPage1.html" />
     <Content Include="Global.asax" />
     <Content Include="god.js" />
+    <Content Include="JavaScript.js" />
     <Content Include="mif\metro.svg" />
     <Content Include="packages.config" />
     <Content Include="Scripts\AllOfMe\Daily.js" />

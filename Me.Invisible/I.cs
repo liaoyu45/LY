@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Data.Entity;
 
 namespace Me.Invisible {
 	public class I : Me.I {
@@ -11,23 +12,29 @@ namespace Me.Invisible {
 		private DateTime today = DateTime.Now.Date;
 		private DateTime tomorrow = DateTime.Now.AddDays(1).Date;
 
-		void Me.I.Pay(int planId, string content) {
-			Universe.Using(d => {
+		int Me.I.Pay(int planId, string content) {
+			return Universe.Using(d => {
 				var p = d.Plans.Find(planId);
 				if (p == null || p.GodId != Id) {
-					return;
+					return 0;
 				}
 				if (p.Done) {
-					return;
+					return 0;
 				}
 				var payed = GetHashCode(content);
+				var r = new Random();
+				for (var i = 0; i < p.Content.Length; i++) {
+					payed = r.Next(payed);
+				}
+				payed *= content.Length;
 				var s = TodayState(d);
 				if (s == null || s.Energy < payed) {
-					return;
+					return 0;
 				}
 				s.Energy -= payed;
-				p.Efforts.Add(new Effort { Content = content });
-				p.Value += payed;
+				p.Efforts.Add(new Effort { Content = content, Payed = payed });
+				p.Current += payed;
+				return payed;
 			});
 		}
 
@@ -78,8 +85,8 @@ namespace Me.Invisible {
 				&& (e.AppearTime < (end ?? DateTime.MaxValue))
 				&& e.Required > (minRequired ?? -1)
 				&& e.Required < (maxRequired ?? int.MaxValue)
-				&& e.Value > (minValue ?? -1)
-				&& e.Value < (maxValue ?? int.MaxValue)
+				&& e.Current > (minValue ?? -1)
+				&& e.Current < (maxValue ?? int.MaxValue)
 				&& (!done.HasValue || e.Finished.HasValue)
 				&& (!abandoned.HasValue || e.Abandoned == abandoned.Value);
 			return new QueryData {
@@ -93,7 +100,7 @@ namespace Me.Invisible {
 		Plan[] Me.I.ArrangeQuery(int query, int start, int end) {
 			Expression<Func<Plan, bool>> value;
 			if (Query.TryGetValue(query, out value)) {
-				return Universe.Using(d => d.Plans.Where(value).ToArray());
+				return Universe.Using(d => d.Plans.Include(e => e.Efforts).Where(value).ToArray());
 			}
 			return Array.Empty<Plan>();
 		}

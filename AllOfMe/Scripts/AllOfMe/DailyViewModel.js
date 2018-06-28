@@ -20,8 +20,13 @@ var vm = {
 	PendingPlan: {
 		Content: ko.observable(),
 		Required: ko.observable(),
-		Testing: ko.observable()
-	}
+		Testing: ko.observable(true)
+	},
+	PendingEffort: {
+		Content: ko.observable(),
+		Value: ko.observable()
+	},
+	QueryingPlans: ko.observable()
 };
 addEventListener("load", function () {
 	ko.applyBindings(vm);

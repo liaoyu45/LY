@@ -13,6 +13,7 @@ function Him(url, key) {
 		}
 		return a0;
 	}
+	var cls = [];
 	function makeClass(obj, i, js) {
 		var oi = obj[i];
 		obj[i] = function (data) {
@@ -20,8 +21,10 @@ function Him(url, key) {
 				this[i] = data[i];
 			}
 		};
+		cls.push(obj[i]);
 		oi.forEach(m=> {
 			obj[i].prototype[m.Name] = function () {
+				var ev = [...arguments].filter(e=>e instanceof Event)[0] || window.event;
 				var a0 = findForm(arguments[0]) || findForm(this[m.Name].RelatedForm);
 				var method = a0 instanceof HTMLFormElement,
 					data = null,
@@ -60,10 +63,7 @@ function Him(url, key) {
 						u += `&${i}=${p[i]}`;
 					}
 				}
-				var cb = [[...arguments].reverse()[0], js[m.Name], function () { }].filter(e=>typeof e === "function")[0];
-				if (location.href.length === 11) {
-					cb.call(this, m["Return"]);
-				}
+				var cb = [...arguments, js[m.Name], function () { }].filter(e=>typeof e === "function")[0];
 				var r = new XMLHttpRequest();
 				r.open(method, u);
 				r.onload = e=> {
@@ -83,15 +83,12 @@ function Him(url, key) {
 					} else if (new RegExp(/^\d+-(1[012]|0?[1-9])-([12][0-9]|0?[1-9])$/).test(s)) {
 						s = new Date(Date.parse(s));
 					}
-					cb.call(this, s);
+					cb.call(this, location.href.length === 11 ? m["Return"] : s);
 				};
 				r.send(data);
 				return r;
 			};
 		});
-		if (location.href.length === 11) {
-			oi.forEach(m=> js[m.Name](m["Return"]));
-		}
 	}
 	function findClass(obj, js) {
 		for (var i in obj) {
@@ -105,6 +102,16 @@ function Him(url, key) {
 		}
 	}
 	findClass(Him.CSharp, Him.Javascript || {});
+	Him.Ready = function () {
+		if (location.href.length === 11) {
+			cls.forEach(e=> {
+				var a = new e();
+				for (var i in a) {
+					a[i]();
+				}
+			});
+		}
+	};
 	for (var i in Him.CSharp) {
 		window[i] = Him.CSharp[i];
 	}

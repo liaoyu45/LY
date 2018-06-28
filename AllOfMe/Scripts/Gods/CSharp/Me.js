@@ -21,7 +21,7 @@ Him.CSharp = {
         "God": null,
         "Content": null,
         "Id": 0,
-        "AppearTime": "2018-06-27T17:11:41.775363+08:00"
+        "AppearTime": "2018-06-28T17:25:40.0861756+08:00"
       }
     },
     {
@@ -111,15 +111,18 @@ Him.CSharp = {
           "Required": 0,
           "Tag": null,
           "GodId": 0,
-          "Value": 0,
+          "Current": 0,
           "Abandoned": false,
           "Finished": null,
           "God": null,
           "Efforts": [],
           "Done": false,
+          "Difficulty": 0.0,
+          "Percent": "NaN",
+          "Left": 0,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-06-27T17:11:41.8174226+08:00"
+          "AppearTime": "2018-06-28T17:25:40.1287149+08:00"
         }
       ]
     }

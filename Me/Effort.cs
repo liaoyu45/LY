@@ -3,5 +3,6 @@
 		public int PlanId { get; set; }
 
 		public Plan Plan { get; set; }
+		public int Payed { get; set; }
 	}
 }
