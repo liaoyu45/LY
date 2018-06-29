@@ -21,12 +21,8 @@ namespace Me.Invisible {
 				if (p.Done) {
 					return 0;
 				}
-				var payed = GetHashCode(content);
-				var r = new Random();
-				for (var i = 0; i < p.Content.Length; i++) {
-					payed = r.Next(payed);
-				}
-				payed *= content.Length;
+				var g = d.Gods.Find(Id);
+				var payed = (int)((GetHashCode(content) / (double)int.MaxValue * p.Required * g.Luck) / p.MinEffortsCount);
 				var s = TodayState(d);
 				if (s == null || s.Energy < payed) {
 					return 0;
@@ -34,6 +30,9 @@ namespace Me.Invisible {
 				s.Energy -= payed;
 				p.Efforts.Add(new Effort { Content = content, Payed = payed });
 				p.Current += payed;
+				if (p.Done) {
+					g.Luck += new Random().NextDouble() * (1 - g.Luck);
+				}
 				return payed;
 			});
 		}
@@ -46,14 +45,14 @@ namespace Me.Invisible {
 			Universe.Using(d => d.Plans.Add(new Plan {
 				GodId = Id,
 				Content = thing,
-				Required = h,
+				Required = (int)(h / d.Gods.Find(Id).Luck),
 			}));
 			return h;
 		}
 
 		void Me.I.Feel(string content, string tag, int? planId, int value) {
 			Universe.Using(d => {
-				d.Possessions.Add(new Possession {
+				d.Feelings.Add(new Feeling {
 					Content = content,
 					Tag = tag,
 					Value = value,
@@ -106,7 +105,7 @@ namespace Me.Invisible {
 		}
 
 		public int MyFeelingsCount() {
-			return Universe.Using(d => d.Possessions.Count(e => e.GodId == Id));
+			return Universe.Using(d => d.Feelings.Count(e => e.GodId == Id));
 		}
 
 		string Me.I.FindMyself(string name, string password) {
@@ -119,6 +118,7 @@ namespace Me.Invisible {
 				var g = d.Gods.FirstOrDefault(e => e.Name == name);
 				if (g == null) {
 					d.Gods.Add(g = new God { Name = name, Password = password });
+					g.Luck = (double)GetHashCode(name) / int.MaxValue;
 					d.SaveChanges();
 				}
 				if (g.Password != password) {

@@ -36,7 +36,7 @@
     <Compile Include="God.cs" />
     <Compile Include="Base\IdAndTime.cs" />
     <Compile Include="PageData.cs" />
-    <Compile Include="Possession.cs" />
+    <Compile Include="Feeling.cs" />
     <Compile Include="Base\NameBase.cs" />
     <Compile Include="Plan.cs" />
     <Compile Include="I.cs" />

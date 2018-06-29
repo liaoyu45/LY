@@ -17,5 +17,6 @@ namespace Me {
 		public double Difficulty => Math.Round(Required / (double)int.MaxValue, 2);
 		public double Percent => Math.Min(1, Math.Round(Current / (double)Required, 2));
 		public int Left => Required - Current;
+		public double MinEffortsCount => Math.Round(Math.Log(Content?.Length ?? 1), 2);
 	}
 }

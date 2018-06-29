@@ -43,10 +43,10 @@ namespace Gods.Web {
 			Gods.Him.FindImplements(tagInterface, his.Modules).Where(e => e.IsInterface).ToList().ForEach(Append);
 			Directory.CreateDirectory(c);
 			foreach (var item in CSharp) {
-				File.WriteAllText($"{c}/{nameof(CSharp)}/{item.Key}.js", $"Him.{nameof(CSharp)} = " + item.Value.ToString(Newtonsoft.Json.Formatting.Indented));
+				File.WriteAllText($"{c}/{nameof(CSharp)}/{item.Key}.js", $"Him.{nameof(CSharp)}.{item.Key} = " + item.Value.ToString(Newtonsoft.Json.Formatting.Indented));
 			}
 			foreach (var item in Javascript) {
-				File.WriteAllText($"{c}/{nameof(Javascript)}/{item.Key}.js", $"window.{item.Key} = Him.{nameof(Javascript)} = " + item.Value.ToString(Newtonsoft.Json.Formatting.Indented));
+				File.WriteAllText($"{c}/{nameof(Javascript)}/{item.Key}.js", $"Him.{nameof(Javascript)}.{item.Key} = " + item.Value.ToString(Newtonsoft.Json.Formatting.Indented));
 			}
 			File.WriteAllText($"{c}/{nameof(His)}.js", $@"
 (function () {{

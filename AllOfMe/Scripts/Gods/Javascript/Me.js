@@ -1,4 +1,4 @@
-window.Me = Him.Javascript = {
+Him.Javascript.Me = {
   "I": {
     "FindMyself": null,
     "WakeUp": null,

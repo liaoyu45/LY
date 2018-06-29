@@ -1,22 +1,21 @@
 function Him(url, key) {
 	"user strict";
-	function findForm(a0) {
-		if (a0 instanceof HTMLElement) {
-			if (!(a0 instanceof HTMLFormElement)) {
-				while (!(a0 instanceof HTMLFormElement)) {
-					a0 = a0.parentElement;
-					if (a0 === document.body) {
-						throw "An HTMLFormElement is required outside.";
-					}
-				}
-			}
-		}
-		return a0;
+	var coding = location.href.length === 11;
+	function isValid(e) {
+		return e instanceof String || !isNaN(e)|| e instanceof Date || e instanceof Boolean;
 	}
 	var cls = [];
-	function makeClass(obj, i, js) {
+	function makeClass(obj, i, jsi) {
 		var oi = obj[i];
+		var obo = Symbol();//one by one
+		var ing = Symbol();
 		obj[i] = function (data) {
+			if (data instanceof Boolean) {
+				this[obo] = data;
+				data = arguments[1];
+			} else {
+				this[obo] = true;
+			}
 			for (var i in data || {}) {
 				this[i] = data[i];
 			}
@@ -24,12 +23,26 @@ function Him(url, key) {
 		cls.push(obj[i]);
 		oi.forEach(m=> {
 			obj[i].prototype[m.Name] = function () {
+				if (this[obo]) {
+					if (this[ing]) {
+						return;
+					}
+					this[ing] = true;
+				}
 				var ev = [...arguments].filter(e=>e instanceof Event)[0] || window.event;
-				var a0 = findForm(arguments[0]) || findForm(this[m.Name].RelatedForm);
+				var a0 = arguments[0];
+				if (a0 instanceof HTMLElement) {//while coding, it is true, why?
+					while (!(a0 instanceof HTMLFormElement)) {
+						a0 = a0.parentElement;
+						if (a0 === document.body) {
+							throw "";
+						}
+					}
+				}
 				var method = a0 instanceof HTMLFormElement,
 					data = null,
 					u = url;
-				if (method) {
+				if (method && !coding) {
 					if (!a0.checkValidity()) {
 						var s = document.createElement("input");
 						s.type = "submit";
@@ -43,30 +56,39 @@ function Him(url, key) {
 					data = new FormData(a0);
 					data.append(key, m.Key);
 					for (var i in this) {
-						if (i !== key && typeof this[i] === "object" && !(i in a0)) {
+						if (i.constructor !== Symbol && isValid(this[i]) && !(i in a0)) {
 							data.append(i, this[i]);
 						}
 					}
 				} else {
 					method = "get";
 					u += `?${key}=${m.Key}`;
-					var p = {};
 					if (m.Parameters) {
+						var p = {};
 						for (var i in this) {
 							if (m.Parameters.some(e=>e === i)) {
 								p[i] = this[i];
 							}
 						}
-					}
-					[...arguments].slice(0, arguments.length - 1).forEach((a, i) => p[m.Parameters[i]] = a);
-					for (var i in p) {
-						u += `&${i}=${p[i]}`;
+						if (a0 instanceof Object) {
+							for (var i of m.Parameters) {
+								if (i in a0 || coding) {
+									p[i] = a0[i];
+								}
+							}
+						} else {
+							[...arguments].filter(isValid).slice(0, m.Parameters.length).forEach((a, i) => p[m.Parameters[i]] = a);
+						}
+						for (var i in p) {
+							u += `&${i}=${p[i]}`;
+						}
 					}
 				}
-				var cb = [...arguments, js[m.Name], function () { }].filter(e=>typeof e === "function")[0];
+				var cb = [...arguments, jsi[m.Name], function () { }].filter(e=>typeof e === "function")[0];
 				var r = new XMLHttpRequest();
 				r.open(method, u);
 				r.onload = e=> {
+					this[ing] = false;
 					var s = r.responseText;
 					if (s.toLowerCase() === "false") {
 						s = false;
@@ -83,7 +105,7 @@ function Him(url, key) {
 					} else if (new RegExp(/^\d+-(1[012]|0?[1-9])-([12][0-9]|0?[1-9])$/).test(s)) {
 						s = new Date(Date.parse(s));
 					}
-					cb.call(this, location.href.length === 11 ? m["Return"] : s);
+					cb.call(this, coding ? m["Return"] : s);
 				};
 				r.send(data);
 				return r;
@@ -101,9 +123,13 @@ function Him(url, key) {
 			}
 		}
 	}
-	findClass(Him.CSharp, Him.Javascript || {});
+	for (var i in Him.CSharp) {
+		if (i in Him.Javascript) {
+			findClass(Him.CSharp[i], Him.Javascript[i]);
+		}
+	}
 	Him.Ready = function () {
-		if (location.href.length === 11) {
+		if (coding) {
 			cls.forEach(e=> {
 				var a = new e();
 				for (var i in a) {
@@ -112,10 +138,9 @@ function Him(url, key) {
 			});
 		}
 	};
-	for (var i in Him.CSharp) {
-		window[i] = Him.CSharp[i];
-	}
 }
+Him.CSharp = {};
+Him.Javascript = {};
 addEventListener("load", function () {
 	[...document.querySelectorAll("input[type=button]")].filter(e=>e.dataset.god).forEach(e=> {
 		e.onclick = () => {

@@ -14,11 +14,11 @@
 </head>
 <body>
 	<!--ko if:I.FindMyself()-->
-	<h1><a data-bind="text: I.Name" href="javascript:new I().Leave();"></a>⚡<i data-bind="text: DailyState.Energy"></i></h1>
+	<h1><a data-bind="text: I.Name" href="javascript:me.Leave();"></a>⚡<i data-bind="text: DailyState.Energy"></i></h1>
 	<!--ko if:!DailyState.Energy()-->
 	<form>
 		<label>今天：<input type="text" name="dailyContent" data-bind="value: DailyState.Content" placeholder="感觉如何？开心就多写点。" /></label>
-		<input type="button" value="确定" onclick="new I().WakeUp(this);" />
+		<input type="button" value="确定" onclick="me.WakeUp(this);" />
 	</form>
 	<!--/ko-->
 	<!--ko if:DailyState.Energy-->
@@ -29,14 +29,14 @@
 	<form>
 		<label>用户名：<input type="text" required name="name" data-bind="value: I.Name" /></label>
 		<label>密码：<input type="password" required name="password" /></label>
-		<input type="button" value="确定" onclick="new window.I().FindMyself(this);" />
+		<input type="button" value="确定" onclick="me.FindMyself(this);" />
 	</form>
 	<!--/ko-->
 	<!--ko if:DailyState.Energy-->
 	<form data-bind="with: PendingPlan">
 		<label>我想要：<input type="text" name="thing" data-bind="value: Content" required /></label>
 		<label>试一试：<input type="checkbox" name="test" data-bind="checked: Testing" /></label>
-		<input type="button" onclick="new I().Desire(this)" value="确定" />
+		<input type="button" onclick="me.Desire(this)" value="确定" />
 		<!--ko if:Required--><span>这需要 <span data-bind="text:Required"></span> 点能量值</span><!--/ko-->
 	</form>
 	<!--/ko-->
@@ -52,7 +52,7 @@
 		<label>达成最多：<input type="range" name="maxValue" /></label>
 		<label>已放弃：<input type="checkbox" value="abandoned" /></label>
 		<label>已完成：<input type="checkbox" value="done" /></label>
-		<input type="button" value="确定" onclick="new I().ArrangePrepare(this);" />
+		<input type="button" value="确定" onclick="me.ArrangePrepare(this);" />
 	</form>
 	<fieldset>
 		<legend>我的全部计划</legend>
@@ -75,11 +75,11 @@
 			<tbody data-bind="foreach: Plans">
 				<tr>
 					<td data-bind="text: Content, click: function(i) { $root.CurrentPlan($root.CurrentPlan() === i ? null : i); }"></td>
-					<td data-bind="text: Difficulty + ' * ' + Content.length"></td>
+					<td data-bind="text: Difficulty + ' * ' + MinEffortsCount"></td>
 					<td data-bind="text: Required"></td>
 					<td data-bind="text: Current"></td>
 					<td data-bind="text: Left"></td>
-					<td data-bind="text: Percent"></td>
+					<td data-bind="text: (Current / Required).toFixed(2)"></td>
 					<td data-bind="text: Efforts.length"></td>
 				</tr>
 				<!--ko if:$root.CurrentPlan()===$data-->
@@ -88,9 +88,9 @@
 					<td data-bind="text: Content"></td>
 					<td></td>
 					<td></td>
-					<td data-bind="text: Value"></td>
+					<td data-bind="text: Payed"></td>
 					<td></td>
-					<td data-bind="text: Value / $parent.Required"></td>
+					<td data-bind="text: (Payed / $parent.Required).toFixed(2)"></td>
 				</tr>
 				<!--/ko-->
 				<!--ko if:$root.DailyState.Energy-->
@@ -100,12 +100,12 @@
 						<form>
 							<input type="hidden" name="planId" data-bind="value: Id" />
 							<!--ko with: $root.PendingEffort-->
-							<input type="text" name="content" data-bind="value: Content" required /><input type="button" value="确定" onclick="new I().Pay(this);" />
+							<input type="text" name="content" data-bind="value: Content" required /><input type="button" value="确定" onclick="me.Pay(this);" />
 							<!--/ko-->
 						</form>
 					</td>
 					<td>
-						<input type="button" value="放弃" onclick="new I().GiveUp(this);" />
+						<input type="button" value="放弃" onclick="me.GiveUp(this);" />
 					</td>
 				</tr>
 				<!--/ko-->

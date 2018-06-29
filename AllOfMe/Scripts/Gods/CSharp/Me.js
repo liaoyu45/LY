@@ -1,4 +1,4 @@
-Him.CSharp = {
+Him.CSharp.Me = {
   "I": [
     {
       "Name": "FindMyself",
@@ -21,7 +21,7 @@ Him.CSharp = {
         "God": null,
         "Content": null,
         "Id": 0,
-        "AppearTime": "2018-06-28T17:25:40.0861756+08:00"
+        "AppearTime": "2018-06-29T16:30:08.4933051+08:00"
       }
     },
     {
@@ -120,9 +120,10 @@ Him.CSharp = {
           "Difficulty": 0.0,
           "Percent": "NaN",
           "Left": 0,
+          "MinEffortsCount": 0.0,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-06-28T17:25:40.1287149+08:00"
+          "AppearTime": "2018-06-29T16:30:08.5333606+08:00"
         }
       ]
     }
