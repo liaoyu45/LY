@@ -6,7 +6,8 @@ var vm = {
 	},
 	DailyState: {
 		Energy: ko.observable(0),
-		Content: ko.observable()
+		Content: ko.observable(),
+		DesireCount: ko.observable()
 	},
 	Plans: ko.observableArray(),
 	PlansSetting: {

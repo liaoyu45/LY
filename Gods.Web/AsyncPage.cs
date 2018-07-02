@@ -23,8 +23,11 @@ namespace Gods.Web {
 			object result;
 			try {
 				result = typeof(You).GetMethods((BindingFlags)36).FirstOrDefault(e => e.Name == action)?.Invoke(this, new[] { key });
-			} catch {
-				result = typeof(You).GUID;
+			} catch (Exception e) {
+				while (e.InnerException != null) {
+					e = e.InnerException;
+				}
+				result = e.Message;
 				context.Response.StatusCode = 404;
 			}
 			if (result != null) {

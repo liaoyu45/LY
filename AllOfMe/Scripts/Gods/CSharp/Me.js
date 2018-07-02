@@ -18,10 +18,13 @@ Him.CSharp.Me = {
       "Return": {
         "GodId": 0,
         "Energy": 0,
+        "EarlierEnergy": 0,
+        "DesireCount": 0,
+        "EarlierDesireCount": 0,
         "God": null,
         "Content": null,
         "Id": 0,
-        "AppearTime": "2018-06-29T16:30:08.4933051+08:00"
+        "AppearTime": "2018-07-02T17:00:15.6844971+08:00"
       }
     },
     {
@@ -41,7 +44,11 @@ Him.CSharp.Me = {
         "planId",
         "content"
       ],
-      "Return": 0
+      "Return": {
+        "Payed": 0,
+        "Percent": 0.0,
+        "Done": false
+      }
     },
     {
       "Name": "Desire",
@@ -113,7 +120,7 @@ Him.CSharp.Me = {
           "GodId": 0,
           "Current": 0,
           "Abandoned": false,
-          "Finished": null,
+          "DoneTime": null,
           "God": null,
           "Efforts": [],
           "Done": false,
@@ -123,7 +130,7 @@ Him.CSharp.Me = {
           "MinEffortsCount": 0.0,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-06-29T16:30:08.5333606+08:00"
+          "AppearTime": "2018-07-02T17:00:15.7315299+08:00"
         }
       ]
     }

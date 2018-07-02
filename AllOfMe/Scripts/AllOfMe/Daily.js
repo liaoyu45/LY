@@ -11,7 +11,10 @@ Him.Javascript.Me.I.FindMyself = function (e) {
 	}
 };
 Him.Javascript.Me.I.Desire = function (e) {
-	vm.PendingPlan.Required(e);
+	if (vm.DailyState.DesireCount() > 0) {
+		vm.DailyState.DesireCount(vm.DailyState.DesireCount() - 1);
+	}
+	vm.PendingPlan.Required(!e || isNaN(e) ? 0 : e);
 	if (!vm.PendingPlan.Testing()) {
 		this.ArrangePrepare();
 	}
@@ -28,6 +31,11 @@ Him.Javascript.Me.I.WakeUp = function (e) {
 	this.ArrangePrepare();
 };
 Him.Javascript.Me.I.ArrangeQuery = function (e) {
+	e.forEach(ee=> {
+		ee.Efforts = ko.observableArray(ee.Efforts);
+		ee.Progress = ko.computed(() => ee.Done ? ee.DoneTime : ee.Percent.toFixed(2));
+		ee.Percent = ko.observable(ee.Percent);
+	});
 	vm.Plans(e);
 };
 Him.Javascript.Me.I.ArrangePrepare = function (e) {
@@ -35,19 +43,24 @@ Him.Javascript.Me.I.ArrangePrepare = function (e) {
 		vm.PlansSetting[i](e[i]);
 	}
 	if (e.Total) {
-		this.ArrangeQuery(e.Id, vm.PlansSetting.Start(), vm.PlansSetting.End());
+		this.ArrangeQuery.last = () =>this.ArrangeQuery(e.Id, vm.PlansSetting.Start(), vm.PlansSetting.End());
+		this.ArrangeQuery.last();
 	}
 };
 Him.Javascript.Me.I.Pay = function (e) {
-	if (e) {
-		vm.CurrentPlan().Efforts.push({
-			Content: vm.PendingEffort.Content(),
-			Value: e
-		});
-		vm.PendingEffort.Content(null);
-	}
+	this.ArrangeQuery.last();
 };
 onload = () => {
-	Him.Ready();
-	(window.me = new Him.CSharp.Me.I()).FindMyself({ name: "", password: ""});
+	Him.Ready({
+		Error: function (s) {
+			alert(s);
+		},
+		Waiting: function (r) {
+			document.title = "wait please";
+		},
+		Done: function (r) {
+			document.title = "DONE";
+		}
+	});
+	(window.me = new Him.CSharp.Me.I()).FindMyself({ name: "", password: "" });
 };

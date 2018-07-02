@@ -61,6 +61,8 @@
     <Content Include="packages.config" />
     <Content Include="Scripts\AllOfMe\Daily.js" />
     <Content Include="Scripts\AllOfMe\DailyViewModel.js" />
+    <Content Include="Scripts\Gods\CSharp\Me.js" />
+    <Content Include="Scripts\Gods\Javascript\Me.js" />
     <Content Include="Scripts\knockout-3.4.2.debug.js" />
     <Content Include="Scripts\knockout-3.4.2.js" />
     <Content Include="WebForm1.aspx" />
@@ -144,8 +146,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="Scripts\Gods\CSharp\" />
-    <Folder Include="Scripts\Gods\Javascript\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

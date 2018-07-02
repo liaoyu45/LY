@@ -35,8 +35,8 @@
 	<!--ko if:DailyState.Energy-->
 	<form data-bind="with: PendingPlan">
 		<label>我想要：<input type="text" name="thing" data-bind="value: Content" required /></label>
-		<label>试一试：<input type="checkbox" name="test" data-bind="checked: Testing" /></label>
-		<input type="button" onclick="me.Desire(this)" value="确定" />
+		<label>试一试(<span data-bind="text: $root.DailyState.DesireCount"></span>)：<input type="checkbox" name="test" data-bind="checked: Testing" /></label>
+		<input type="button" onclick="me.Desire(this)" value="确定" data-bind="attr:{}" alt="qwer" placeholder="098i09" />
 		<!--ko if:Required--><span>这需要 <span data-bind="text:Required"></span> 点能量值</span><!--/ko-->
 	</form>
 	<!--/ko-->
@@ -68,7 +68,7 @@
 					<th>全部</th>
 					<th>已完成</th>
 					<th>剩余</th>
-					<th>完成百分比</th>
+					<th>完成百分比/时间</th>
 					<th>努力次数</th>
 				</tr>
 			</thead>
@@ -79,15 +79,13 @@
 					<td data-bind="text: Required"></td>
 					<td data-bind="text: Current"></td>
 					<td data-bind="text: Left"></td>
-					<td data-bind="text: (Current / Required).toFixed(2)"></td>
-					<td data-bind="text: Efforts.length"></td>
+					<td data-bind="text: Progress"></td>
+					<td data-bind="text: Efforts().length"></td>
 				</tr>
 				<!--ko if:$root.CurrentPlan()===$data-->
 				<!--ko foreach:Efforts-->
 				<tr>
-					<td data-bind="text: Content"></td>
-					<td></td>
-					<td></td>
+					<td data-bind="text: Content" colspan="3"></td>
 					<td data-bind="text: Payed"></td>
 					<td></td>
 					<td data-bind="text: (Payed / $parent.Required).toFixed(2)"></td>

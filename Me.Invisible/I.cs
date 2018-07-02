@@ -12,42 +12,56 @@ namespace Me.Invisible {
 		private DateTime today = DateTime.Now.Date;
 		private DateTime tomorrow = DateTime.Now.AddDays(1).Date;
 
-		int Me.I.Pay(int planId, string content) {
+		PayData Me.I.Pay(int planId, string content) {
 			return Universe.Using(d => {
 				var p = d.Plans.Find(planId);
-				if (p == null || p.GodId != Id) {
-					return 0;
-				}
 				if (p.Done) {
-					return 0;
+					throw new Exception(p.Content + "-已完成");
 				}
 				var g = d.Gods.Find(Id);
-				var payed = (int)((GetHashCode(content) / (double)int.MaxValue * p.Required * g.Luck) / p.MinEffortsCount);
+				var payed = (int)(GetHashCode(content) / (double)int.MaxValue * p.Required * g.Luck / p.MinEffortsCount);
 				var s = TodayState(d);
-				if (s == null || s.Energy < payed) {
-					return 0;
+				if (s.Energy < payed) {
+					throw new Exception("今日能量不足");
 				}
 				s.Energy -= payed;
 				p.Efforts.Add(new Effort { Content = content, Payed = payed });
 				p.Current += payed;
 				if (p.Done) {
+					p.Current = p.Required;
+					p.DoneTime = DateTime.Now;
 					g.Luck += new Random().NextDouble() * (1 - g.Luck);
 				}
-				return payed;
+				return new PayData {
+					Payed = payed,
+					Percent = p.Percent
+				};
 			});
 		}
 
-		int Me.I.Desire(string thing, bool test) {
-			var h = GetHashCode(thing);
-			if (test) {
-				return h;
-			}
-			Universe.Using(d => d.Plans.Add(new Plan {
-				GodId = Id,
-				Content = thing,
-				Required = (int)(h / d.Gods.Find(Id).Luck),
-			}));
-			return h;
+		DesireData Me.I.Desire(string thing, bool test) {
+			return Universe.Using(d => {
+				var s = TodayState(d);
+				if (s.DesireCount < 1) {
+					throw new Exception($"当日尝试的次数用尽：{DateTime.Now.ToString("yyyy-MM-dd")}/，已用 {s.EarlierDesireCount} 次。");
+				}
+				s.DesireCount--;
+				var r = GetHashCode(thing);
+				var data = new DesireData {
+					CountLeft = s.DesireCount,
+					Required = r
+				};
+				if (test) {
+					return data;
+				}
+				d.Plans.Add(new Plan {
+					GodId = Id,
+					Content = thing,
+					Required = (int)Math.Min(r / d.Gods.Find(Id).Luck, int.MaxValue),
+				});
+				return data;
+
+			});
 		}
 
 		void Me.I.Feel(string content, string tag, int? planId, int value) {
@@ -86,7 +100,7 @@ namespace Me.Invisible {
 				&& e.Required < (maxRequired ?? int.MaxValue)
 				&& e.Current > (minValue ?? -1)
 				&& e.Current < (maxValue ?? int.MaxValue)
-				&& (!done.HasValue || e.Finished.HasValue)
+				&& (!done.HasValue || e.DoneTime.HasValue)
 				&& (!abandoned.HasValue || e.Abandoned == abandoned.Value);
 			return new QueryData {
 				Id = id, Total = Universe.Using(d => {
@@ -135,24 +149,21 @@ namespace Me.Invisible {
 
 		public DailyState WakeUp(string dailyContent) {
 			return Universe.Using(d => {
-				var god = Id <= 0 ? null : d.Gods.Find(Id);
-				if (god == null) {
-					return null;
-				}
+				var god = d.Gods.Find(Id);
 				var s = TodayState(d);
 				if (dailyContent == null) {
 					return s;
 				}
 				if (s == null) {
+					var v = GetHashCode(dailyContent);
+					var t = Math.Log(dailyContent.Length);
 					var r = new Random();
-					var v = r.Next();
-					var fc = Math.Log(dailyContent.Length);
-					for (var i = 0; i < fc; i++) {
+					for (var i = 0; i < t; i++) {
 						v = r.Next(v, int.MaxValue);
 					}
-					god.DailyStates.Add(s = new DailyState {
+					d.DailyStates.Add(s = new DailyState(v) {
 						Content = dailyContent,
-						Energy = v
+						GodId = Id
 					});
 				}
 				return s;

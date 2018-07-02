@@ -2,14 +2,14 @@ function Him(url, key) {
 	"user strict";
 	var coding = location.href.length === 11;
 	function isValid(e) {
-		return e instanceof String || !isNaN(e)|| e instanceof Date || e instanceof Boolean;
+		return e instanceof String || !isNaN(e) || e instanceof Date || e instanceof Boolean;
 	}
 	var cls = [];
-	function makeClass(obj, i, jsi) {
-		var oi = obj[i];
+	function makeClass(obj, n, jo) {
+		var oi = obj[n];
 		var obo = Symbol();//one by one
 		var ing = Symbol();
-		obj[i] = function (data) {
+		obj[n] = function (data) {
 			if (data instanceof Boolean) {
 				this[obo] = data;
 				data = arguments[1];
@@ -20,9 +20,9 @@ function Him(url, key) {
 				this[i] = data[i];
 			}
 		};
-		cls.push(obj[i]);
+		cls.push(obj[n]);
 		oi.forEach(m=> {
-			obj[i].prototype[m.Name] = function () {
+			obj[n].prototype[m.Name] = function () {
 				if (this[obo]) {
 					if (this[ing]) {
 						return;
@@ -84,10 +84,11 @@ function Him(url, key) {
 						}
 					}
 				}
-				var cb = [...arguments, jsi[m.Name], function () { }].filter(e=>typeof e === "function")[0];
+				var cb = [...arguments, jo[m.Name], function () { }].filter(e=>typeof e === "function")[0];
 				var r = new XMLHttpRequest();
 				r.open(method, u);
 				r.onload = e=> {
+					Him.Done.call(this, r);
 					this[ing] = false;
 					var s = r.responseText;
 					if (s.toLowerCase() === "false") {
@@ -105,21 +106,25 @@ function Him(url, key) {
 					} else if (new RegExp(/^\d+-(1[012]|0?[1-9])-([12][0-9]|0?[1-9])$/).test(s)) {
 						s = new Date(Date.parse(s));
 					}
+					if (typeof m["Return"] === "object" && typeof s === "string" && s) {
+						[Him.Error, function () { }].filter(ee=>typeof ee === "function")[0].call(this, s);
+					}
 					cb.call(this, coding ? m["Return"] : s);
 				};
+				Him.Waiting.call(this, r);
 				r.send(data);
 				return r;
 			};
 		});
 	}
-	function findClass(obj, js) {
-		for (var i in obj) {
-			var oi = obj[i];
-			var jsi = i in js ? js[i] : {};
+	function findClass(co, jo) {
+		for (var i in co) {
+			var oi = co[i];
+			var ji = i in jo ? jo[i] : {};
 			if (oi instanceof Array) {
-				makeClass(obj, i, jsi);
+				makeClass(co, i, ji);
 			} else {
-				findClass(oi, jsi);
+				findClass(oi, ji);
 			}
 		}
 	}
@@ -128,16 +133,19 @@ function Him(url, key) {
 			findClass(Him.CSharp[i], Him.Javascript[i]);
 		}
 	}
-	Him.Ready = function () {
+	Him.Ready = function (a) {
 		if (coding) {
 			cls.forEach(e=> {
-				var a = new e();
-				for (var i in a) {
-					a[i]();
+				for (var i in e.prototype) {
+					new e()[i]();
 				}
 			});
 		}
+		Him.Error = a && a.Error;
+		Him.Waiting = a && a.Waiting;
+		Him.Done = a && a.Done;
 	};
+	Him.Error = s=>console.log(s);
 }
 Him.CSharp = {};
 Him.Javascript = {};
