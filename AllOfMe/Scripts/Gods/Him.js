@@ -1,11 +1,29 @@
 function Him(url, key) {
 	"user strict";
+	var events = {
+		waiting: s=>console.log(s),
+		error: s=>console.log(s),
+		done: s=>console.log(s),
+	};
 	var coding = location.href.length === 11;
 	function isValid(e) {
 		return e instanceof String || !isNaN(e) || e instanceof Date || e instanceof Boolean;
 	}
 	var cls = [];
 	function makeClass(obj, n, jo) {
+		Object.defineProperties(jo, (function () {
+			var r = {};
+			for (var i in jo) {
+				r[i] = (function () {
+					var arr = jo[i] instanceof Function ? [jo[i]] : [];
+					return {
+						get: () =>arr,
+						set: v=>(v instanceof Function ? arr : []).push(v)
+					};
+				}());
+			}
+			return r;
+		})());
 		var oi = obj[n];
 		var obo = Symbol();//one by one
 		var ing = Symbol();
@@ -23,19 +41,14 @@ function Him(url, key) {
 		cls.push(obj[n]);
 		oi.forEach(m=> {
 			obj[n].prototype[m.Name] = function () {
-				if (this[obo]) {
-					if (this[ing]) {
-						return;
-					}
-					this[ing] = true;
-				}
 				var ev = [...arguments].filter(e=>e instanceof Event)[0] || window.event;
 				var a0 = arguments[0];
-				if (a0 instanceof HTMLElement) {//while coding, it is true, why?
+				if (a0 instanceof HTMLElement) {//while coding, instanceof returns true
 					while (!(a0 instanceof HTMLFormElement)) {
 						a0 = a0.parentElement;
-						if (a0 === document.body) {
-							throw "";
+						if (!a0 || a0 === document.body) {
+							console.log("Can not find an HTMLFormElement: " + m.Name);
+							return;
 						}
 					}
 				}
@@ -65,13 +78,13 @@ function Him(url, key) {
 					u += `?${key}=${m.Key}`;
 					if (m.Parameters) {
 						var p = {};
-						for (var i in this) {
+						for (let i in this) {
 							if (m.Parameters.some(e=>e === i)) {
 								p[i] = this[i];
 							}
 						}
 						if (a0 instanceof Object) {
-							for (var i of m.Parameters) {
+							for (let i of m.Parameters) {
 								if (i in a0 || coding) {
 									p[i] = a0[i];
 								}
@@ -79,12 +92,12 @@ function Him(url, key) {
 						} else {
 							[...arguments].filter(isValid).slice(0, m.Parameters.length).forEach((a, i) => p[m.Parameters[i]] = a);
 						}
-						for (var i in p) {
+						for (let i in p) {
 							u += `&${i}=${p[i]}`;
 						}
 					}
 				}
-				var cb = [...arguments, jo[m.Name], function () { }].filter(e=>typeof e === "function")[0];
+				var cb = [...arguments, ...jo[m.Name], function () { }].filter(e=>typeof e === "function");
 				var r = new XMLHttpRequest();
 				r.open(method, u);
 				r.onload = e=> {
@@ -107,11 +120,18 @@ function Him(url, key) {
 						s = new Date(Date.parse(s));
 					}
 					if (typeof m["Return"] === "object" && typeof s === "string" && s) {
-						[Him.Error, function () { }].filter(ee=>typeof ee === "function")[0].call(this, s);
+						[events.error, function () { }].filter(ee=>typeof ee === "function")[0].call(this, s);
+						return;
 					}
-					cb.call(this, coding ? m["Return"] : s);
+					cb.forEach(e=>e.apply(this, [coding ? m["Return"] : s, ev]));
 				};
-				Him.Waiting.call(this, r);
+				events.waiting.call(this, r);
+				if (this[obo]) {
+					if (this[ing]) {
+						return;
+					}
+					this[ing] = true;
+				}
 				r.send(data);
 				return r;
 			};
@@ -133,7 +153,7 @@ function Him(url, key) {
 			findClass(Him.CSharp[i], Him.Javascript[i]);
 		}
 	}
-	Him.Ready = function (a) {
+	onload = function () {
 		if (coding) {
 			cls.forEach(e=> {
 				for (var i in e.prototype) {
@@ -141,34 +161,12 @@ function Him(url, key) {
 				}
 			});
 		}
-		Him.Error = a && a.Error;
-		Him.Waiting = a && a.Waiting;
-		Him.Done = a && a.Done;
 	};
-	Him.Error = s=>console.log(s);
+	Him.SetEvents = function (a) {
+		for (var i in events) {
+			events[i] = a[i] || events[i];
+		}
+	};
 }
 Him.CSharp = {};
 Him.Javascript = {};
-addEventListener("load", function () {
-	[...document.querySelectorAll("input[type=button]")].filter(e=>e.dataset.god).forEach(e=> {
-		e.onclick = () => {
-			var form = e.parentElement;
-			while (!(form instanceof HTMLFormElement)) {
-				form = form.parentElement;
-			}
-			var t = window,
-				ev = false;
-			[...e.dataset.god.split('.')].forEach(e=> {
-				if (typeof t[e] === "function") {
-					if (ev) {
-						t[e](form);
-					} else {
-						ev = t = new t[e]();
-					}
-				} else {
-					t = t[e];
-				}
-			});
-		};
-	});
-});

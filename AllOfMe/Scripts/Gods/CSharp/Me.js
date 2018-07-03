@@ -24,7 +24,7 @@ Him.CSharp.Me = {
         "God": null,
         "Content": null,
         "Id": 0,
-        "AppearTime": "2018-07-02T17:00:15.6844971+08:00"
+        "AppearTime": "2018-07-03T15:40:19.9691866+08:00"
       }
     },
     {
@@ -57,7 +57,10 @@ Him.CSharp.Me = {
         "thing",
         "test"
       ],
-      "Return": 0
+      "Return": {
+        "Required": 0,
+        "CountLeft": 0
+      }
     },
     {
       "Name": "Feel",
@@ -130,7 +133,7 @@ Him.CSharp.Me = {
           "MinEffortsCount": 0.0,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-02T17:00:15.7315299+08:00"
+          "AppearTime": "2018-07-03T15:40:20.0242388+08:00"
         }
       ]
     }

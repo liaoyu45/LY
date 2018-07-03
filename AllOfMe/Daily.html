@@ -65,22 +65,22 @@
 				<tr>
 					<th>内容</th>
 					<th>难度</th>
+					<th>努力次数</th>
+					<th>完成百分比/时间</th>
 					<th>全部</th>
 					<th>已完成</th>
 					<th>剩余</th>
-					<th>完成百分比/时间</th>
-					<th>努力次数</th>
 				</tr>
 			</thead>
 			<tbody data-bind="foreach: Plans">
 				<tr>
 					<td data-bind="text: Content, click: function(i) { $root.CurrentPlan($root.CurrentPlan() === i ? null : i); }"></td>
 					<td data-bind="text: Difficulty + ' * ' + MinEffortsCount"></td>
+					<td data-bind="text: Efforts().length"></td>
+					<td data-bind="text: Progress"></td>
 					<td data-bind="text: Required"></td>
 					<td data-bind="text: Current"></td>
 					<td data-bind="text: Left"></td>
-					<td data-bind="text: Progress"></td>
-					<td data-bind="text: Efforts().length"></td>
 				</tr>
 				<!--ko if:$root.CurrentPlan()===$data-->
 				<!--ko foreach:Efforts-->
@@ -97,9 +97,7 @@
 					<td colspan="5">
 						<form>
 							<input type="hidden" name="planId" data-bind="value: Id" />
-							<!--ko with: $root.PendingEffort-->
-							<input type="text" name="content" data-bind="value: Content" required /><input type="button" value="确定" onclick="me.Pay(this);" />
-							<!--/ko-->
+							<input type="text" name="content" data-bind="value: $root.PendingEffort" required /><input type="button" value="确定" onclick="me.Pay(this);" />
 						</form>
 					</td>
 					<td>

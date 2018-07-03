@@ -43,19 +43,12 @@ namespace Gods.Web {
 			Gods.Him.FindImplements(tagInterface, his.Modules).Where(e => e.IsInterface).ToList().ForEach(Append);
 			Directory.CreateDirectory(c);
 			foreach (var item in CSharp) {
-				File.WriteAllText($"{c}/{nameof(CSharp)}/{item.Key}.js", $"Him.{nameof(CSharp)}.{item.Key} = " + item.Value.ToString(Newtonsoft.Json.Formatting.Indented));
+				File.WriteAllText($"{c}/{nameof(CSharp)}/{item.Key}.js", $"Him.{nameof(CSharp)}.{item.Key} = {item.Value.ToString(Newtonsoft.Json.Formatting.Indented)};");
 			}
 			foreach (var item in Javascript) {
-				File.WriteAllText($"{c}/{nameof(Javascript)}/{item.Key}.js", $"Him.{nameof(Javascript)}.{item.Key} = " + item.Value.ToString(Newtonsoft.Json.Formatting.Indented));
+				File.WriteAllText($"{c}/{nameof(Javascript)}/{item.Key}.js", $"Him.{nameof(Javascript)}.{item.Key} = {item.Value.ToString(Newtonsoft.Json.Formatting.Indented)};");
 			}
-			File.WriteAllText($"{c}/{nameof(His)}.js", $@"
-(function () {{
-	function load() {{
-		Him('{his.AjaxRoute}', '{his.AjaxKey}');
-		removeEventListener('load', load);
-	}}
-	addEventListener('load', load);
-}})();".Trim());
+			File.WriteAllText($"{c}/{nameof(His)}.js", $@"Him('{his.AjaxRoute}', '{his.AjaxKey}');".Trim());
 		}
 
 		private static void Append(Type item) {

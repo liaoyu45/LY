@@ -23,10 +23,7 @@ var vm = {
 		Required: ko.observable(),
 		Testing: ko.observable(true)
 	},
-	PendingEffort: {
-		Content: ko.observable(),
-		Value: ko.observable()
-	},
+	PendingEffort: ko.observable(),
 	QueryingPlans: ko.observable()
 };
 addEventListener("load", function () {

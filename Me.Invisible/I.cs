@@ -57,7 +57,7 @@ namespace Me.Invisible {
 				d.Plans.Add(new Plan {
 					GodId = Id,
 					Content = thing,
-					Required = (int)Math.Min(r / d.Gods.Find(Id).Luck, int.MaxValue),
+					Required = (int)Math.Min(r, r / d.Gods.Find(Id).Luck),
 				});
 				return data;
 
