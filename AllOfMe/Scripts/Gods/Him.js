@@ -101,7 +101,7 @@ function Him(url, key) {
 				var r = new XMLHttpRequest();
 				r.open(method, u);
 				r.onload = e=> {
-					Him.Done.call(this, r);
+					events.done.call(this, r);
 					this[ing] = false;
 					var s = r.responseText;
 					if (s.toLowerCase() === "false") {
