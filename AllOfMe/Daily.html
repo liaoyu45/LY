@@ -9,20 +9,25 @@
 	<script src="/Scripts/Gods/CSharp/Me.js"></script>
 	<script src="/Scripts/Gods/Javascript/Me.js"></script>
 	<script src="/Scripts/Gods/His.js"></script>
-	<script src="/Scripts/AllOfMe/DailyViewModel.js"></script>
-	<script src="/Scripts/AllOfMe/Daily.js"></script>
+	<script src="/Scripts/AllOfMe/Daily/ViewModel.js"></script>
+	<script src="/Scripts/AllOfMe/Daily/Callbacks.js"></script>
+	<script src="/Scripts/AllOfMe/Daily/Effects.js"></script>
+
+	<link href="App_Themes/AllOfMe/Daily.css" rel="stylesheet" />
 </head>
 <body>
 	<!--ko if:I.FindMyself()-->
-	<h1><a data-bind="text: I.Name" href="javascript:me.Leave();"></a>⚡<i data-bind="text: DailyState.Energy"></i></h1>
-	<!--ko if:!DailyState.Energy()-->
+	<h1>
+		<a style="font-size: 111px;" data-bind="text: I.Name" href="javascript:me.Leave();"></a>
+		<!--ko if:DailyState-->
+		<span data-bind="text: DailyState"></span>
+		<!--/ko-->
+	</h1>
+	<!--ko if:!DailyState()-->
 	<form>
-		<label>今天：<input type="text" name="dailyContent" data-bind="value: DailyState.Content" placeholder="感觉如何？开心就多写点。" /></label>
+		<label>今天：<input type="text" name="dailyContent" placeholder="感觉如何？开心就多写点。" /></label>
 		<input type="button" value="确定" onclick="me.WakeUp(this);" />
 	</form>
-	<!--/ko-->
-	<!--ko if:DailyState.Energy-->
-	<p data-bind="text: DailyState.Content"></p>
 	<!--/ko-->
 	<!--/ko-->
 	<!--ko if:!I.FindMyself()-->
@@ -32,27 +37,19 @@
 		<input type="button" value="确定" onclick="me.FindMyself(this);" />
 	</form>
 	<!--/ko-->
-	<!--ko if:DailyState.Energy-->
-	<form data-bind="with: PendingPlan">
-		<label>我想要：<input type="text" name="thing" data-bind="value: Content" required /></label>
-		<label>试一试(<span data-bind="text: $root.DailyState.DesireCount"></span>)：<input type="checkbox" name="test" data-bind="checked: Testing" /></label>
-		<input type="button" onclick="me.Desire(this)" value="确定" data-bind="attr:{}" alt="qwer" placeholder="098i09" />
-		<!--ko if:Required--><span>这需要 <span data-bind="text:Required"></span> 点能量值</span><!--/ko-->
-	</form>
-	<!--/ko-->
 	<!--ko if:I.FindMyself()-->
 	<form>
-		<label>开始最早：<input type="datetime" name="start" /></label>
-		<label>结束最晚：<input type="datetime" name="end" /></label>
-		<label>达成最早：<input type="datetime" name="start" /></label>
-		<label>达成最晚：<input type="datetime" name="end" /></label>
-		<label>最少需要：<input type="range" name="minRequired" /></label>
-		<label>最多需要：<input type="range" name="maxRequired" /></label>
-		<label>达成最少：<input type="range" name="minValue" /></label>
-		<label>达成最多：<input type="range" name="maxValue" /></label>
+		<label>我想要：<input type="text" name="thing" data-bind="value: PendingPlan" required /></label>
+		<input type="button" onclick="me.Desire(this)" value="确定" />
+	</form>
+	<form data-him="QueryPlans">
+		<label>开始最早：<input type="date" name="start" /></label>
+		<label>结束最晚：<input type="date" name="end" /></label>
+		<label>达成最早：<input type="date" name="start" /></label>
+		<label>达成最晚：<input type="date" name="end" /></label>
 		<label>已放弃：<input type="checkbox" value="abandoned" /></label>
 		<label>已完成：<input type="checkbox" value="done" /></label>
-		<input type="button" value="确定" onclick="me.ArrangePrepare(this);" />
+		<input type="button" value="确定" onclick="me.QueryPlans(this);" />
 	</form>
 	<fieldset>
 		<legend>我的全部计划</legend>
@@ -60,51 +57,46 @@
 		<span>无</span>
 		<!--/ko-->
 		<!--ko if:Plans().length-->
-		<table>
+		<table style="border-collapse: collapse; table-layout: fixed; width: 100%;">
 			<thead>
 				<tr>
+					<th>始于</th>
 					<th>内容</th>
-					<th>难度</th>
 					<th>努力次数</th>
-					<th>完成百分比/时间</th>
-					<th>全部</th>
-					<th>已完成</th>
-					<th>剩余</th>
+					<th>完成状态</th>
 				</tr>
 			</thead>
 			<tbody data-bind="foreach: Plans">
-				<tr>
-					<td data-bind="text: Content, click: function(i) { $root.CurrentPlan($root.CurrentPlan() === i ? null : i); }"></td>
-					<td data-bind="text: Difficulty + ' * ' + MinEffortsCount"></td>
-					<td data-bind="text: Efforts().length"></td>
-					<td data-bind="text: Progress"></td>
-					<td data-bind="text: Required"></td>
-					<td data-bind="text: Current"></td>
-					<td data-bind="text: Left"></td>
+				<tr onclick="me.QueryEfforts();">
+					<td>
+						<span data-bind="text: AppearTime"></span>
+						<form style="display:none;" data-him="QueryEfforts">
+							<input type="hidden" name="planId" data-bind="value: Id"/>
+						</form>
+					</td>
+					<td data-bind="text: Content"></td>
+					<td data-bind="text: Efforts.length"></td>
+					<td data-bind="text: DoneTime"></td>
 				</tr>
 				<!--ko if:$root.CurrentPlan()===$data-->
 				<!--ko foreach:Efforts-->
 				<tr>
-					<td data-bind="text: Content" colspan="3"></td>
-					<td data-bind="text: Payed"></td>
-					<td></td>
-					<td data-bind="text: (Payed / $parent.Required).toFixed(2)"></td>
+					<td data-bind="text: AppearTime"></td>
+					<td colspan="3" data-bind="text: Content"></td>
 				</tr>
 				<!--/ko-->
-				<!--ko if:$root.DailyState.Energy-->
 				<tr>
-					<td>继续努力：</td>
-					<td colspan="5">
-						<form>
+					<td colspan="4">
+						<form style="display:inline;width:100%;">从：<input type="date" data-bind="value:AppearTime" name="effortStart" />至：<input type="date" name="effortEnd" /></form>
+						<form style="display:inline;width:100%;">
+							继续努力：
 							<input type="hidden" name="planId" data-bind="value: Id" />
-							<input type="text" name="content" data-bind="value: $root.PendingEffort" required /><input type="button" value="确定" onclick="me.Pay(this);" />
+							<input type="text" name="content" data-bind="value: $root.PendingEffort" required />
+							<input type="button" value="确定" onclick="me.Pay(this);" />
+							<input type="button" value="放弃" onclick="me.GiveUp(this);" />
 						</form>
 					</td>
-					<td>
-						<input type="button" value="放弃" onclick="me.GiveUp(this);" />
-					</td>
 				</tr>
-				<!--/ko-->
 				<!--/ko-->
 			</tbody>
 		</table>

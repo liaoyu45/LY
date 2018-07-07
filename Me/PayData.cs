@@ -1,9 +1,9 @@
-﻿using System;
-
-namespace Me {
+﻿namespace Me {
 	public class PayData {
 		public int Payed { get; set; }
-		public double Percent { get; set; }
-		public bool Done => Percent >= 1;
+		public double PlanPercent { get; set; }
+		public double EffortPercent { get; set; }
+
+		public bool Done => PlanPercent >= 1;
 	}
 }

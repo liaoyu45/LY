@@ -3,7 +3,7 @@ function Him(url, key) {
 	var events = {
 		waiting: s=>console.log(s),
 		error: s=>console.log(s),
-		done: s=>console.log(s),
+		done: s=>console.log(s)
 	};
 	var coding = location.href.length === 11;
 	function isValid(e) {
@@ -42,7 +42,7 @@ function Him(url, key) {
 		oi.forEach(m=> {
 			obj[n].prototype[m.Name] = function () {
 				var ev = [...arguments].filter(e=>e instanceof Event)[0] || window.event;
-				var a0 = arguments[0];
+				var a0 = arguments[0] || document.querySelector(`[data-him='${m.Name}']`);
 				if (a0 instanceof HTMLElement) {//while coding, instanceof returns true
 					while (!(a0 instanceof HTMLFormElement)) {
 						a0 = a0.parentElement;
@@ -100,8 +100,9 @@ function Him(url, key) {
 				var cb = [...arguments, ...jo[m.Name], function () { }].filter(e=>typeof e === "function");
 				var r = new XMLHttpRequest();
 				r.open(method, u);
+				r.onabort = () =>this[ing] = false;
 				r.onload = e=> {
-					events.done.call(this, r);
+					events.done.apply(this, [r, ev]);
 					this[ing] = false;
 					var s = r.responseText;
 					if (s.toLowerCase() === "false") {
@@ -110,7 +111,7 @@ function Him(url, key) {
 						s = true;
 					} else if (s.length && !isNaN(s)) {
 						s = (s.indexOf('.') > -1 ? parseFloat : parseInt)(s);
-					} else if (new RegExp(/^[{\[].+[}\]]$/).test(s)) {
+					} else if (new RegExp(/^[{\[].*[}\]]$/).test(s)) {
 						try {
 							s = JSON.parse(s);
 						} catch (e) {
@@ -120,18 +121,18 @@ function Him(url, key) {
 						s = new Date(Date.parse(s));
 					}
 					if (typeof m["Return"] === "object" && typeof s === "string" && s) {
-						[events.error, function () { }].filter(ee=>typeof ee === "function")[0].call(this, s);
+						[events.error, function () { }].filter(ee=>typeof ee === "function")[0].apply(this, [s, ev]);
 						return;
 					}
 					cb.forEach(e=>e.apply(this, [coding ? m["Return"] : s, ev]));
 				};
-				events.waiting.call(this, r);
 				if (this[obo]) {
 					if (this[ing]) {
 						return;
 					}
 					this[ing] = true;
 				}
+				events.waiting.apply(this, [r, ev]);
 				r.send(data);
 				return r;
 			};
@@ -154,6 +155,8 @@ function Him(url, key) {
 		}
 	}
 	onload = function () {
+	};
+	Him.SetEvents = function (a) {
 		if (coding) {
 			cls.forEach(e=> {
 				for (var i in e.prototype) {
@@ -161,8 +164,6 @@ function Him(url, key) {
 				}
 			});
 		}
-	};
-	Him.SetEvents = function (a) {
 		for (var i in events) {
 			events[i] = a[i] || events[i];
 		}

@@ -1,9 +1,9 @@
 ﻿using System.Data.Entity;
 
-namespace Me {
-	class TheBigBang : DropCreateDatabaseIfModelChanges<Universe> {
+namespace Me.Invisible {
+	class TheBigBang : DropCreateDatabaseAlways<Universe> {
 		protected override void Seed(Universe context) {
-			context.Gods.Add(new God { Name = "MeMySelfAndI", Password = "123" });
+			context.Gods.Add(new God { Name = "eee", Password = "111" });
 			context.SaveChanges();
 			base.Seed(context);
 		}

@@ -32,7 +32,6 @@
   <ItemGroup>
     <Compile Include="Base\ContentBase.cs" />
     <Compile Include="DailyState.cs" />
-    <Compile Include="DesireData.cs" />
     <Compile Include="Effort.cs" />
     <Compile Include="God.cs" />
     <Compile Include="Base\IdAndTime.cs" />

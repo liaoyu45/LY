@@ -2,7 +2,7 @@ Him.CSharp.Me = {
   "I": [
     {
       "Name": "FindMyself",
-      "Key": "18475057.1410996241",
+      "Key": "12001237.1410996241",
       "Parameters": [
         "name",
         "password"
@@ -11,60 +11,42 @@ Him.CSharp.Me = {
     },
     {
       "Name": "WakeUp",
-      "Key": "18475057.2049745300",
+      "Key": "12001237.2049745300",
       "Parameters": [
         "dailyContent"
       ],
-      "Return": {
-        "GodId": 0,
-        "Energy": 0,
-        "EarlierEnergy": 0,
-        "DesireCount": 0,
-        "EarlierDesireCount": 0,
-        "God": null,
-        "Content": null,
-        "Id": 0,
-        "AppearTime": "2018-07-03T15:40:19.9691866+08:00"
-      }
+      "Return": ""
     },
     {
       "Name": "Leave",
-      "Key": "18475057.1905830978",
+      "Key": "12001237.1905830978",
       "Return": 0
     },
     {
       "Name": "MyFeelingsCount",
-      "Key": "18475057.1941835107",
+      "Key": "12001237.1941835107",
       "Return": 0
     },
     {
       "Name": "Pay",
-      "Key": "18475057.1614899325",
+      "Key": "12001237.1614899325",
       "Parameters": [
         "planId",
         "content"
       ],
-      "Return": {
-        "Payed": 0,
-        "Percent": 0.0,
-        "Done": false
-      }
+      "Return": 0
     },
     {
       "Name": "Desire",
-      "Key": "18475057.295260549",
+      "Key": "12001237.314836140",
       "Parameters": [
-        "thing",
-        "test"
+        "thing"
       ],
-      "Return": {
-        "Required": 0,
-        "CountLeft": 0
-      }
+      "Return": 0
     },
     {
       "Name": "Feel",
-      "Key": "18475057.147331922",
+      "Key": "12001237.161900991",
       "Parameters": [
         "content",
         "tag",
@@ -75,7 +57,7 @@ Him.CSharp.Me = {
     },
     {
       "Name": "GiveUp",
-      "Key": "18475057.1317552560",
+      "Key": "12001237.1317552560",
       "Parameters": [
         "planId",
         "forever"
@@ -84,58 +66,51 @@ Him.CSharp.Me = {
     },
     {
       "Name": "Resume",
-      "Key": "18475057.442381339",
+      "Key": "12001237.442381339",
       "Parameters": [
         "planId"
       ],
       "Return": 0
     },
     {
-      "Name": "ArrangePrepare",
-      "Key": "18475057.1781447872",
+      "Name": "QueryPlans",
+      "Key": "12001237.1850629231",
       "Parameters": [
         "start",
         "end",
-        "minRequired",
-        "maxRequired",
-        "minValue",
-        "maxValue",
         "done",
         "abandoned"
       ],
-      "Return": {
-        "Total": 0,
-        "Id": 0
-      }
-    },
-    {
-      "Name": "ArrangeQuery",
-      "Key": "18475057.1065803883",
-      "Parameters": [
-        "query",
-        "start",
-        "end"
-      ],
       "Return": [
         {
-          "Required": 0,
           "Tag": null,
           "GodId": 0,
-          "Current": 0,
           "Abandoned": false,
           "DoneTime": null,
           "God": null,
           "Efforts": [],
-          "Done": false,
-          "Difficulty": 0.0,
-          "Percent": "NaN",
-          "Left": 0,
-          "MinEffortsCount": 0.0,
+          "EffortsCount": 0,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-03T15:40:20.0242388+08:00"
+          "AppearTime": "2018-07-07T17:21:52.0169891+08:00"
+        }
+      ]
+    },
+    {
+      "Name": "QueryEfforts",
+      "Key": "12001237.2037707531",
+      "Parameters": [
+        "planId"
+      ],
+      "Return": [
+        {
+          "PlanId": 0,
+          "Plan": null,
+          "Content": null,
+          "Id": 0,
+          "AppearTime": "2018-07-07T17:21:52.068538+08:00"
         }
       ]
     }
   ]
-}
+};

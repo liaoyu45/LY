@@ -8,5 +8,7 @@ namespace Me {
 		public List<DailyState> DailyStates { get; set; } = new List<DailyState>();
 		public List<Feeling> Possessions { get; set; } = new List<Feeling>();
 		public List<Plan> Plans { get; set; } = new List<Plan>();
+
+		public int MinDailyEnergy => (int)(Luck * int.MaxValue);
 	}
 }

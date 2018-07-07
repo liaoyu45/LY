@@ -9,7 +9,7 @@ Him.Javascript.Me = {
     "Feel": null,
     "GiveUp": null,
     "Resume": null,
-    "ArrangePrepare": null,
-    "ArrangeQuery": null
+    "QueryPlans": null,
+    "QueryEfforts": null
   }
-}
+};

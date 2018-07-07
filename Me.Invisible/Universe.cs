@@ -2,7 +2,7 @@
 using System.Data.Entity;
 using System.Linq;
 
-namespace Me {
+namespace Me.Invisible {
 	public class Universe : DbContext {
 		public DbSet<Effort> Efforts { get; set; }
 		public DbSet<Plan> Plans { get; set; }

@@ -42,43 +42,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Content\metro-all.css" />
-    <Content Include="Content\metro-all.min.css" />
-    <Content Include="Content\metro-colors.css" />
-    <Content Include="Content\metro-colors.min.css" />
-    <Content Include="Content\metro-icons.css" />
-    <Content Include="Content\metro-icons.min.css" />
-    <Content Include="Content\metro-rtl.css" />
-    <Content Include="Content\metro-rtl.min.css" />
-    <Content Include="Content\metro.css" />
-    <Content Include="Content\metro.min.css" />
+    <Content Include="App_Themes\AllOfMe\Daily.css" />
     <Content Include="Daily.html" />
     <Content Include="HtmlPage1.html" />
     <Content Include="Global.asax" />
     <Content Include="god.js" />
     <Content Include="JavaScript.js" />
-    <Content Include="mif\metro.svg" />
     <Content Include="packages.config" />
-    <Content Include="Scripts\AllOfMe\Daily.js" />
-    <Content Include="Scripts\AllOfMe\DailyViewModel.js" />
+    <Content Include="Scripts\AllOfMe\Daily\Callbacks.js" />
+    <Content Include="Scripts\AllOfMe\Daily\Effects.js" />
+    <Content Include="Scripts\AllOfMe\Daily\ViewModel.js" />
     <Content Include="Scripts\Gods\CSharp\Me.js" />
     <Content Include="Scripts\Gods\Javascript\Me.js" />
     <Content Include="Scripts\knockout-3.4.2.debug.js" />
     <Content Include="Scripts\knockout-3.4.2.js" />
     <Content Include="WebForm1.aspx" />
-    <None Include="Scripts\jquery-3.3.1.intellisense.js" />
-    <Content Include="Scripts\jquery-3.3.1.js" />
-    <Content Include="Scripts\jquery-3.3.1.min.js" />
-    <Content Include="Scripts\jquery-3.3.1.slim.js" />
-    <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
-    <Content Include="Scripts\metro.js" />
-    <Content Include="Scripts\metro.min.js" />
-    <Content Include="Scripts\metro.min.js.map" />
-    <Content Include="mif\metro.woff" />
-    <Content Include="mif\metro.ttf" />
-    <Content Include="mif\metro.json" />
-    <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.3.1.min.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

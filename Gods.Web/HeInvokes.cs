@@ -28,6 +28,10 @@ namespace Gods.Web {
 					return r;
 				}
 			}
+			var bad = method.GetParameters().FirstOrDefault(e => e.GetCustomAttributes<RequiredAttribute>().Any() && HttpContext.Current.Request.Params.AllKeys.Contains(e.Name));
+			if (bad != null) {
+				throw new TargetParameterCountException(method.Name + " needs parameter: " + bad.Name);
+			}
 			var ins = Activator.CreateInstance(type);
 			var prs = type.GetProperties();
 			var hasSession = HttpContext.Current.Session != null;
@@ -35,19 +39,32 @@ namespace Gods.Web {
 				foreach (var item in prs.Where(e => e.CanWrite)) {
 					var v = HttpContext.Current.Session[item.Name];
 					if (v != null) {
-						item.SetValue(ins, v); 
+						item.SetValue(ins, v);
 					}
 				}
 			}
 			var newPs = Validate(ins, method);
+			object[] ps;
 			if (newPs != null) {
-				return newPs;
+				if (newPs is object[]) {
+					var nps = (newPs as object[]).Select(e => e?.GetType()).ToArray();
+					var ops = method.GetParameters().Select(e => e.ParameterType).ToArray();
+					if (nps.Length != ops.Length) {
+						return newPs;
+					}
+					for (int i = 0; i < ops.Length; i++) {
+						if (nps[i] != null && nps[i] != ops[i]) {
+							return newPs;
+						}
+					}
+					ps = newPs as object[];
+				} else {
+					return newPs; 
+				}
+			} else {
+				ps = method.GetParameters().Select(p => MapObject(p.ParameterType, HttpContext.Current.Request[p.Name])).ToArray(); 
 			}
-			var bad = method.GetParameters().FirstOrDefault(e => e.GetCustomAttributes<RequiredAttribute>().Any() && HttpContext.Current.Request.Params.AllKeys.Contains(e.Name));
-			if (bad != null) {
-				throw new TargetParameterCountException(method.Name + " needs parameter: " + bad.Name);
-			}
-			r = method.Invoke(ins, method.GetParameters().Select(p => MapObject(p.ParameterType, HttpContext.Current.Request[p.Name])).ToArray());
+			r = method.Invoke(ins, ps);
 			if (hasSession) {
 				foreach (var item in prs.Where(e => e.CanRead)) {
 					HttpContext.Current.Session[item.Name] = item.GetValue(ins);

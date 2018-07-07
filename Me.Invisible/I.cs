@@ -12,55 +12,31 @@ namespace Me.Invisible {
 		private DateTime today = DateTime.Now.Date;
 		private DateTime tomorrow = DateTime.Now.AddDays(1).Date;
 
-		PayData Me.I.Pay(int planId, string content) {
-			return Universe.Using(d => {
+		void Me.I.Pay(int planId, string content) {
+			Universe.Using(d => {
 				var p = d.Plans.Find(planId);
-				if (p.Done) {
+				if (p.DoneTime.HasValue) {
 					throw new Exception(p.Content + "-已完成");
 				}
 				var g = d.Gods.Find(Id);
-				var payed = (int)(GetHashCode(content) / (double)int.MaxValue * p.Required * g.Luck / p.MinEffortsCount);
 				var s = TodayState(d);
-				if (s.Energy < payed) {
-					throw new Exception("今日能量不足");
-				}
-				s.Energy -= payed;
-				p.Efforts.Add(new Effort { Content = content, Payed = payed });
-				p.Current += payed;
-				if (p.Done) {
-					p.Current = p.Required;
+				Effort e;
+				p.Efforts.Add(e = new Effort { Content = content });
+				if (p.DoneTime.HasValue) {
 					p.DoneTime = DateTime.Now;
 					g.Luck += new Random().NextDouble() * (1 - g.Luck);
 				}
-				return new PayData {
-					Payed = payed,
-					Percent = p.Percent
-				};
 			});
 		}
 
-		DesireData Me.I.Desire(string thing, bool test) {
-			return Universe.Using(d => {
+		void Me.I.Desire(string thing) {
+			Universe.Using(d => {
 				var s = TodayState(d);
-				if (s.DesireCount < 1) {
-					throw new Exception($"当日尝试的次数用尽：{DateTime.Now.ToString("yyyy-MM-dd")}/，已用 {s.EarlierDesireCount} 次。");
-				}
-				s.DesireCount--;
 				var r = GetHashCode(thing);
-				var data = new DesireData {
-					CountLeft = s.DesireCount,
-					Required = r
-				};
-				if (test) {
-					return data;
-				}
 				d.Plans.Add(new Plan {
 					GodId = Id,
-					Content = thing,
-					Required = (int)Math.Min(r, r / d.Gods.Find(Id).Luck),
+					Content = thing
 				});
-				return data;
-
 			});
 		}
 
@@ -90,32 +66,14 @@ namespace Me.Invisible {
 			});
 		}
 
-		QueryData Me.I.ArrangePrepare(DateTime? start, DateTime? end, int? minRequired, int? maxRequired, int? minValue, int? maxValue, bool? done, bool? abandoned) {
-			var id = nameof(Me.I.ArrangePrepare).GetHashCode();
-			Query[id] = e =>
+		Plan[] Me.I.QueryPlans(DateTime? start, DateTime? end, bool? done, bool? abandoned) {
+			var r = Universe.Using(d => d.Plans.Where(e =>
 				e.GodId == Id
 				&& (e.AppearTime > (start ?? DateTime.MinValue))
 				&& (e.AppearTime < (end ?? DateTime.MaxValue))
-				&& e.Required > (minRequired ?? -1)
-				&& e.Required < (maxRequired ?? int.MaxValue)
-				&& e.Current > (minValue ?? -1)
-				&& e.Current < (maxValue ?? int.MaxValue)
 				&& (!done.HasValue || e.DoneTime.HasValue)
-				&& (!abandoned.HasValue || e.Abandoned == abandoned.Value);
-			return new QueryData {
-				Id = id, Total = Universe.Using(d => {
-					d.Database.Log = ee => Console.WriteLine(ee);
-					return d.Plans.Count(Query[id]);
-				})
-			};
-		}
-
-		Plan[] Me.I.ArrangeQuery(int query, int start, int end) {
-			Expression<Func<Plan, bool>> value;
-			if (Query.TryGetValue(query, out value)) {
-				return Universe.Using(d => d.Plans.Include(e => e.Efforts).Where(value).ToArray());
-			}
-			return Array.Empty<Plan>();
+				&& (!abandoned.HasValue || e.Abandoned == abandoned.Value)).OrderBy(e => e.AppearTime).ToList());
+			return r.ToArray();
 		}
 
 		public int MyFeelingsCount() {
@@ -147,26 +105,22 @@ namespace Me.Invisible {
 			Id = 0;
 		}
 
-		public DailyState WakeUp(string dailyContent) {
+		public string WakeUp(string dailyContent) {
 			return Universe.Using(d => {
 				var god = d.Gods.Find(Id);
 				var s = TodayState(d);
 				if (dailyContent == null) {
-					return s;
+					return s?.Content;
 				}
 				if (s == null) {
 					var v = GetHashCode(dailyContent);
-					var t = Math.Log(dailyContent.Length);
-					var r = new Random();
-					for (var i = 0; i < t; i++) {
-						v = r.Next(v, int.MaxValue);
-					}
-					d.DailyStates.Add(s = new DailyState(v) {
+					v = Math.Max(god.MinDailyEnergy, v);
+					d.DailyStates.Add(s = new DailyState {
 						Content = dailyContent,
 						GodId = Id
 					});
 				}
-				return s;
+				return dailyContent;
 			});
 		}
 
@@ -185,6 +139,10 @@ namespace Me.Invisible {
 					p.Abandoned = false;
 				}
 			});
+		}
+
+		Effort[] Me.I.QueryEfforts(int planId) {
+			return Universe.Using(d => d.Plans.Include(e => e.Efforts).FirstOrDefault(e => e.GodId == Id && e.Id == planId).Efforts.ToArray());
 		}
 	}
 }
