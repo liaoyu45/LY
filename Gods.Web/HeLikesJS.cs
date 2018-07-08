@@ -59,7 +59,7 @@ namespace Gods.Web {
 			item.GetMethods().Where(m => !m.IsSpecialName).ToList().ForEach(m => {
 				var t = new JObject {
 					[nameof(m.Name)] = m.Name,
-					["Key"] = item.GetHashCode() + "." + Math.Abs(Gods.Him.SignMethod(m))
+					["Key"] = item.FullName.GetHashCode() + "." + Math.Abs(Gods.Him.SignMethod(m))
 				};
 				var Parameters = JArray.FromObject(m.GetParameters().Select(e => e.Name).ToList());
 				if (Parameters.Count > 0) {
@@ -120,7 +120,7 @@ namespace Gods.Web {
 			}
 
 			public override int GetHashCode() {
-				return declare.GetHashCode();
+				return declare.FullName.GetHashCode();
 			}
 		}
 	}

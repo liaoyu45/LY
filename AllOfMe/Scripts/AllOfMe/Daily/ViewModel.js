@@ -1,4 +1,4 @@
-﻿/// <reference path="../knockout-3.4.2.js" />
+﻿/// <reference path="../../knockout-3.4.2.debug.js" />
 var vm = {
 	I: {
 		FindMyself: ko.observable(false),

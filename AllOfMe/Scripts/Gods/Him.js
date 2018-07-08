@@ -11,9 +11,10 @@ function Him(url, key) {
 	}
 	var cls = [];
 	function makeClass(obj, n, jo) {
+		var oi = obj[n];
 		Object.defineProperties(jo, (function () {
 			var r = {};
-			for (var i in jo) {
+			oi.map(m=>m.Name).forEach(i=> {
 				r[i] = (function () {
 					var arr = jo[i] instanceof Function ? [jo[i]] : [];
 					return {
@@ -21,10 +22,9 @@ function Him(url, key) {
 						set: v=>(v instanceof Function ? arr : []).push(v)
 					};
 				}());
-			}
+			});
 			return r;
 		})());
-		var oi = obj[n];
 		var obo = Symbol();//one by one
 		var ing = Symbol();
 		obj[n] = function (data) {
@@ -54,7 +54,8 @@ function Him(url, key) {
 				}
 				var method = a0 instanceof HTMLFormElement,
 					data = null,
-					u = url;
+					u = url,
+					request;
 				if (method && !coding) {
 					if (!a0.checkValidity()) {
 						var s = document.createElement("input");
@@ -66,7 +67,7 @@ function Him(url, key) {
 						return;
 					}
 					method = "post";
-					data = new FormData(a0);
+					data = new FormData(request = a0);
 					data.append(key, m.Key);
 					for (var i in this) {
 						if (i.constructor !== Symbol && isValid(this[i]) && !(i in a0)) {
@@ -76,24 +77,21 @@ function Him(url, key) {
 				} else {
 					method = "get";
 					u += `?${key}=${m.Key}`;
+					request = {};
 					if (m.Parameters) {
-						var p = {};
 						for (let i in this) {
 							if (m.Parameters.some(e=>e === i)) {
-								p[i] = this[i];
+								request[i] = this[i];
 							}
 						}
-						if (a0 instanceof Object) {
-							for (let i of m.Parameters) {
-								if (i in a0 || coding) {
-									p[i] = a0[i];
-								}
+						for (let i of m.Parameters) {
+							if (a0 instanceof Object && i in a0 || coding) {
+								request[i] = a0[i];
 							}
-						} else {
-							[...arguments].filter(isValid).slice(0, m.Parameters.length).forEach((a, i) => p[m.Parameters[i]] = a);
 						}
-						for (let i in p) {
-							u += `&${i}=${p[i]}`;
+						[...arguments].filter(isValid).slice(0, m.Parameters.length).forEach((a, i) => request[m.Parameters[i]] = a);
+						for (let i in request) {
+							u += `&${i}=${request[i]}`;
 						}
 					}
 				}
@@ -124,7 +122,7 @@ function Him(url, key) {
 						[events.error, function () { }].filter(ee=>typeof ee === "function")[0].apply(this, [s, ev]);
 						return;
 					}
-					cb.forEach(e=>e.apply(this, [coding ? m["Return"] : s, ev]));
+					cb.forEach(e=>e.apply(this, [coding ? m["Return"] : s, request, ev]));
 				};
 				if (this[obo]) {
 					if (this[ing]) {
@@ -141,7 +139,7 @@ function Him(url, key) {
 	function findClass(co, jo) {
 		for (var i in co) {
 			var oi = co[i];
-			var ji = i in jo ? jo[i] : {};
+			var ji = i in jo ? jo[i] : jo[i] = {};
 			if (oi instanceof Array) {
 				makeClass(co, i, ji);
 			} else {
@@ -150,12 +148,11 @@ function Him(url, key) {
 		}
 	}
 	for (var i in Him.CSharp) {
-		if (i in Him.Javascript) {
-			findClass(Him.CSharp[i], Him.Javascript[i]);
+		if (!(i in Him.Javascript)) {
+			Him.Javascript[i] = {};
 		}
+		findClass(Him.CSharp[i], Him.Javascript[i]);
 	}
-	onload = function () {
-	};
 	Him.SetEvents = function (a) {
 		if (coding) {
 			cls.forEach(e=> {
