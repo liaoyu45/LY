@@ -2,7 +2,7 @@ Him.CSharp.Me = {
   "I": [
     {
       "Name": "FindMyself",
-      "Key": "-842352665.1410996241",
+      "Key": "1167702007.1410996241",
       "Parameters": [
         "name",
         "password"
@@ -10,26 +10,13 @@ Him.CSharp.Me = {
       "Return": ""
     },
     {
-      "Name": "WakeUp",
-      "Key": "-842352665.2049745300",
-      "Parameters": [
-        "dailyContent"
-      ],
-      "Return": ""
-    },
-    {
       "Name": "Leave",
-      "Key": "-842352665.1905830978",
-      "Return": 0
-    },
-    {
-      "Name": "MyFeelingsCount",
-      "Key": "-842352665.1941835107",
+      "Key": "1167702007.1905830978",
       "Return": 0
     },
     {
       "Name": "Pay",
-      "Key": "-842352665.1614899325",
+      "Key": "1167702007.1614899325",
       "Parameters": [
         "planId",
         "content"
@@ -38,35 +25,15 @@ Him.CSharp.Me = {
     },
     {
       "Name": "Desire",
-      "Key": "-842352665.314836140",
+      "Key": "1167702007.314836140",
       "Parameters": [
         "thing"
       ],
       "Return": 0
     },
     {
-      "Name": "Feel",
-      "Key": "-842352665.173333136",
-      "Parameters": [
-        "content",
-        "tag",
-        "planId",
-        "value"
-      ],
-      "Return": 0
-    },
-    {
       "Name": "GiveUp",
-      "Key": "-842352665.1317552560",
-      "Parameters": [
-        "planId",
-        "forever"
-      ],
-      "Return": 0
-    },
-    {
-      "Name": "Resume",
-      "Key": "-842352665.442381339",
+      "Key": "1167702007.1297976969",
       "Parameters": [
         "planId"
       ],
@@ -74,33 +41,31 @@ Him.CSharp.Me = {
     },
     {
       "Name": "QueryPlans",
-      "Key": "-842352665.1809119375",
+      "Key": "1167702007.1770967912",
       "Parameters": [
         "start",
         "end",
-        "done",
-        "abandoned"
+        "tag"
       ],
       "Return": [
         {
           "Tag": null,
           "GodId": 0,
-          "Abandoned": false,
-          "DoneTime": null,
           "God": null,
           "Efforts": [],
-          "EffortsCount": 0,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-08T15:24:43.9300456+08:00"
+          "AppearTime": "2018-07-12T10:11:08.6890186+08:00"
         }
       ]
     },
     {
       "Name": "QueryEfforts",
-      "Key": "-842352665.2037707531",
+      "Key": "1167702007.2036627289",
       "Parameters": [
-        "planId"
+        "planId",
+        "start",
+        "end"
       ],
       "Return": [
         {
@@ -108,7 +73,7 @@ Him.CSharp.Me = {
           "Plan": null,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-08T15:24:44.1039864+08:00"
+          "AppearTime": "2018-07-12T10:11:08.7500984+08:00"
         }
       ]
     }

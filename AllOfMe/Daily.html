@@ -3,6 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title></title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
 	<script src="Scripts/knockout-3.4.2.debug.js"></script>
 
 	<script src="/Scripts/Gods/Him.js"></script>
@@ -15,70 +17,103 @@
 	<link href="App_Themes/AllOfMe/Daily.css" rel="stylesheet" />
 </head>
 <body>
-	<!--ko if:I.FindMyself()-->
-	<h1>
-		<a style="font-size: 111px;" data-bind="text: I.Name" href="javascript:me.Leave();"></a>
-		<!--ko if:DailyState-->
-		<span data-bind="text: DailyState"></span>
-		<!--/ko-->
-	</h1>
-	<!--ko if:!DailyState()-->
+	<!--ko if:!Name()-->
 	<form>
-		<label>今天：<input type="text" name="dailyContent" placeholder="感觉如何？开心就多写点。" /></label>
-		<input type="button" value="确定" onclick="me.WakeUp(this);" />
-	</form>
-	<!--/ko-->
-	<!--/ko-->
-	<!--ko if:!I.FindMyself()-->
-	<form>
-		<label>用户名：<input type="text" required name="name" data-bind="value: I.Name" /></label>
-		<label>密码：<input type="password" required name="password" /></label>
+		<input type="text" required name="name" placeholder="用户名" />
+		<input type="password" required name="password" placeholder="密码" />
 		<input type="button" value="确定" onclick="me.FindMyself(this);" />
 	</form>
 	<!--/ko-->
-	<!--ko if:I.FindMyself()&&!CurrentPlan()-->
-	<form>
-		<label>我想要：<input type="text" name="thing" data-bind="value: PendingPlan" required /></label>
-		<input type="button" onclick="me.Desire(this)" value="确定" />
-	</form>
-	<form data-him="QueryPlans">
-		<label>开始最早：<input type="date" name="start" /></label>
-		<label>结束最晚：<input type="date" name="end" /></label>
-		<label>达成最早：<input type="date" name="start" /></label>
-		<label>达成最晚：<input type="date" name="end" /></label>
-		<label>已放弃：<input type="checkbox" value="abandoned" /></label>
-		<label>已完成：<input type="checkbox" value="done" /></label>
-		<input type="button" value="确定" onclick="me.QueryPlans(this);" />
-	</form>
-	<ul data-bind="foreach: Plans">
-		<li>
-			<span data-bind="text: AppearTime"></span>-<span data-bind="text: DoneTime"></span>
-			<h2 data-bind="text: Content,click:function(){me.QueryEfforts(Id);}"></h2>
-		</li>
-	</ul>
+	<!--ko if:Name-->
+	<h1 data-bind="text: Name" onclick="me.Leave();"></h1>
+	<!--/ko-->
+	<!--ko if:Name()&&!CurrentPlan()-->
+	<div>
+		<table style="width: 100%; text-align: center;">
+			<tr>
+				<td onclick="toggleForms(planActions, newPlanForm);">🖊</td>
+				<td onclick="toggleForms(planActions, queryPlansForm);">🔍</td>
+				<td onclick="toggleForms(planActions);">❌</td>
+			</tr>
+			<tr id="planActions" style="display: none;">
+				<td colspan="3">
+					<form id="newPlanForm">
+						<textarea name="thing" required placeholder="新计划" style="width: 100%;"></textarea>
+						<input type="button" onclick="me.Desire(this)" value="确定" />
+					</form>
+					<form id="queryPlansForm" data-him="QueryPlans">
+						<input type="date" name="start" placeholder="始于" />
+						<input type="date" name="end" placeholder="止于" />
+						<input type="button" value="确定" onclick="me.QueryPlans(this);" />
+					</form>
+					<script type="text/javascript">
+						function toggleForms(parent, show) {
+							if (show) {
+								parent.style.display = "";
+								[...show.parentElement.children].forEach(e=>e.style.display = "none");
+								show.style.display = "";
+							} else {
+								parent.style.display = "none";
+							}
+						}
+					</script>
+				</td>
+			</tr>
+		</table>
+		<ul data-bind="foreach: Plans">
+			<li>
+				<span data-bind="text: AppearTime"></span>
+				<h2 data-bind="text: Content,click:function(){me.QueryEfforts(Id);}"></h2>
+			</li>
+		</ul>
+	</div>
 	<!--/ko-->
 	<div data-bind="with:CurrentPlan">
 		<h2 data-bind="text:Content"></h2>
-		<!--ko if:Efforts.length-->
-		<form>
-			<label>从：<input type="date" data-bind="value:AppearTime" name="effortStart" /></label>
-			<label>至：<input type="date" name="effortEnd" /></label>
-			<input type="button" value="确定" onclick="me.QueryEfforts(this);" />
-		</form>
-		<!--/ko-->
+		<table style="width: 100%; text-align: center;">
+			<tr>
+				<td onclick="toggleForms(effortActions, newEffortForm);">🖊</td>
+				<td onclick="toggleForms(effortActions, queryEffortsForm);">🔍</td>
+				<td onclick="toggleForms(effortActions);">❌</td>
+			</tr>
+			<tr id="effortActions" style="display: none;">
+				<td colspan="3">
+					<form id="queryEffortsForm">
+						<input type="date" data-bind="value:AppearTime" name="effortStart" />
+						<input type="date" name="effortEnd" />
+						<input type="button" value="确定" onclick="me.QueryEfforts(this);" />
+					</form>
+					<form id="newEffortForm">
+						<input type="hidden" name="planId" data-bind="value: Id" />
+						<textarea name="content" data-bind="value:$root.PendingEffort" required placeholder="继续努力"></textarea>
+						<input type="button" value="确定" onclick="me.Pay(this); this.previousElementSibling.focus();" />
+						<input type="button" value="放弃" onclick="me.GiveUp(this);" />
+					</form>
+				</td>
+			</tr>
+		</table>
 		<ul data-bind="foreach:Efforts">
 			<li>
 				<span data-bind="text: AppearTime"></span>
 				<article data-bind="text: Content"></article>
 			</li>
 		</ul>
-		<form style="display:inline;width:100%;">
-			继续努力：
-			<input type="hidden" name="planId" data-bind="value: Id" />
-			<input type="text" name="content" data-bind="value: $root.PendingEffort" required />
-			<input type="button" value="确定" onclick="me.Pay(this);" />
-			<input type="button" value="放弃" onclick="me.GiveUp(this);" />
-		</form>
 	</div>
+	<div id="dialog" style="position: fixed;top:0; left:0;width: 100%; height: 100%; background:rgba(0,0,0,.1);padding:55px; box-sizing: border-box; display: none;" onclick="hideDialog(event);">
+	</div>
+	<script type="text/javascript">
+		function showDialog(ele) {
+			dialog.innerHTML = "";
+			dialog.appendChild(ele);
+			ele.style.display = "";
+			dialog.style.display = "";
+		}
+		function hideDialog(event) {
+			if (event.target !== dialog) {
+				return;
+			}
+			this.style.display = "none";
+		}
+	</script>
 </body>
 </html>

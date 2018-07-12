@@ -27,7 +27,7 @@ namespace Gods.Data {
 						 select pt.GenericTypeArguments[0]).ToList();
 			var tableToType = types.Where(t => t.BaseType.BaseType == typeof(DynamicModel)).ToDictionary(e => loader.GetTableName(e));//table to type
 			Func<MainTableData[]> all1 = () => loader.GetRecord(tableToType.Keys.ToArray())
-					.SelectMany(sql => db.Database.SqlQuery<DetailTable>(sql))
+					.SelectMany(sql => db.Database.SqlQuery<DetailTableData>(sql))
 					.GroupBy(t => t.Main).ToDictionary(e => e, e => tableToType[e.Key].BaseType).Select(t => new MainTableData(
 							   t.Value,
 							   loader.Size(t.Value),

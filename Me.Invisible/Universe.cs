@@ -6,8 +6,6 @@ namespace Me.Invisible {
 	public class Universe : DbContext {
 		public DbSet<Effort> Efforts { get; set; }
 		public DbSet<Plan> Plans { get; set; }
-		public DbSet<Feeling> Feelings { get; set; }
-		public DbSet<DailyState> DailyStates { get; set; }
 		public DbSet<God> Gods { get; set; }
 
 		static Universe() {

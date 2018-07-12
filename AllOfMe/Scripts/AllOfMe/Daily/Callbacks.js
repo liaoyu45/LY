@@ -4,19 +4,15 @@
 /// <reference path="ViewModel.js" />
 /// <reference path="../../knockout-3.4.2.debug.js" />
 Him.Javascript.Me.I.FindMyself = function (e) {
-	vm.I.FindMyself(!!e);
-	vm.I.Name(e);
+	vm.Name(e);
 	if (e) {
-		this.WakeUp(() =>this.QueryPlans());
+		this.QueryPlans();
 	}
 };
 Him.Javascript.Me.I.Desire = function (e) {
 	this.QueryPlans();
 };
 Him.Javascript.Me.I.Leave = () =>location.reload();
-Him.Javascript.Me.I.WakeUp = function (e) {
-	vm.DailyState(e);
-};
 Him.Javascript.Me.I.QueryEfforts = function (e, r) {
 	vm.CurrentPlan(vm.Plans().filter(ee=>ee.Id == r.planId)[0]);
 	vm.CurrentPlan().Efforts(e);

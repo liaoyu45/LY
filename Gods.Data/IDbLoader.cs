@@ -26,7 +26,7 @@ namespace Gods.Data {
 		/// <returns>具有基础结构的表的名称。</returns>
 		string GetTableName(Type type);
 		/// <summary>
-		/// 用于定义生成新名的规则。
+		/// 用于定义生成新表名的规则。
 		/// </summary>
 		/// <param name="model">等待填充的数据。</param>
 		/// <returns>一个表名，数据将填充到此表。</returns>

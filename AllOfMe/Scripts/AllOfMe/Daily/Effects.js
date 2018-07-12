@@ -4,3 +4,6 @@ addEventListener("keydown", e => {
 		vm.CurrentPlan(null);
 	}
 });
+function openDialog(ele) {
+
+}

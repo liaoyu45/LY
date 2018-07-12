@@ -31,12 +31,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Base\ContentBase.cs" />
-    <Compile Include="DailyState.cs" />
     <Compile Include="Effort.cs" />
     <Compile Include="God.cs" />
     <Compile Include="Base\IdAndTime.cs" />
     <Compile Include="PageData.cs" />
-    <Compile Include="Feeling.cs" />
     <Compile Include="Base\NameBase.cs" />
     <Compile Include="PayData.cs" />
     <Compile Include="Plan.cs" />

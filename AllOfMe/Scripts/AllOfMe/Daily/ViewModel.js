@@ -1,10 +1,6 @@
 ﻿/// <reference path="../../knockout-3.4.2.debug.js" />
 var vm = {
-	I: {
-		FindMyself: ko.observable(false),
-		Name: ko.observable()
-	},
-	DailyState: ko.observable(),
+	Name: ko.observable(),
 	Plans: ko.observableArray(),
 	PlansSetting: {
 		Id: ko.observable(),
