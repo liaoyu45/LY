@@ -207,7 +207,7 @@ effect.load = function (settings) {
         }
     } else {
         for (var i = 0; i < game.tagsMax; i++) {
-            var color = god.random().color();
+            var color = god.color.random();
             fillarr.push({ baseColor: color, fill: color });
         }
     }

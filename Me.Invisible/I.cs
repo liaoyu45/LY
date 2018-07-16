@@ -48,7 +48,7 @@ namespace Me.Invisible {
 			return r.ToArray();
 		}
 
-		string Me.I.FindMyself(string name, string password) {
+		string Me.I.WakeUp(string name, string password) {
 			if (Id > 0) {
 				return Universe.Using(d => d.Gods.Find(Id)?.Name);
 			} else if (name?.Any() != true || password?.Any() != true) {
@@ -68,7 +68,7 @@ namespace Me.Invisible {
 			});
 		}
 
-		void Me.I.Leave() {
+		void Me.I.Sleep() {
 			Id = 0;
 		}
 

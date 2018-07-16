@@ -47,12 +47,15 @@
     <Content Include="HtmlPage1.html" />
     <Content Include="Global.asax" />
     <Content Include="god.js" />
+    <Content Include="HtmlPage2.html" />
     <Content Include="JavaScript.js" />
+    <Content Include="JavaScript1.js" />
     <Content Include="packages.config" />
     <Content Include="Scripts\AllOfMe\Daily\Callbacks.js" />
     <Content Include="Scripts\AllOfMe\Daily\Effects.js" />
     <Content Include="Scripts\AllOfMe\Daily\ViewModel.js" />
     <Content Include="Scripts\Gods\CSharp\Me.js" />
+    <Content Include="Scripts\Gods\Him.js" />
     <Content Include="Scripts\Gods\Javascript\Me.js" />
     <Content Include="Scripts\knockout-3.4.2.debug.js" />
     <Content Include="Scripts\knockout-3.4.2.js" />
@@ -65,7 +68,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\Gods\Him.js" />
     <Content Include="Scripts\Gods\His.js" />
     <Content Include="Web.config" />
   </ItemGroup>

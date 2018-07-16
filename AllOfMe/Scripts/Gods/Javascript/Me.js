@@ -1,7 +1,8 @@
-Him.Javascript.Me = {
+window.god = window.god || (window.god = {});
+(god.Javascript || (god.Javascript = {})).Me = {
   "I": {
-    "FindMyself": null,
-    "Leave": null,
+    "WakeUp": null,
+    "Sleep": null,
     "Pay": null,
     "Desire": null,
     "GiveUp": null,

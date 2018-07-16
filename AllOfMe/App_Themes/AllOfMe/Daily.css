@@ -2,3 +2,9 @@
 	width: 100%;
 	box-sizing: border-box;
 }
+
+table {
+	table-layout: fixed;
+	width: 100%;
+	text-align: center;
+}

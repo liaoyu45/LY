@@ -36,19 +36,21 @@ namespace Gods.Web {
 			Him.his = his;
 			RouteTable.Routes.Add(new Route(his.AjaxRoute, new Me()));
 			var webRoot = HostingEnvironment.MapPath("/");
-			var c = $"{webRoot}/Scripts/{nameof(Gods)}";
+			var root = $"{webRoot}/Scripts/{nameof(Gods)}";
 			his.Implements = webRoot + his.Implements;
 			his.Validators = webRoot + his.Validators;
 			his.Modules = webRoot + his.Modules;
 			Gods.Him.FindImplements(tagInterface, his.Modules).Where(e => e.IsInterface).ToList().ForEach(Append);
-			Directory.CreateDirectory(c);
+			Directory.CreateDirectory(root);
 			foreach (var item in CSharp) {
-				File.WriteAllText($"{c}/{nameof(CSharp)}/{item.Key}.js", $"Him.{nameof(CSharp)}.{item.Key} = {item.Value.ToString(Newtonsoft.Json.Formatting.Indented)};");
+				File.WriteAllText($"{root}/{nameof(CSharp)}/{item.Key}.js", $@"window.god = window.god || (window.god = {{}});
+(god.CSharp || (god.CSharp = {{}})).{item.Key} = {item.Value.ToString(Newtonsoft.Json.Formatting.Indented)};");
 			}
 			foreach (var item in Javascript) {
-				File.WriteAllText($"{c}/{nameof(Javascript)}/{item.Key}.js", $"Him.{nameof(Javascript)}.{item.Key} = {item.Value.ToString(Newtonsoft.Json.Formatting.Indented)};");
+				File.WriteAllText($"{root}/{nameof(Javascript)}/{item.Key}.js", $@"window.god = window.god || (window.god = {{}});
+(god.Javascript || (god.Javascript = {{}})).{item.Key} = {item.Value.ToString(Newtonsoft.Json.Formatting.Indented)};");
 			}
-			File.WriteAllText($"{c}/{nameof(His)}.js", $@"Him('{his.AjaxRoute}', '{his.AjaxKey}');".Trim());
+			File.WriteAllText($"{root}/{nameof(His)}.js", $@"Him('{his.AjaxRoute}', '{his.AjaxKey}');".Trim());
 		}
 
 		private static void Append(Type item) {

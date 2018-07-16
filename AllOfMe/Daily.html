@@ -5,12 +5,12 @@
 	<title></title>
 	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-	<script src="Scripts/knockout-3.4.2.debug.js"></script>
-
-	<script src="/Scripts/Gods/Him.js"></script>
 	<script src="/Scripts/Gods/CSharp/Me.js"></script>
-	<script src="/Scripts/Gods/His.js"></script>
+	<script src="Scripts/Gods/Him.js"></script>
+
+	<script src="Scripts/knockout-3.4.2.debug.js"></script>
 	<script src="/Scripts/AllOfMe/Daily/ViewModel.js"></script>
+
 	<script src="/Scripts/AllOfMe/Daily/Callbacks.js"></script>
 	<script src="/Scripts/AllOfMe/Daily/Effects.js"></script>
 
@@ -21,24 +21,22 @@
 	<form>
 		<input type="text" required name="name" placeholder="用户名" />
 		<input type="password" required name="password" placeholder="密码" />
-		<input type="button" value="确定" onclick="me.FindMyself(this);" />
+		<input type="button" value="确定" onclick="me.WakeUp(this);" />
 	</form>
-	<!--/ko-->
-	<!--ko if:Name-->
-	<h1 data-bind="text: Name" onclick="me.Leave();"></h1>
 	<!--/ko-->
 	<!--ko if:Name()&&!CurrentPlan()-->
 	<div>
-		<table style="width: 100%; text-align: center;">
+		<h1 data-bind="text:Name" onclick="me.Sleep();"></h1>
+		<table>
 			<tr>
+				<td>计划</td>
 				<td onclick="toggleForms(planActions, newPlanForm);">🖊</td>
 				<td onclick="toggleForms(planActions, queryPlansForm);">🔍</td>
-				<td onclick="toggleForms(planActions);">❌</td>
 			</tr>
 			<tr id="planActions" style="display: none;">
 				<td colspan="3">
 					<form id="newPlanForm">
-						<textarea name="thing" required placeholder="新计划" style="width: 100%;"></textarea>
+						<input name="thing" required placeholder="新计划" />
 						<input type="button" onclick="me.Desire(this)" value="确定" />
 					</form>
 					<form id="queryPlansForm" data-him="QueryPlans">
@@ -46,17 +44,6 @@
 						<input type="date" name="end" placeholder="止于" />
 						<input type="button" value="确定" onclick="me.QueryPlans(this);" />
 					</form>
-					<script type="text/javascript">
-						function toggleForms(parent, show) {
-							if (show) {
-								parent.style.display = "";
-								[...show.parentElement.children].forEach(e=>e.style.display = "none");
-								show.style.display = "";
-							} else {
-								parent.style.display = "none";
-							}
-						}
-					</script>
 				</td>
 			</tr>
 		</table>
@@ -69,12 +56,12 @@
 	</div>
 	<!--/ko-->
 	<div data-bind="with:CurrentPlan">
-		<h2 data-bind="text:Content"></h2>
-		<table style="width: 100%; text-align: center;">
+		<h2 data-bind="text:Content,click:function(){$root.CurrentPlan(null);}"></h2>
+		<table>
 			<tr>
+				<td>努力</td>
 				<td onclick="toggleForms(effortActions, newEffortForm);">🖊</td>
 				<td onclick="toggleForms(effortActions, queryEffortsForm);">🔍</td>
-				<td onclick="toggleForms(effortActions);">❌</td>
 			</tr>
 			<tr id="effortActions" style="display: none;">
 				<td colspan="3">
@@ -99,21 +86,5 @@
 			</li>
 		</ul>
 	</div>
-	<div id="dialog" style="position: fixed;top:0; left:0;width: 100%; height: 100%; background:rgba(0,0,0,.1);padding:55px; box-sizing: border-box; display: none;" onclick="hideDialog(event);">
-	</div>
-	<script type="text/javascript">
-		function showDialog(ele) {
-			dialog.innerHTML = "";
-			dialog.appendChild(ele);
-			ele.style.display = "";
-			dialog.style.display = "";
-		}
-		function hideDialog(event) {
-			if (event.target !== dialog) {
-				return;
-			}
-			this.style.display = "none";
-		}
-	</script>
 </body>
 </html>

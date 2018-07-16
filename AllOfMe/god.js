@@ -4,7 +4,7 @@
 		this.initiatedTime = new Date();
 		this.modes = {
 			coding: location.href.length === 11,
-			debugging: location.href.indexOf("localhost") > 0,
+			debugging: location.href.indexOf("localhost") > 0
 		};
 		Object.defineProperty(this, "emptyFunction", {
 			get: function () {
@@ -64,12 +64,6 @@
 				this.addEventListener.apply(this, narguments);
 			}
 		};
-		this.toDefault = function (v, dv) {
-			if (typeof v === "undefined" || v === null) {
-				return dv;
-			}
-			return v;
-		};
 		this.window = (function () {
 			return {
 				fakeGIF: function (ele, delay) {
@@ -104,7 +98,7 @@
 							}
 						},
 						element: ele
-					}
+					};
 				},
 				queryString: function (item) {
 					var svalue = location.search.match(new RegExp("[\?\&]" + item + "=([^\&]*)(\&?)", "i"));
@@ -119,39 +113,18 @@
 						}
 						img.src = god.formatString("{0}.{1}", filename, suffixes[i] + "?r=" + Math.random());
 						i++;
-					};
+					}
 					img.onerror = assign;
 					assign();
 				},
 				fromTemplate: function (templateSelector, outterTagName) {
 					var template = document.body.querySelector(templateSelector);
-					if (!outterTagName) {
-						outterTagName = template.dataset.tagName;
-					}
+					outterTagName = outterTagName || template.dataset.tagName || "div";
 					var parent = document.createElement(outterTagName);
 					parent.innerHTML = template.textContent.trim();
 					return parent.firstElementChild;
 				},
-				browser: {
-					versions: (function () {
-						var u = navigator.userAgent, app = navigator.appVersion;
-						return {//移动终端浏览器版本信息 
-							trident: u.indexOf('Trident') > -1, //IE内核
-							presto: u.indexOf('Presto') > -1, //opera内核
-							webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
-							gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') === -1, //火狐内核
-							ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
-							android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
-							iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQHD浏览器
-							iPad: u.indexOf('iPad') > -1, //是否iPad
-							webApp: u.indexOf('Safari') === -1 //是否web应该程序，没有头部与底部
-						};
-					})(),
-					language: (navigator.browserLanguage || navigator.language).toLowerCase()
-				},
-				mobile: (function () {
-					return !!navigator.userAgent.match(/Mobile/);
-				})(),
+				mobile: !!navigator.userAgent.match(/Mobile/),
 				dragable: function (ops) {
 					var x0, y0, log = { move: [], element: ops.element };
 					god.addEventListener(ops, "start", "stop", "move");
@@ -212,7 +185,7 @@
 							log.element.style.left = log.newElement.style.left;
 							log.element.style.top = log.newElement.style.top;
 						}
-					}
+					};
 				},
 				watchDrag: function (ops) {
 					function stop(e) {
@@ -235,7 +208,7 @@
 						window.removeEventListener("mousedown", start);
 					}
 					return {
-						release: release,
+						release: release
 					};
 				},
 				toast: function (message, duration, later) {
@@ -256,8 +229,8 @@
 								document.body.removeChild(e.p);
 								god.safe(later)();
 							}, duration, this);
-						}
-					}
+						};
+					};
 					new Toast().showMessage(message, duration || 1024);
 				},
 				setCenter: function (ele, always) {
@@ -270,11 +243,10 @@
 						window.addEventListener("resize", resize);
 						return function () {
 							window.removeEventListener("resize", resize);
-						}
+						};
 					}
 				}
 			};
-			return a;
 		})();
 		this.formatString = function () {
 			if (arguments.length === 0)
@@ -290,24 +262,6 @@
 			time = time || new Date();
 			return this.formatString("{0}/{1}/{2}", time.getHours(), time.getMinutes(), time.getSeconds());
 		},
-		this.trim = function (str, side, replace) {
-			if (god.modes.coding) {
-				str = ""; side = true; replace = [];
-			}
-			if (typeof replace === "string") {
-				replace = replace.split("");
-			}
-			if (typeof side === "boolean") {
-				return god.trim(str, side, replace);
-			}
-			return god.trim(str, true, side) + god.trim(str, false, side);
-		};
-		this.getTypeName = function (obj) {
-			if (typeof obj === "undefined") return undefined;
-			var name = obj.constructor.toString().trim();
-			var match = name.match(/[^\s]+?(?=\s*\()/);
-			return match.length ? match[0] : "";
-		};
 		this.idIndexFile = (function () {
 			function idIndexFileInner() {
 				var self = this;
@@ -424,42 +378,10 @@
 						r.nextIndex(self.loadImgs);
 					};
 					img.src = r.getPath();
-				}
+				};
 			}
 			return new idIndexFileInner();
 		})();
-		this.random = function (exclude) {
-			function innerClass() {
-				function randomString(len, chars) {
-					if (typeof exclude === "string") {
-						for (var i = 0; i < exclude.length; i++) {
-							chars = chars.replace(exclude[i], "");
-						}
-					}
-					var max = chars.length;
-					var result = "";
-					for (i = 0; i < len; i++) {
-						result += chars.charAt(Math.floor(Math.random() * max));
-					}
-					return result;
-				}
-				var fieldStart = "_$ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-				var keyboard = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()`-=[]\;',./~_+{}|:\"<>?";
-				this.keyboard = function (len) {
-					return randomString(len, keyboard);
-				};
-				this.fieldName = function (len) {
-					return randomString(1, fieldStart) + randomString(len - 1, keyboard);
-				};
-				this.number = function (len) {
-					return parseInt("0x" + randomString(1, "01234566789ABCDEF"));
-				};
-				this.color = function () {
-					return "#" + ("00000" + ((Math.random() * 16777215 + 0.5) >> 0).toString(16)).slice(-6);
-				}
-			};
-			return new innerClass();
-		};
 		this.safe = function (func, thisArg) {
 			if (!thisArg) {
 				thisArg = window;
@@ -475,16 +397,6 @@
 					console.log(e.message);
 				}
 			};
-		};
-		this.makeFunction = function (func) {
-			return typeof func === "function" ? func : this.emptyFunction;
-		};
-		this.removeItem = function (arr, filter) {
-			for (var i = arr.length - 1; i >= 0; i--) {
-				if (filter.call(arr[i], i)) {
-					arr.splice(i, 1);
-				}
-			}
 		};
 		this.color = (function () {
 			var innerClass = function () {
@@ -512,8 +424,8 @@
 						}
 						if (aNum.length === 3) {
 							var numHex = "#";
-							for (var i = 0; i < aNum.length; i += 1) {
-								numHex += (aNum[i] + aNum[i]);
+							for (let i = 0; i < aNum.length; i += 1) {
+								numHex += aNum[i] + aNum[i];
 							}
 							return numHex;
 						}
@@ -531,7 +443,7 @@
 							hex = sColorNew;
 						}
 						var sColorChange = [];
-						for (var i = 1; i < 7; i += 2) {
+						for (let i = 1; i < 7; i += 2) {
 							sColorChange.push(parseInt("0x" + hex.slice(i, i + 2)));
 						}
 						return sColorChange;
@@ -540,17 +452,17 @@
 				};
 				this.hsl2rgb = function (h, s, l) {//http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion/
 					var r, g, b;
+					function hue2rgb(p, q, t) {
+						if (t < 0) t += 1;
+						if (t > 1) t -= 1;
+						if (t < 1 / 6) return p + (q - p) * 6 * t;
+						if (t < 1 / 2) return q;
+						if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+						return p;
+					}
 					if (s === 0) {
 						r = g = b = l;
 					} else {
-						var hue2rgb = function hue2rgb(p, q, t) {
-							if (t < 0) t += 1;
-							if (t > 1) t -= 1;
-							if (t < 1 / 6) return p + (q - p) * 6 * t;
-							if (t < 1 / 2) return q;
-							if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-							return p;
-						}
 						var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
 						var p = 2 * l - q;
 						r = hue2rgb(p, q, h + 1 / 3);
@@ -600,7 +512,10 @@
 						r.push(c0[i] + parseInt((c1[i] - c0[i]) / p));
 					}
 					return str ? `rgba(${r.join(',')})` : r;
-				}
+				};
+				this.random = function () {
+					return "#" + ("00000" + (Math.random() * 16777215 + 0.5).toString(16)).slice(-6);
+				};
 			};
 			return new innerClass();
 		})();
@@ -684,12 +599,12 @@
 					}
 					var d = Math.abs(distance);
 					if (distance > 0) {
-						for (var i = 0; i < d - end; i++) {
+						for (let i = 0; i < d - end; i++) {
 							arr.push(instance(arr[arr.length - 1], false));
 							endAdded += 1;
 						}
 					} else {
-						for (var i = 0; i < d - front; i++) {
+						for (let i = 0; i < d - front; i++) {
 							arr.unshift(instance(arr[0], true));
 							frontAdded += 1;
 						}
@@ -733,7 +648,7 @@
 				moveArray: moveArray, removeItem: removeItem
 			};
 		})();
-	};
+	}
 	this.god = new GodThere();
 }).call(this);
 document.head.innerHTML += '<style type="text/css">@keyframes slide2topPosition{to{bottom:256px;display:none;}}@keyframes slide2topColor{to{color:rgba(0,0,0,0);background-color:rgba(0,0,0,0);border-color:rgba(0,0,0,0);}}.toast,.toast_slide2top{bottom:0;position:fixed;width:100%;text-align:center;z-index:1111;animation:slide2topPosition 2s cubic-bezier(0,1,0.5,1) 1 normal;}.toast .toastInner,.toast_slide2top .toastInner{padding:5px;display:inline-block;background-color:#393939;color:#a4a4a4;border-radius:5px;animation:slide2topColor 2s ease 1 normal;}</style>';

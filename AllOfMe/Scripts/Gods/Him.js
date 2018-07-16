@@ -1,11 +1,22 @@
-function Him(url, key) {
-	"user strict";
-	var events = {
-		waiting: s=>console.log(s),
-		error: s=>console.log(s),
-		done: s=>console.log(s)
-	};
+(function () {
 	var coding = location.href.length === 11;
+	var god = window.god || (window.god = {});
+	"user strict";
+	var ILikeCSharpSoI = "MakeJavasciptLookLikeCSharp";
+	var settings = (function () {
+		var r = { Key: "Him1344150689", Url: "/Gods" };
+		var s = coding ? null : localStorage.getItem(ILikeCSharpSoI);
+		try {
+			return s ? JSON.parse(s) : r;
+		} catch (e) {
+		}
+		localStorage.setItem(ILikeCSharpSoI, JSON.stringify(r));
+		return r;
+	})();
+	var CSharp = god.CSharp || (god.CSharp = {});
+	var Javascript = god.Javascript || (god.Javascript = {});
+	var events = {};
+	["waiting", "error", "done"].forEach(e=>events[e] = s=>console.log(s));
 	function isValid(e) {
 		return e instanceof String || !isNaN(e) || e instanceof Date || e instanceof Boolean;
 	}
@@ -54,7 +65,7 @@ function Him(url, key) {
 				}
 				var method = a0 instanceof HTMLFormElement,
 					data = null,
-					u = url,
+					u = settings.Url,
 					request;
 				if (method && !coding) {
 					if (!a0.checkValidity()) {
@@ -68,7 +79,7 @@ function Him(url, key) {
 					}
 					method = "post";
 					data = new FormData(request = a0);
-					data.append(key, m.Key);
+					data.append(settings.Key, m.Key);
 					for (var i in this) {
 						if (i.constructor !== Symbol && isValid(this[i]) && !(i in a0)) {
 							data.append(i, this[i]);
@@ -76,7 +87,7 @@ function Him(url, key) {
 					}
 				} else {
 					method = "get";
-					u += `?${key}=${m.Key}`;
+					u += `?${settings.Key}=${m.Key}`;
 					request = {};
 					if (m.Parameters) {
 						for (let i in this) {
@@ -147,13 +158,13 @@ function Him(url, key) {
 			}
 		}
 	}
-	for (var i in Him.CSharp) {
-		if (!(i in Him.Javascript)) {
-			Him.Javascript[i] = {};
+	for (var i in CSharp) {
+		if (!(i in Javascript)) {
+			Javascript[i] = {};
 		}
-		findClass(Him.CSharp[i], Him.Javascript[i]);
+		findClass(CSharp[i], Javascript[i]);
 	}
-	Him.SetEvents = function (a) {
+	god[ILikeCSharpSoI] = function (a) {
 		if (coding) {
 			cls.forEach(e=> {
 				for (var i in e.prototype) {
@@ -165,6 +176,4 @@ function Him(url, key) {
 			events[i] = a[i] || events[i];
 		}
 	};
-}
-Him.CSharp = {};
-Him.Javascript = {};
+})();

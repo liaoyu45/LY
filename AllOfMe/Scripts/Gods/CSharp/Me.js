@@ -1,8 +1,9 @@
-Him.CSharp.Me = {
+window.god = window.god || (window.god = {});
+(god.CSharp || (god.CSharp = {})).Me = {
   "I": [
     {
-      "Name": "FindMyself",
-      "Key": "1167702007.1410996241",
+      "Name": "WakeUp",
+      "Key": "1167702007.2093240825",
       "Parameters": [
         "name",
         "password"
@@ -10,8 +11,8 @@ Him.CSharp.Me = {
       "Return": ""
     },
     {
-      "Name": "Leave",
-      "Key": "1167702007.1905830978",
+      "Name": "Sleep",
+      "Key": "1167702007.764117084",
       "Return": 0
     },
     {
@@ -55,7 +56,7 @@ Him.CSharp.Me = {
           "Efforts": [],
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-12T10:11:08.6890186+08:00"
+          "AppearTime": "2018-07-16T16:52:25.7279592+08:00"
         }
       ]
     },
@@ -73,7 +74,7 @@ Him.CSharp.Me = {
           "Plan": null,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-12T10:11:08.7500984+08:00"
+          "AppearTime": "2018-07-16T16:52:25.7700173+08:00"
         }
       ]
     }

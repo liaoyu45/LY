@@ -3,8 +3,8 @@
 namespace Me {
 	public interface I : World.I {
 		int Id { get; set; }
-		string FindMyself(string name, string password);
-		void Leave();
+		string WakeUp(string name, string password);
+		void Sleep();
 		void Pay(int planId, string content);
 		void Desire(string thing);
 		void GiveUp(int planId);
