@@ -36,13 +36,15 @@
 			<tr id="planActions" style="display: none;">
 				<td colspan="3">
 					<form id="newPlanForm">
-						<input name="thing" required placeholder="新计划" />
+						<input name="thing" required placeholder="新计划" data-bind="value:PendingPlan" />
 						<input type="button" onclick="me.Desire(this)" value="确定" />
 					</form>
 					<form id="queryPlansForm" data-him="QueryPlans">
 						<input type="date" name="start" placeholder="始于" />
 						<input type="date" name="end" placeholder="止于" />
-						<input type="button" value="确定" onclick="me.QueryPlans(this);" />
+						<input type="hidden" name="take" data-bind="value:$root.PlansTake" />
+						<input type="hidden" name="skip" data-bind="value:$root.PlansSkip" />
+						<input type="button" value="确定" onclick="me.QueryPlans();" />
 					</form>
 				</td>
 			</tr>
@@ -53,6 +55,10 @@
 				<h2 data-bind="text: Content,click:function(){me.QueryEfforts(Id);}"></h2>
 			</li>
 		</ul>
+		<div data-bind="visible:Plans().length">
+			<input type="range" data-bind="value:$root.PlansTake" min="1" max="8" />
+			<a href="javascript:void(0)" onclick="me.QueryPlans();">加载更多</a>
+		</div>
 	</div>
 	<!--/ko-->
 	<div data-bind="with:CurrentPlan">
@@ -68,6 +74,8 @@
 					<form id="queryEffortsForm">
 						<input type="date" data-bind="value:AppearTime" name="effortStart" />
 						<input type="date" name="effortEnd" />
+						<input type="hidden" name="take" data-bind="value:$root.EffortsTake" />
+						<input type="hidden" name="skip" data-bind="value:$root.EffortsSkip" />
 						<input type="button" value="确定" onclick="me.QueryEfforts(this);" />
 					</form>
 					<form id="newEffortForm">
@@ -85,6 +93,10 @@
 				<article data-bind="text: Content"></article>
 			</li>
 		</ul>
+		<div data-bind="visible:HaveMoreEfforts">
+			<input type="range" data-bind="value:$root.EffortsTake" min="1" max="8" />
+			<a href="javascript:void(0)" onclick="me.QueryEfforts();">加载更多</a>
+		</div>
 	</div>
 </body>
 </html>

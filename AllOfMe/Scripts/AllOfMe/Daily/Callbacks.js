@@ -15,11 +15,17 @@ god.Javascript.Me.I.Desire = function (e) {
 god.Javascript.Me.I.Sleep = () =>location.reload();
 god.Javascript.Me.I.QueryEfforts = function (e, r) {
 	vm.CurrentPlan(vm.Plans().filter(ee=>ee.Id === r.planId)[0]);
-	vm.CurrentPlan().Efforts(e);
+	if (!vm.EffortsSkip()) {
+		vm.CurrentPlan().Efforts.removeAll();
+	}
+	vm.CurrentPlan().Efforts(vm.CurrentPlan().Efforts().concat(e));
 };
 god.Javascript.Me.I.QueryPlans = function (e) {
-	vm.Plans(e);
-	vm.Plans().forEach(e=>e.Efforts = ko.observableArray(e.Efforts));
+	if (!vm.PlansSkip()) {
+		vm.Plans.removeAll();
+	}
+	e.forEach(ee=>ee.Efforts = ko.observableArray(ee.Efforts));
+	vm.Plans(vm.Plans().concat(e));
 };
 god.Javascript.Me.I.Pay = function (e) {
 	vm.CurrentPlan().Efforts.push({ Content: vm.PendingEffort(), AppearTime: new Date() });

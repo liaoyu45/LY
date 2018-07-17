@@ -11,7 +11,7 @@ namespace Me.Invisible {
 
 		private DateTime today = DateTime.Now.Date;
 		private DateTime tomorrow = DateTime.Now.AddDays(1).Date;
-
+		static private DateTime mine = DateTime.Parse("1990-03-13");
 		void Me.I.Pay(int planId, string content) {
 			Universe.Using(d => {
 				var p = d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId);
@@ -38,13 +38,16 @@ namespace Me.Invisible {
 			});
 		}
 
-		Plan[] Me.I.QueryPlans(DateTime? start, DateTime? end, string tag) {
+		Plan[] Me.I.QueryPlans(DateTime? start, DateTime? end, int skip, int take) {
 			Rang.Arrange(ref start, ref end, () => start.Value.AddDays(1));
-			var r = Universe.Using(d => d.Plans.Where(e =>
-				e.GodId == Id
-				&& (tag == null || tag.Length == 0 || tag == e.Tag)
-				&& (e.AppearTime > (start ?? DateTime.MinValue))
-				&& (e.AppearTime < (end ?? DateTime.MaxValue))).OrderBy(e => e.AppearTime).ToList());
+			var r = Universe.Using(d => {
+				d.Database.Log = e => Console.WriteLine(e);
+				return d.Plans.Where(e =>
+e.GodId == Id
+&& (e.AppearTime > (start ?? mine))
+&& (e.AppearTime < (end ?? DateTime.Now))
+).OrderBy(e => e.AppearTime).Skip(skip).Take(take).ToList();
+			});
 			return r.ToArray();
 		}
 

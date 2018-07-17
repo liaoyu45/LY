@@ -8,7 +8,7 @@ namespace Me {
 		void Pay(int planId, string content);
 		void Desire(string thing);
 		void GiveUp(int planId);
-		Plan[] QueryPlans(DateTime? start, DateTime? end, string tag);
+		Plan[] QueryPlans(DateTime? start, DateTime? end, int skip, int take);
 		Effort[] QueryEfforts(int planId, DateTime? start, DateTime? end);
 	}
 }

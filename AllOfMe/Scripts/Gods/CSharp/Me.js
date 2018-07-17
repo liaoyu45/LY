@@ -42,21 +42,21 @@ window.god = window.god || (window.god = {});
     },
     {
       "Name": "QueryPlans",
-      "Key": "1167702007.1770967912",
+      "Key": "1167702007.1799548965",
       "Parameters": [
         "start",
         "end",
-        "tag"
+        "skip",
+        "take"
       ],
       "Return": [
         {
-          "Tag": null,
           "GodId": 0,
           "God": null,
           "Efforts": [],
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-16T16:52:25.7279592+08:00"
+          "AppearTime": "2018-07-17T16:58:38.3280422+08:00"
         }
       ]
     },
@@ -74,7 +74,7 @@ window.god = window.god || (window.god = {});
           "Plan": null,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-16T16:52:25.7700173+08:00"
+          "AppearTime": "2018-07-17T16:58:38.3740917+08:00"
         }
       ]
     }

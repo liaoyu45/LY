@@ -8,3 +8,8 @@ table {
 	width: 100%;
 	text-align: center;
 }
+
+input[type=range], input[type=range] + a {
+	display: inline-block;
+	float: left;
+}
