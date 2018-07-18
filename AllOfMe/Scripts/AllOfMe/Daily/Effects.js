@@ -1,4 +1,7 @@
-﻿/// <reference path="ViewModel.js" />
+﻿/// <reference path="../../Gods/CSharp/Me.js" />
+/// <reference path="../../Gods/Him.js" />
+/// <reference path="ViewModel.js" />
+/// <reference path="Callbacks.js" />
 addEventListener("keydown", e => {
 	if (e.keyCode === 27) {
 		vm.CurrentPlan(null);

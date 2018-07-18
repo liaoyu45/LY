@@ -4,6 +4,7 @@
 <head>
 	<title></title>
 	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<script src="god.js"></script>
 
 	<script src="/Scripts/Gods/CSharp/Me.js"></script>
 	<script src="Scripts/Gods/Him.js"></script>
@@ -44,7 +45,7 @@
 						<input type="date" name="end" placeholder="止于" />
 						<input type="hidden" name="take" data-bind="value:$root.PlansTake" />
 						<input type="hidden" name="skip" data-bind="value:$root.PlansSkip" />
-						<input type="button" value="确定" onclick="me.QueryPlans();" />
+						<input type="button" value="确定" onclick="vm.PlansSkip(0);me.QueryPlans();" />
 					</form>
 				</td>
 			</tr>
@@ -52,17 +53,17 @@
 		<ul data-bind="foreach: Plans">
 			<li>
 				<span data-bind="text: AppearTime"></span>
-				<h2 data-bind="text: Content,click:function(){me.QueryEfforts(Id);}"></h2>
+				<h5 data-bind="text: Content,click:function(){me.QueryEfforts(Id);}"></h5>
 			</li>
 		</ul>
 		<div data-bind="visible:Plans().length">
-			<input type="range" data-bind="value:$root.PlansTake" min="1" max="8" />
-			<a href="javascript:void(0)" onclick="me.QueryPlans();">加载更多</a>
+			<input type="range" data-bind="value:$root.PlansTake" min="1" max="8" value="4" />
+			<a href="javascript:void(0)" onclick="vm.PlansSkip(vm.Plans().length + vm.PlansTake()); me.QueryPlans();">加载更多</a>
 		</div>
 	</div>
 	<!--/ko-->
 	<div data-bind="with:CurrentPlan">
-		<h2 data-bind="text:Content,click:function(){$root.CurrentPlan(null);}"></h2>
+		<h1 data-bind="text:Content,click:function(){$root.CurrentPlan(null);}"></h1>
 		<table>
 			<tr>
 				<td>努力</td>
@@ -93,7 +94,7 @@
 				<article data-bind="text: Content"></article>
 			</li>
 		</ul>
-		<div data-bind="visible:HaveMoreEfforts">
+		<div data-bind="visible:Efforts().length">
 			<input type="range" data-bind="value:$root.EffortsTake" min="1" max="8" />
 			<a href="javascript:void(0)" onclick="me.QueryEfforts();">加载更多</a>
 		</div>

@@ -6,7 +6,7 @@ namespace Me {
 		string WakeUp(string name, string password);
 		void Sleep();
 		void Pay(int planId, string content);
-		void Desire(string thing);
+		int Desire(string thing);
 		void GiveUp(int planId);
 		Plan[] QueryPlans(DateTime? start, DateTime? end, int skip, int take);
 		Effort[] QueryEfforts(int planId, DateTime? start, DateTime? end);

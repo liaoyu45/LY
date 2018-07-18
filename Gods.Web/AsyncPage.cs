@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Routing;
 using System.Web.SessionState;
 using System.Web.UI;
+using System.IO;
 
 namespace Gods.Web {
 	public class Me : You, IRequiresSessionState, IRouteHandler {
@@ -35,9 +37,12 @@ namespace Gods.Web {
 					result = ((DateTime)result).ToString("YYYY-MM-DD HH:ss:mm");
 				} else if (result.GetType() != typeof(string) && result.GetType().IsClass) {
 					context.Response.ContentType = "application/json";
-					result = Newtonsoft.Json.JsonConvert.SerializeObject(result, new Newtonsoft.Json.JsonSerializerSettings {
-						ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-					});
+					var er = new JsonSerializer { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, Formatting = Formatting.Indented };
+					er.Converters.Add(new Newtonsoft.Json.Converters.IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" });
+					using (var str = new StringWriter()) {
+						er.Serialize(str, result);
+						result = str.ToString();
+					}
 				}
 			}
 			context.Response.Write(result);

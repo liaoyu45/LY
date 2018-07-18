@@ -42,7 +42,7 @@ window.god = window.god || (window.god = {});
     },
     {
       "Name": "QueryPlans",
-      "Key": "1167702007.1799548965",
+      "Key": "1167702007.1806772885",
       "Parameters": [
         "start",
         "end",
@@ -56,13 +56,13 @@ window.god = window.god || (window.god = {});
           "Efforts": [],
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-17T16:58:38.3280422+08:00"
+          "AppearTime": "2018-07-18T15:09:26.3496207+08:00"
         }
       ]
     },
     {
       "Name": "QueryEfforts",
-      "Key": "1167702007.2036627289",
+      "Key": "1167702007.2029403369",
       "Parameters": [
         "planId",
         "start",
@@ -74,7 +74,7 @@ window.god = window.god || (window.god = {});
           "Plan": null,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-17T16:58:38.3740917+08:00"
+          "AppearTime": "2018-07-18T15:09:26.4086871+08:00"
         }
       ]
     }

@@ -6,9 +6,15 @@
 			coding: location.href.length === 11,
 			debugging: location.href.indexOf("localhost") > 0
 		};
-		Object.defineProperty(this, "emptyFunction", {
-			get: function () {
-				return function () { };
+		Object.defineProperties(this, {
+			emptyFunction: {
+				get: () =>() => { }
+			},
+			now: {
+				get: () => {
+					var n = new Date();
+					return `${n.getFullYear()}-${n.getMonth() + 1}-${n.getDate()} ${n.getHours()}:${n.getMinutes()}:${n.getSeconds()}`;
+				}
 			}
 		});
 		this.removeEventListener = function (obj, ename, func) {

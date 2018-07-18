@@ -1,4 +1,5 @@
-﻿/// <reference path="../../Gods/CSharp/Me.js" />
+﻿/// <reference path="C:\Users\zy\Source\Repos\LY\AllOfMe\god.js" />
+/// <reference path="../../Gods/CSharp/Me.js" />
 /// <reference path="../../Gods/Him.js" />
 /// <reference path="../../Gods/His.js" />
 /// <reference path="ViewModel.js" />
@@ -9,11 +10,12 @@ god.Javascript.Me.I.WakeUp = function (e) {
 		this.QueryPlans();
 	}
 };
-god.Javascript.Me.I.Desire = function (e) {
-	this.QueryPlans();
+god.Javascript.Me.I.Desire = function (e, r) {
+	vm.CurrentPlan({ Content: r.thing.value, AppearTime: god.now, Id: e, Efforts: ko.observableArray() });
 };
 god.Javascript.Me.I.Sleep = () =>location.reload();
 god.Javascript.Me.I.QueryEfforts = function (e, r) {
+	vm.PendingEffort(null);
 	vm.CurrentPlan(vm.Plans().filter(ee=>ee.Id === r.planId)[0]);
 	if (!vm.EffortsSkip()) {
 		vm.CurrentPlan().Efforts.removeAll();
@@ -28,8 +30,7 @@ god.Javascript.Me.I.QueryPlans = function (e) {
 	vm.Plans(vm.Plans().concat(e));
 };
 god.Javascript.Me.I.Pay = function (e) {
-	vm.CurrentPlan().Efforts.push({ Content: vm.PendingEffort(), AppearTime: new Date() });
-	vm.PendingEffort(null);
+	this.QueryEfforts(vm.CurrentPlan().Id);
 };
 
 god.MakeJavasciptLookLikeCSharp({

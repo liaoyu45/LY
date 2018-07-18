@@ -10,15 +10,11 @@ window.vm = {
 	CurrentPlan: ko.observable(),
 	PendingPlan: ko.observable(),
 	PendingEffort: ko.observable(),
-	PlansSkip: ko.computed(function () {
-		return "vm" in window && vm.Plans().length;
-	}),
-	EffortsSkip: ko.computed(function () {
-		"vm" in window && vm.CurrentPlan().Efforts().length
-	}),
-	PlansTake: ko.observable(8),
-	EffortsTake: ko.observable(8),
-	HaveMorePlans: ko.computed(() =>"vm" in window && vm.Plans().length % vm.PlansTake() === 0),
-	HaveMoreEfforts: ko.computed(() =>"vm" in window && vm.CurrentPlan() && vm.CurrentPlan().Efforts().length % vm.EffortsTake() === 0)
+	PlansSkip: ko.observable(),
+	EffortsSkip: ko.observable(),
+	PlansTake: ko.observable(3),
+	EffortsTake: ko.observable(3),
+	HaveMorePlans: ko.observable(),
+	HaveMoreEfforts: ko.observable()
 };
 addEventListener("load", () => ko.applyBindings(vm));

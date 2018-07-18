@@ -19,12 +19,15 @@ namespace Me.Invisible {
 			});
 		}
 
-		void Me.I.Desire(string thing) {
-			Universe.Using(d => {
-				d.Plans.Add(new Plan {
+		int Me.I.Desire(string thing) {
+			return Universe.Using(d => {
+				var plan = new Plan {
 					GodId = Id,
 					Content = thing
-				});
+				};
+				d.Plans.Add(plan);
+				d.SaveChanges();
+				return plan.Id;
 			});
 		}
 
@@ -46,7 +49,7 @@ namespace Me.Invisible {
 e.GodId == Id
 && (e.AppearTime > (start ?? mine))
 && (e.AppearTime < (end ?? DateTime.Now))
-).OrderBy(e => e.AppearTime).Skip(skip).Take(take).ToList();
+).OrderByDescending(e => e.AppearTime).Skip(skip).Take(take).ToList();
 			});
 			return r.ToArray();
 		}

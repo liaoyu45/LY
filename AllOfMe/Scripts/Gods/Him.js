@@ -9,6 +9,7 @@
 		try {
 			return s ? JSON.parse(s) : r;
 		} catch (e) {
+			console.log("can not be");
 		}
 		localStorage.setItem(ILikeCSharpSoI, JSON.stringify(r));
 		return r;
@@ -120,14 +121,15 @@
 						s = true;
 					} else if (s.length && !isNaN(s)) {
 						s = (s.indexOf('.') > -1 ? parseFloat : parseInt)(s);
-					} else if (new RegExp(/^[{\[].*[}\]]$/).test(s)) {
+					} else if (new RegExp(/^\d+-(1[012]|0?[1-9])-([12][0-9]|0?[1-9])$/).test(s)) {
+						s = new Date(Date.parse(s));
+					} else if ((s.startsWith('[') || s.startsWith('{')) && typeof m["Return"] === "object") {
 						try {
 							s = JSON.parse(s);
 						} catch (e) {
 							console.log(e);
+							console.log(s);
 						}
-					} else if (new RegExp(/^\d+-(1[012]|0?[1-9])-([12][0-9]|0?[1-9])$/).test(s)) {
-						s = new Date(Date.parse(s));
 					}
 					if (typeof m["Return"] === "object" && typeof s === "string" && s) {
 						[events.error, function () { }].filter(ee=>typeof ee === "function")[0].apply(this, [s, ev]);
