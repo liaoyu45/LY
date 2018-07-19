@@ -40,7 +40,7 @@
 						<input name="thing" required placeholder="新计划" data-bind="value:PendingPlan" />
 						<input type="button" onclick="me.Desire(this)" value="确定" />
 					</form>
-					<form id="queryPlansForm" data-him="QueryPlans">
+					<form id="queryPlansForm" data-god="QueryPlans">
 						<input type="date" name="start" placeholder="始于" />
 						<input type="date" name="end" placeholder="止于" />
 						<input type="hidden" name="take" data-bind="value:$root.PlansTake" />
@@ -52,18 +52,25 @@
 		</table>
 		<ul data-bind="foreach: Plans">
 			<li>
-				<span data-bind="text: AppearTime"></span>
+				<time data-bind="text: AppearTime"></time><span data-bind="text: Done?'已完成':'进行中'"></span>
 				<h5 data-bind="text: Content,click:function(){me.QueryEfforts(Id);}"></h5>
 			</li>
 		</ul>
 		<div data-bind="visible:Plans().length">
 			<input type="range" data-bind="value:$root.PlansTake" min="1" max="8" value="4" />
-			<a href="javascript:void(0)" onclick="vm.PlansSkip(vm.Plans().length + vm.PlansTake()); me.QueryPlans();">加载更多</a>
+			<a href="javascript:void(0)" onclick="vm.PlansSkip(vm.Plans().length); me.QueryPlans();">加载更多</a>
 		</div>
 	</div>
 	<!--/ko-->
 	<div data-bind="with:CurrentPlan">
 		<h1 data-bind="text:Content,click:function(){$root.CurrentPlan(null);}"></h1>
+		<time data-bind="text: AppearTime"></time>
+		<form>
+			<input type="hidden" name="planId" data-bind="value: Id" />
+			<input type="button" value="放弃" onclick="me.GiveUp(this);" data-bind="attr:{disabled:Done}" />
+			<input type="button" value="完成" onclick="me.Finish(this);" data-bind="attr:{disabled:!Done()}" />
+			<input type="button" value="遗忘" onclick="me.Abandon(this);" />
+		</form>
 		<table>
 			<tr>
 				<td>努力</td>
@@ -90,13 +97,13 @@
 		</table>
 		<ul data-bind="foreach:Efforts">
 			<li>
-				<span data-bind="text: AppearTime"></span>
+				<time data-bind="text: AppearTime"></time>
 				<article data-bind="text: Content"></article>
 			</li>
 		</ul>
 		<div data-bind="visible:Efforts().length">
 			<input type="range" data-bind="value:$root.EffortsTake" min="1" max="8" />
-			<a href="javascript:void(0)" onclick="me.QueryEfforts();">加载更多</a>
+			<a href="javascript:void(0)" onclick="$root.EffortsSkip(Efforts().length); me.QueryEfforts();">加载更多</a>
 		</div>
 	</div>
 </body>

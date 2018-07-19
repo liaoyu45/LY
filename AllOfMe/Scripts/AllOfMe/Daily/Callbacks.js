@@ -10,10 +10,15 @@ god.Javascript.Me.I.WakeUp = function (e) {
 		this.QueryPlans();
 	}
 };
-god.Javascript.Me.I.Desire = function (e, r) {
-	vm.CurrentPlan({ Content: r.thing.value, AppearTime: god.now, Id: e, Efforts: ko.observableArray() });
+god.Javascript.Me.I.Sleep = function () {
+	location.reload();
 };
-god.Javascript.Me.I.Sleep = () =>location.reload();
+god.Javascript.Me.I.Desire = function (e, r) {
+	vm.PlansSkip(0);
+	this.QueryPlans(function () {
+		vm.CurrentPlan({ Content: r.thing.value, AppearTime: god.now, Id: e, Efforts: ko.observableArray() });
+	});
+};
 god.Javascript.Me.I.QueryEfforts = function (e, r) {
 	vm.PendingEffort(null);
 	vm.CurrentPlan(vm.Plans().filter(ee=>ee.Id === r.planId)[0]);
@@ -26,13 +31,21 @@ god.Javascript.Me.I.QueryPlans = function (e) {
 	if (!vm.PlansSkip()) {
 		vm.Plans.removeAll();
 	}
-	e.forEach(ee=>ee.Efforts = ko.observableArray(ee.Efforts));
+	e.forEach(ee=> {
+		ee.Efforts = ko.observableArray(ee.Efforts);
+		ee.Done = ko.observable(ee.Done);
+	});
 	vm.Plans(vm.Plans().concat(e));
 };
 god.Javascript.Me.I.Pay = function (e) {
 	this.QueryEfforts(vm.CurrentPlan().Id);
 };
+god.Javascript.Me.I.Abandon = () => {
+	return confirm("永远放弃这个计划，不再想起么？");
+};
+god.Javascript.Me.I.Abandon = function () {
 
+};
 god.MakeJavasciptLookLikeCSharp({
 	error: function (s) {
 		alert(s);

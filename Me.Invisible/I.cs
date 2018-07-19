@@ -31,16 +31,6 @@ namespace Me.Invisible {
 			});
 		}
 
-		void Me.I.GiveUp(int planId) {
-			Universe.Using(d => {
-				var p = d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId);
-				if (p == null) {
-					return;
-				}
-				d.Plans.Remove(p);
-			});
-		}
-
 		Plan[] Me.I.QueryPlans(DateTime? start, DateTime? end, int skip, int take) {
 			Rang.Arrange(ref start, ref end, () => start.Value.AddDays(1));
 			var r = Universe.Using(d => {
@@ -76,6 +66,27 @@ e.GodId == Id
 
 		void Me.I.Sleep() {
 			Id = 0;
+		}
+
+		void Me.I.Forget(int planId) {
+			Universe.Using(d => {
+				var p = d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId);
+				if (p != null) {
+					d.Plans.Remove(p);
+				}
+			});
+		}
+
+		void Me.I.GiveUp(int planId) {
+			Universe.Using(d => {
+				(d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId) ?? new Plan()).Abandoned = true;
+			});
+		}
+
+		void Me.I.Finish(int planId) {
+			Universe.Using(d => {
+				(d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId) ?? new Plan()).Done = true;
+			});
 		}
 
 		Effort[] Me.I.QueryEfforts(int planId, DateTime? start, DateTime? end) {

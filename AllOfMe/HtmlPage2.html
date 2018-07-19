@@ -5,7 +5,18 @@
 	<meta charset="utf-8" />
 </head>
 <body>
-	<canvas id="bgAni" width="333" height="222"></canvas>
-	<script src="JavaScript1.js"></script>
+	<!--<canvas id="bgAni" width="333" height="222"></canvas>-->
+	<!--<script src="JavaScript1.js"></script>-->
+	<i id="e"></i>
+	<script type="text/javascript">
+		function myfunction(a) {
+			e.innerHTML += /\(\s*god\s*\)|god\s*=>/.test(a.toString().split('{'[0])) + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + a.toString() + "<br/>";
+		}
+		myfunction(function (god) { });
+		myfunction(function e(god) { });
+		myfunction((god) => { });
+		myfunction(() => { });
+		myfunction(god=> { });
+	</script>
 </body>
 </html>

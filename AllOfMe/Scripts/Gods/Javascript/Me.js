@@ -6,6 +6,8 @@ window.god = window.god || (window.god = {});
     "Pay": null,
     "Desire": null,
     "GiveUp": null,
+    "Finish": null,
+    "Forget": null,
     "QueryPlans": null,
     "QueryEfforts": null
   }

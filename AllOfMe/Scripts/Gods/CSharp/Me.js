@@ -41,6 +41,22 @@ window.god = window.god || (window.god = {});
       "Return": 0
     },
     {
+      "Name": "Finish",
+      "Key": "1167702007.347262110",
+      "Parameters": [
+        "planId"
+      ],
+      "Return": 0
+    },
+    {
+      "Name": "Forget",
+      "Key": "1167702007.1429488596",
+      "Parameters": [
+        "planId"
+      ],
+      "Return": 0
+    },
+    {
       "Name": "QueryPlans",
       "Key": "1167702007.1806772885",
       "Parameters": [
@@ -52,11 +68,13 @@ window.god = window.god || (window.god = {});
       "Return": [
         {
           "GodId": 0,
+          "Done": false,
+          "Abandoned": false,
           "God": null,
           "Efforts": [],
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-18T15:09:26.3496207+08:00"
+          "AppearTime": "2018-07-19T16:20:57.5318992+08:00"
         }
       ]
     },
@@ -74,7 +92,7 @@ window.god = window.god || (window.god = {});
           "Plan": null,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-18T15:09:26.4086871+08:00"
+          "AppearTime": "2018-07-19T16:20:57.6380012+08:00"
         }
       ]
     }

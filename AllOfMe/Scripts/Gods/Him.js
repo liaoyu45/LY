@@ -27,13 +27,11 @@
 		Object.defineProperties(jo, (function () {
 			var r = {};
 			oi.map(m=>m.Name).forEach(i=> {
-				r[i] = (function () {
-					var arr = jo[i] instanceof Function ? [jo[i]] : [];
-					return {
-						get: () =>arr,
-						set: v=>(v instanceof Function ? arr : []).push(v)
-					};
-				}());
+				var arr = jo[i] instanceof Function ? [jo[i]] : [];
+				r[i] = {
+					get: () =>arr,
+					set: v=>(v instanceof Function ? arr : []).push(v)
+				};
 			});
 			return r;
 		})());
@@ -54,7 +52,7 @@
 		oi.forEach(m=> {
 			obj[n].prototype[m.Name] = function () {
 				var ev = [...arguments].filter(e=>e instanceof Event)[0] || window.event;
-				var a0 = arguments[0] || document.querySelector(`[data-him='${m.Name}']`);
+				var a0 = document.querySelector(`form[data-god='${m.Name}']`) || [...arguments].filter(e=>e instanceof HTMLElement)[0];
 				if (a0 instanceof HTMLElement) {//while coding, instanceof returns true
 					while (!(a0 instanceof HTMLFormElement)) {
 						a0 = a0.parentElement;
@@ -107,7 +105,17 @@
 						}
 					}
 				}
-				var cb = [...arguments, ...jo[m.Name], function () { }].filter(e=>typeof e === "function");
+				var cb = jo[m.Name].filter(e=>e.toString().split('{')[0].indexOf("=>") > -1);
+				for (var i of cb) {
+					var bad;
+					try {
+						if (bad = !i(request)) {
+							return;
+						}
+					} catch (e) {
+					}
+				}
+				cb = [...arguments, ...jo[m.Name], function () { }].filter(e=>typeof e === "function" && e.toString().split('{')[0].indexOf("=>") === -1);
 				var r = new XMLHttpRequest();
 				r.open(method, u);
 				r.onabort = () =>this[ing] = false;
@@ -123,7 +131,7 @@
 						s = (s.indexOf('.') > -1 ? parseFloat : parseInt)(s);
 					} else if (new RegExp(/^\d+-(1[012]|0?[1-9])-([12][0-9]|0?[1-9])$/).test(s)) {
 						s = new Date(Date.parse(s));
-					} else if ((s.startsWith('[') || s.startsWith('{')) && typeof m["Return"] === "object") {
+					} else if (s && typeof m["Return"] === "object") {
 						try {
 							s = JSON.parse(s);
 						} catch (e) {
@@ -135,7 +143,16 @@
 						[events.error, function () { }].filter(ee=>typeof ee === "function")[0].apply(this, [s, ev]);
 						return;
 					}
-					cb.forEach(e=>e.apply(this, [coding ? m["Return"] : s, request, ev]));
+					for (var i of cb) {
+						var bad;
+						try {
+							if (bad = i.apply(this, [s || m["Return"], request, ev])) {
+								break;
+							}
+						} catch (e) {
+							break;
+						}
+					}
 				};
 				if (this[obo]) {
 					if (this[ing]) {
