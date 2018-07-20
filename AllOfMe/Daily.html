@@ -30,40 +30,36 @@
 		<h1 data-bind="text:Name" onclick="me.Sleep();"></h1>
 		<table>
 			<tr>
-				<td>计划</td>
-				<td onclick="toggleForms(planActions, newPlanForm);">🖊</td>
-				<td onclick="toggleForms(planActions, queryPlansForm);">🔍</td>
-			</tr>
-			<tr id="planActions" style="display: none;">
-				<td colspan="3">
-					<form id="newPlanForm">
-						<input name="thing" required placeholder="新计划" data-bind="value:PendingPlan" />
-						<input type="button" onclick="me.Desire(this)" value="确定" />
-					</form>
-					<form id="queryPlansForm" data-god="QueryPlans">
-						<input type="date" name="start" placeholder="始于" />
-						<input type="date" name="end" placeholder="止于" />
-						<div>
-							遗忘：<label>全部：<input type="radio" name="abandoned" checked /></label>
-							<label>否：<input type="radio" name="abandoned" value="false" /></label>
-							<label>是：<input type="radio" name="abandoned" value="true" /></label>
-						</div>
-						<div>
-							完成：<label>全部：<input type="radio" name="done" checked /></label>
-							<label>否：<input type="radio" name="done" value="false" /></label>
-							<label>是：<input type="radio" name="done" value="true" /></label>
-						</div>
-						<input type="hidden" name="take" data-bind="value:$root.PlansTake" />
-						<input type="hidden" name="skip" data-bind="value:$root.PlansSkip" />
-						<input type="button" value="确定" onclick="vm.PlansSkip(0);me.QueryPlans();" />
-					</form>
-				</td>
+				<td onclick="toggleForms(planActions, newPlanForm);">新的计划</td>
+				<td onclick="toggleForms(planActions, queryPlansForm);">回顾</td>
 			</tr>
 		</table>
+		<div id="planActions" style="display: none;">
+			<div>
+				<label>始于：<time data-bind="text: PlanStart"></time></label>
+				<label>止于：<time data-bind="text: PlanEnd"></time></label>
+			</div>
+			<form id="newPlanForm">
+				<input name="thing" required placeholder="新计划" data-bind="value:PendingPlan" />
+				<input type="button" onclick="me.Desire(this);this.previousElementSibling.focus();" value="确定" />
+			</form>
+			<form id="queryPlansForm" data-god="QueryPlans">
+				<input type="date" name="start" data-bind="value: PlanStart" placeholder="始于" />
+				<input type="date" name="end" data-bind="value: PlanEnd" placeholder="止于" />
+				<div>
+					<label>全部：<input type="radio" name="done" checked /></label>
+					<label>未完成：<input type="radio" name="done" value="false" /></label>
+					<label>已完成：<input type="radio" name="done" value="true" /></label>
+				</div>
+				<input type="hidden" name="take" data-bind="value:$root.PlansTake" />
+				<input type="hidden" name="skip" data-bind="value:$root.PlansSkip" />
+				<input type="button" value="确定" onclick="vm.PlansSkip(0);me.QueryPlans();" />
+			</form>
+		</div>
 		<ul data-bind="foreach: Plans">
 			<li>
 				<h5 data-bind="text: Content,click:function(){me.QueryEfforts(Id);}"></h5>
-				<time data-bind="text: AppearTime"></time><span data-bind="text: Done()?'已完成':Abandoned()?'已搁置':'进行中'"></span>
+				<time data-bind="text: AppearTime"></time><span style="float: right;" data-bind="text: Done()?'已完成':'进行中'"></span>
 			</li>
 		</ul>
 		<div data-bind="visible:Plans().length">
@@ -75,36 +71,29 @@
 	<div data-bind="with:CurrentPlan">
 		<h1 data-bind="text:Content,click:function(){$root.CurrentPlan(null);}"></h1>
 		<time data-bind="text: AppearTime"></time>
-		<form>
-			<input type="hidden" name="planId" data-bind="value: Id" />
-			<input type="button" value="放弃" onclick="me.GiveUp(this);" data-bind="attr:{disabled:Done()||Abandoned()}" />
-			<input type="button" value="完成" onclick="me.Finish(this);" data-bind="attr:{disabled:Done()}" />
-			<input type="button" value="遗忘" onclick="me.Forget(this);" data-bind="attr:{disabled:Done()||Abandoned()}" />
-		</form>
 		<table>
 			<tr>
-				<td>努力</td>
-				<td onclick="toggleForms(effortActions, newEffortForm);">🖊</td>
-				<td onclick="toggleForms(effortActions, queryEffortsForm);">🔍</td>
-			</tr>
-			<tr id="effortActions" style="display: none;">
-				<td colspan="3">
-					<form id="queryEffortsForm">
-						<input type="date" data-bind="value:AppearTime" name="effortStart" />
-						<input type="date" name="effortEnd" />
-						<input type="hidden" name="take" data-bind="value:$root.EffortsTake" />
-						<input type="hidden" name="skip" data-bind="value:$root.EffortsSkip" />
-						<input type="button" value="确定" onclick="me.QueryEfforts(this);" />
-					</form>
-					<form id="newEffortForm">
-						<input type="hidden" name="planId" data-bind="value: Id" />
-						<textarea name="content" data-bind="value:$root.PendingEffort" required placeholder="继续努力"></textarea>
-						<input type="button" value="确定" onclick="me.Pay(this); this.previousElementSibling.focus();" />
-						<input type="button" value="放弃" onclick="me.GiveUp(this);" />
-					</form>
-				</td>
+				<td onclick="toggleForms(effortActions, newEffortForm);">继续努力</td>
+				<td onclick="toggleForms(effortActions, queryEffortsForm);">回顾</td>
+				<td data-bind="click:function(){me.GiveUp(Id);},attr:{disabled:Done()}">放弃</td>
+				<td data-bind="click:function(){me.Finish(Id);},attr:{disabled:Done()}">完成</td>
 			</tr>
 		</table>
+		<div id="effortActions" style="display: none;">
+			<form id="queryEffortsForm">
+				<input type="date" data-bind="value:AppearTime" name="effortStart" />
+				<input type="date" name="effortEnd" />
+				<input type="hidden" name="take" data-bind="value:$root.EffortsTake" />
+				<input type="hidden" name="skip" data-bind="value:$root.EffortsSkip" />
+				<input type="button" value="确定" onclick="me.QueryEfforts(this);" />
+			</form>
+			<form id="newEffortForm">
+				<input type="hidden" name="planId" data-bind="value: Id" />
+				<textarea name="content" data-bind="value:$root.PendingEffort" required placeholder="继续努力"></textarea>
+				<input type="button" value="确定" onclick="me.Pay(this); this.previousElementSibling.focus();" />
+				<input type="button" value="放弃" onclick="me.GiveUp(this);" />
+			</form>
+		</div>
 		<ul data-bind="foreach:Efforts">
 			<li>
 				<time data-bind="text: AppearTime"></time>

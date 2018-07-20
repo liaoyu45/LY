@@ -2,6 +2,8 @@
 window.vm = {
 	Name: ko.observable(),
 	Plans: ko.observableArray(),
+	PlanStart: ko.observable("1990-03-13"),
+	PlanEnd: ko.observable(god.now.split(' ')[0]),
 	PlansSetting: {
 		Id: ko.observable(),
 		Total: ko.observable(0),
@@ -14,7 +16,5 @@ window.vm = {
 	EffortsSkip: ko.observable(),
 	PlansTake: ko.observable(3),
 	EffortsTake: ko.observable(3),
-	HaveMorePlans: ko.observable(),
-	HaveMoreEfforts: ko.observable()
 };
 addEventListener("load", () => ko.applyBindings(vm));

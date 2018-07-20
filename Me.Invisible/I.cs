@@ -77,24 +77,10 @@ e.GodId == Id
 			});
 		}
 
-		void Me.I.Pause(int planId) {
-			Universe.Using(d => {
-				var plan = d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId) ?? new Plan();
-				plan.Done = false;
-				plan.Abandoned = true;
-			});
-		}
-
 		void Me.I.Finish(int planId) {
 			Universe.Using(d => {
 				var plan = d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId) ?? new Plan();
 				plan.Done = true;
-				plan.Abandoned = false;
-			});
-		}
-		void Me.I.Resume(int planId) {
-			Universe.Using(d => {
-				(d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId) ?? new Plan()).Abandoned = false;
 			});
 		}
 

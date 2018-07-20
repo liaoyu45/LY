@@ -14,24 +14,21 @@ god.MakeJavasciptLookLikeCSharp("Me", {
 		},
 		"Pay": function (e) {
 			this.QueryEfforts(vm.CurrentPlan().Id, function () {
-				vm.CurrentPlan().Abandoned(false);
 				vm.CurrentPlan().Done(false);
 			});
 		},
 		"Desire": function (e, r) {
 			vm.PlansSkip(0);
 			this.QueryPlans(function () {
-				vm.CurrentPlan({ Content: r.thing.value, AppearTime: god.now, Id: e, Efforts: ko.observableArray(), Done: ko.observable(), Abandoned: ko.observable() });
+				vm.CurrentPlan({ Content: r.thing.value, AppearTime: god.now, Id: e, Efforts: ko.observableArray(), Done: ko.observable() });
 			});
 		},
 		"GiveUp": function (e, r) {
 			vm.Plans.remove(vm.CurrentPlan());
 			vm.CurrentPlan(null);
 		},
-		"Finish": null,
-		"Forget": function () {
-			vm.CurrentPlan().Done(false);
-			vm.CurrentPlan().Abandoned(true);
+		"Finish": function () {
+			vm.CurrentPlan().Done(true);
 		},
 		"QueryPlans": function (e) {
 			if (!vm.PlansSkip()) {
@@ -40,7 +37,6 @@ god.MakeJavasciptLookLikeCSharp("Me", {
 			e.forEach(ee=> {
 				ee.Efforts = ko.observableArray(ee.Efforts);
 				ee.Done = ko.observable(ee.Done);
-				ee.Abandoned = ko.observable(ee.Abandoned);
 			});
 			vm.Plans(vm.Plans().concat(e));
 		},

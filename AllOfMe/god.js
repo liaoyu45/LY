@@ -13,7 +13,7 @@
 			now: {
 				get: () => {
 					var n = new Date();
-					return `${n.getFullYear()}-${n.getMonth() + 1}-${n.getDate()} ${n.getHours()}:${n.getMinutes()}:${n.getSeconds()}`;
+					return `${n.getFullYear()}-${[...("0" + (n.getMonth() + 1))].reverse().slice(0,2).reverse().join("")}-${n.getDate()} ${n.getHours()}:${n.getMinutes()}:${n.getSeconds()}`;
 				}
 			}
 		});

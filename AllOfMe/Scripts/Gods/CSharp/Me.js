@@ -45,15 +45,8 @@ window.god = window.god || (window.god = {});
       ]
     },
     {
-      "Name": "Forget",
-      "Key": "1167702007.1429488596",
-      "Parameters": [
-        "planId"
-      ]
-    },
-    {
       "Name": "QueryPlans",
-      "Key": "1167702007.1806772885",
+      "Key": "1167702007.1812406247",
       "Parameters": [
         "start",
         "end",
@@ -64,20 +57,19 @@ window.god = window.god || (window.god = {});
         {
           "GodId": 0,
           "Done": false,
-          "Abandoned": false,
           "God": null,
           "Efforts": [],
           "Content": null,
           "Id": 0,
           "AppearTime": new Date(
-            1532073775461
+            1532077328153
           )
         }
       ]
     },
     {
       "Name": "QueryEfforts",
-      "Key": "1167702007.2029403369",
+      "Key": "1167702007.2023770007",
       "Parameters": [
         "planId",
         "start",
@@ -90,7 +82,7 @@ window.god = window.god || (window.god = {});
           "Content": null,
           "Id": 0,
           "AppearTime": new Date(
-            1532073775502
+            1532077328197
           )
         }
       ]
