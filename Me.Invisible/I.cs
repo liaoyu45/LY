@@ -68,7 +68,7 @@ e.GodId == Id
 			Id = 0;
 		}
 
-		void Me.I.Forget(int planId) {
+		void Me.I.GiveUp(int planId) {
 			Universe.Using(d => {
 				var p = d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId);
 				if (p != null) {
@@ -77,15 +77,24 @@ e.GodId == Id
 			});
 		}
 
-		void Me.I.GiveUp(int planId) {
+		void Me.I.Pause(int planId) {
 			Universe.Using(d => {
-				(d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId) ?? new Plan()).Abandoned = true;
+				var plan = d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId) ?? new Plan();
+				plan.Done = false;
+				plan.Abandoned = true;
 			});
 		}
 
 		void Me.I.Finish(int planId) {
 			Universe.Using(d => {
-				(d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId) ?? new Plan()).Done = true;
+				var plan = d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId) ?? new Plan();
+				plan.Done = true;
+				plan.Abandoned = false;
+			});
+		}
+		void Me.I.Resume(int planId) {
+			Universe.Using(d => {
+				(d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId) ?? new Plan()).Abandoned = false;
 			});
 		}
 

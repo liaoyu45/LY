@@ -6,13 +6,13 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<script src="god.js"></script>
 
-	<script src="/Scripts/Gods/CSharp/Me.js"></script>
-	<script src="Scripts/Gods/Him.js"></script>
-
 	<script src="Scripts/knockout-3.4.2.debug.js"></script>
 	<script src="/Scripts/AllOfMe/Daily/ViewModel.js"></script>
 
-	<script src="/Scripts/AllOfMe/Daily/Callbacks.js"></script>
+	<script src="/Scripts/Gods/CSharp/Me.js"></script>
+	<script src="Scripts/Gods/Him.js"></script>
+	<script src="/Scripts/Gods/Javascript/Me.js"></script>
+
 	<script src="/Scripts/AllOfMe/Daily/Effects.js"></script>
 
 	<link href="App_Themes/AllOfMe/Daily.css" rel="stylesheet" />
@@ -43,6 +43,16 @@
 					<form id="queryPlansForm" data-god="QueryPlans">
 						<input type="date" name="start" placeholder="始于" />
 						<input type="date" name="end" placeholder="止于" />
+						<div>
+							遗忘：<label>全部：<input type="radio" name="abandoned" checked /></label>
+							<label>否：<input type="radio" name="abandoned" value="false" /></label>
+							<label>是：<input type="radio" name="abandoned" value="true" /></label>
+						</div>
+						<div>
+							完成：<label>全部：<input type="radio" name="done" checked /></label>
+							<label>否：<input type="radio" name="done" value="false" /></label>
+							<label>是：<input type="radio" name="done" value="true" /></label>
+						</div>
 						<input type="hidden" name="take" data-bind="value:$root.PlansTake" />
 						<input type="hidden" name="skip" data-bind="value:$root.PlansSkip" />
 						<input type="button" value="确定" onclick="vm.PlansSkip(0);me.QueryPlans();" />
@@ -52,8 +62,8 @@
 		</table>
 		<ul data-bind="foreach: Plans">
 			<li>
-				<time data-bind="text: AppearTime"></time><span data-bind="text: Done?'已完成':'进行中'"></span>
 				<h5 data-bind="text: Content,click:function(){me.QueryEfforts(Id);}"></h5>
+				<time data-bind="text: AppearTime"></time><span data-bind="text: Done()?'已完成':Abandoned()?'已搁置':'进行中'"></span>
 			</li>
 		</ul>
 		<div data-bind="visible:Plans().length">
@@ -67,9 +77,9 @@
 		<time data-bind="text: AppearTime"></time>
 		<form>
 			<input type="hidden" name="planId" data-bind="value: Id" />
-			<input type="button" value="放弃" onclick="me.GiveUp(this);" data-bind="attr:{disabled:Done}" />
-			<input type="button" value="完成" onclick="me.Finish(this);" data-bind="attr:{disabled:!Done()}" />
-			<input type="button" value="遗忘" onclick="me.Abandon(this);" />
+			<input type="button" value="放弃" onclick="me.GiveUp(this);" data-bind="attr:{disabled:Done()||Abandoned()}" />
+			<input type="button" value="完成" onclick="me.Finish(this);" data-bind="attr:{disabled:Done()}" />
+			<input type="button" value="遗忘" onclick="me.Forget(this);" data-bind="attr:{disabled:Done()||Abandoned()}" />
 		</form>
 		<table>
 			<tr>

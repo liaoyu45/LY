@@ -3,7 +3,7 @@
 		public int Id { get; set; }
 
 		public string GiveUp(int planId) {
-			return "Please, do not give up.";
+			return "请不要放弃";
 		}
 	}
 }

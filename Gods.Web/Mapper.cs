@@ -13,6 +13,9 @@ namespace Gods.Web {
 					return Activator.CreateInstance(type);
 				}
 				if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)) {
+					if (pv.Length == 0 || pv.ToLower() == "null") {
+						return null;
+					}
 					type = type.GenericTypeArguments[0];
 				}
 				if (type == typeof(bool)) {

@@ -44,25 +44,30 @@ namespace Gods.Web {
 			Directory.CreateDirectory(root);
 			foreach (var item in CSharp) {
 				File.WriteAllText($"{root}/{nameof(CSharp)}/{item.Key}.js", $@"window.god = window.god || (window.god = {{}});
-(god.CSharp || (god.CSharp = {{}})).{item.Key} = {item.Value.ToString(Newtonsoft.Json.Formatting.Indented)};");
+(god.CSharp || (god.CSharp = {{}})).{item.Key} = {item.Value.ToString(Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter())};");
 			}
 			foreach (var item in Javascript) {
-				File.WriteAllText($"{root}/{nameof(Javascript)}/{item.Key}.js", $@"window.god = window.god || (window.god = {{}});
-(god.Javascript || (god.Javascript = {{}})).{item.Key} = {item.Value.ToString(Newtonsoft.Json.Formatting.Indented)};");
+				var v = $"{root}/{nameof(Javascript)}/{item.Key}.js";
+				if (!File.Exists(v)) {
+					File.WriteAllText(v, $@"/// <reference path=""../CSharp/Me.js"" />
+/// <reference path=""../Him.js"" />
+god.MakeJavasciptLookLikeCSharp(""{item.Key}"",{item.Value.ToString(Newtonsoft.Json.Formatting.Indented)});");
+				}
 			}
 			File.WriteAllText($"{root}/{nameof(His)}.js", $@"Him('{his.AjaxRoute}', '{his.AjaxKey}');".Trim());
 		}
 
 		private static void Append(Type item) {
 			var javascript = MapNamespace(item, Javascript)[item.Name] = new JObject();
-			item.GetMethods().Where(m => !m.IsSpecialName).ToList().ForEach(m => javascript[m.Name] = null);
 			var csharp = MapNamespace(item, CSharp);
 			var Methods = new JArray();
 			item.GetMethods().Where(m => !m.IsSpecialName).ToList().ForEach(m => {
+				javascript[m.Name] = null;
 				var t = new JObject {
 					[nameof(m.Name)] = m.Name,
 					["Key"] = item.FullName.GetHashCode() + "." + Math.Abs(Gods.Him.SignMethod(m))
 				};
+				Methods.Add(t);
 				var Parameters = JArray.FromObject(m.GetParameters().Select(e => e.Name).ToList());
 				if (Parameters.Count > 0) {
 					t[nameof(Parameters)] = Parameters;
@@ -73,6 +78,8 @@ namespace Gods.Web {
 					v = string.Empty;
 				} else if (rt == typeof(DateTime)) {
 					v = DateTime.Now;
+				} else if (rt == typeof(void)) {
+					return;
 				} else if (rt.IsValueType) {
 					v = 0;
 				} else if (rt.GetInterfaces().Any(e => e.IsGenericType && e.GetGenericTypeDefinition() == typeof(IEnumerable<>))) {
@@ -82,7 +89,6 @@ namespace Gods.Web {
 					v = JToken.FromObject(Activator.CreateInstance(rt));
 				}
 				t["Return"] = v;
-				Methods.Add(t);
 			});
 			if (Methods.Count > 0) {
 				csharp[item.Name] = Methods;

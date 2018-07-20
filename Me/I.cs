@@ -9,7 +9,8 @@ namespace Me {
 		int Desire(string thing);
 		void GiveUp(int planId);
 		void Finish(int planId);
-		void Forget(int planId);
+		void Pause(int planId);
+		void Resume(int planId);
 		Plan[] QueryPlans(DateTime? start, DateTime? end, int skip, int take);
 		Effort[] QueryEfforts(int planId, DateTime? start, DateTime? end);
 	}

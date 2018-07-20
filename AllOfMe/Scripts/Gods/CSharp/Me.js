@@ -12,8 +12,7 @@ window.god = window.god || (window.god = {});
     },
     {
       "Name": "Sleep",
-      "Key": "1167702007.764117084",
-      "Return": 0
+      "Key": "1167702007.764117084"
     },
     {
       "Name": "Pay",
@@ -21,8 +20,7 @@ window.god = window.god || (window.god = {});
       "Parameters": [
         "planId",
         "content"
-      ],
-      "Return": 0
+      ]
     },
     {
       "Name": "Desire",
@@ -37,24 +35,21 @@ window.god = window.god || (window.god = {});
       "Key": "1167702007.1297976969",
       "Parameters": [
         "planId"
-      ],
-      "Return": 0
+      ]
     },
     {
       "Name": "Finish",
       "Key": "1167702007.347262110",
       "Parameters": [
         "planId"
-      ],
-      "Return": 0
+      ]
     },
     {
       "Name": "Forget",
       "Key": "1167702007.1429488596",
       "Parameters": [
         "planId"
-      ],
-      "Return": 0
+      ]
     },
     {
       "Name": "QueryPlans",
@@ -74,7 +69,9 @@ window.god = window.god || (window.god = {});
           "Efforts": [],
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-19T16:20:57.5318992+08:00"
+          "AppearTime": new Date(
+            1532073775461
+          )
         }
       ]
     },
@@ -92,7 +89,9 @@ window.god = window.god || (window.god = {});
           "Plan": null,
           "Content": null,
           "Id": 0,
-          "AppearTime": "2018-07-19T16:20:57.6380012+08:00"
+          "AppearTime": new Date(
+            1532073775502
+          )
         }
       ]
     }

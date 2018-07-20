@@ -51,7 +51,6 @@
     <Content Include="JavaScript.js" />
     <Content Include="JavaScript1.js" />
     <Content Include="packages.config" />
-    <Content Include="Scripts\AllOfMe\Daily\Callbacks.js" />
     <Content Include="Scripts\AllOfMe\Daily\Effects.js" />
     <Content Include="Scripts\AllOfMe\Daily\ViewModel.js" />
     <Content Include="Scripts\Gods\CSharp\Me.js" />
