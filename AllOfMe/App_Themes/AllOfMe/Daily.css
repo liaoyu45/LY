@@ -10,6 +10,18 @@ table {
 }
 
 input[type=range], input[type=range] + a {
-	display: inline-block;
 	float: left;
+	display: block;
 }
+
+.conditions {
+	position: relative;
+}
+
+	.conditions > * {
+		display: none;
+	}
+
+		.conditions > *:first-child {
+			display: block;
+		}

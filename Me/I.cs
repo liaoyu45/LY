@@ -5,7 +5,7 @@ namespace Me {
 		int Id { get; set; }
 		string WakeUp(string name, string password);
 		void Sleep();
-		void Pay(int planId, string content);
+		int Pay(int planId, string content);
 		int Desire(string thing);
 		void GiveUp(int planId);
 		void Finish(int planId);

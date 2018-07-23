@@ -21,14 +21,7 @@ addEventListener("keydown", e => {
 		vm.CurrentPlan(null);
 	}
 });
-function toggleForms(parent, show) {
-	if (parent.dataset.last === show.id) {
-		parent.dataset.last = "";
-		parent.style.display = "none";
-	} else {
-		parent.dataset.last = show.id;
-		parent.style.display = "";
-		[...show.parentElement.children].forEach(e=>e.style.display = "none");
-		show.style.display = "";
-	}
+function toggleForms(show) {
+	var parent = show.parentElement;
+	parent[parent.firstElementChild === show ? "appendChild" : "insertBefore"](show, parent.firstElementChild);
 }

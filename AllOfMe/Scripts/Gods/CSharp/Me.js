@@ -20,7 +20,8 @@ window.god = window.god || (window.god = {});
       "Parameters": [
         "planId",
         "content"
-      ]
+      ],
+      "Return": 0
     },
     {
       "Name": "Desire",
@@ -46,7 +47,7 @@ window.god = window.god || (window.god = {});
     },
     {
       "Name": "QueryPlans",
-      "Key": "1167702007.1812406247",
+      "Key": "1167702007.1799548965",
       "Parameters": [
         "start",
         "end",
@@ -62,14 +63,14 @@ window.god = window.god || (window.god = {});
           "Content": null,
           "Id": 0,
           "AppearTime": new Date(
-            1532077328153
+            1532335796266
           )
         }
       ]
     },
     {
       "Name": "QueryEfforts",
-      "Key": "1167702007.2023770007",
+      "Key": "1167702007.2036627289",
       "Parameters": [
         "planId",
         "start",
@@ -82,7 +83,7 @@ window.god = window.god || (window.god = {});
           "Content": null,
           "Id": 0,
           "AppearTime": new Date(
-            1532077328197
+            1532335796305
           )
         }
       ]

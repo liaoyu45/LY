@@ -12,10 +12,12 @@ namespace Me.Invisible {
 		private DateTime today = DateTime.Now.Date;
 		private DateTime tomorrow = DateTime.Now.AddDays(1).Date;
 		static private DateTime mine = DateTime.Parse("1990-03-13");
-		void Me.I.Pay(int planId, string content) {
-			Universe.Using(d => {
-				var p = d.Plans.FirstOrDefault(e => e.GodId == Id && e.Id == planId);
-				p?.Efforts.Add(new Effort { Content = content });
+		int Me.I.Pay(int planId, string content) {
+			return Universe.Using(d => {
+				Effort ee;
+				d.Plans.First(e => e.GodId == Id && e.Id == planId).Efforts.Add(ee = new Effort { Content = content });
+				d.SaveChanges();
+				return ee.Id;
 			});
 		}
 
@@ -32,7 +34,7 @@ namespace Me.Invisible {
 		}
 
 		Plan[] Me.I.QueryPlans(DateTime? start, DateTime? end, int skip, int take) {
-			Rang.Arrange(ref start, ref end, () => start.Value.AddDays(1));
+			Range.Arrange(ref start, ref end);
 			var r = Universe.Using(d => {
 				d.Database.Log = e => Console.WriteLine(e);
 				return d.Plans.Where(e =>
@@ -85,14 +87,14 @@ e.GodId == Id
 		}
 
 		Effort[] Me.I.QueryEfforts(int planId, DateTime? start, DateTime? end) {
-			Rang.Arrange(ref start, ref end, () => start.Value.AddDays(1));
+			Range.Arrange(ref start, ref end);
 			return Universe.Using(d => d.Plans.Include(e => e.Efforts).FirstOrDefault(e => e.GodId == Id && e.Id == planId).Efforts.Where(e => (!start.HasValue || e.AppearTime > start) && (!end.HasValue || e.AppearTime < end)).ToArray());
 		}
 	}
-	class Rang {
-		public static void Arrange<T>(ref T? small, ref T? big, Func<T> ifNot) where T : struct, IComparable<T> {
+	class Range {
+		public static void Arrange<T>(ref T? small, ref T? big) where T : struct, IComparable<T> {
 			if (small.HasValue && big.HasValue && big.Value.CompareTo(small.Value) < 0) {
-				big = ifNot();
+				big = null;
 			}
 		}
 	}
