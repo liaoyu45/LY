@@ -8,12 +8,17 @@ namespace Gods.Web {
 	public static partial class Him {
 		public static ICacheManager CacheManager { get; set; } = new CacheManager();
 		public static IMapper Mapper;
-		internal static object Invoke(int typeHash, int methodSign) {
-			var type = cache.FirstOrDefault(e => e.GetHashCode() == typeHash)?.GetImplement();
-			if (type == null) {
-				throw new DllNotFoundException();
-			}
-			var method = Gods.Him.GetSignedMethod(type, methodSign) ?? Gods.Him.GetSignedMethod(type, -methodSign);
+		internal static object Invoke(int typeNameHash, int methodSign) {
+			var type = cache.FirstOrDefault(e => e.GetHashCode() == typeNameHash)?.GetImplement();
+			return Invoke(type, Gods.Him.GetSignedMethod(type, methodSign) ?? Gods.Him.GetSignedMethod(type, -methodSign));
+		}
+
+		internal static object Invoke(string typeName, string methodName) {
+			var type = cache.FirstOrDefault(e => e.GetHashCode() == typeName.GetHashCode()).GetImplement();
+			return Invoke(type, type.GetMethods().FirstOrDefault(e => e.Name == methodName));
+		}
+
+		private static object Invoke(Type type, MethodInfo method) {
 			if (method == null) {
 				throw new MissingMethodException();
 			}
@@ -59,10 +64,10 @@ namespace Gods.Web {
 					}
 					ps = newPs as object[];
 				} else {
-					return newPs; 
+					return newPs;
 				}
 			} else {
-				ps = method.GetParameters().Select(p => MapObject(p.ParameterType, HttpContext.Current.Request[p.Name])).ToArray(); 
+				ps = method.GetParameters().Select(p => MapObject(p.ParameterType, HttpContext.Current.Request[p.Name])).ToArray();
 			}
 			r = method.Invoke(ins, ps);
 			if (hasSession) {
@@ -75,7 +80,7 @@ namespace Gods.Web {
 			} else {
 				CacheManager?.Remove(a);
 			}
-			(ins as IDisposable)?.Dispose();
+					(ins as IDisposable)?.Dispose();
 			return r;
 		}
 	}

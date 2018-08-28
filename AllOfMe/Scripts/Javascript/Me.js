@@ -1,6 +1,9 @@
-/// <reference path="../CSharp/Me.js" />
-/// <reference path="../Him.js" />
-/// <reference path="../../AllOfMe/Daily/ViewModel.js" />
+/// <reference path="/Scripts/CSharp/Me.js" />
+/// <reference path="/Scripts/god.web.js" />
+/// <reference path="/Scripts/AllOfMe/Daily/ViewModel.js" />
+god.Javascript.Me.I.Desire = e=> {
+	alert(e.thing);
+};
 god.MakeJavasciptLookLikeCSharp("Me", {
 	"I": {
 		"WakeUp": function (e) {
@@ -23,9 +26,11 @@ god.MakeJavasciptLookLikeCSharp("Me", {
 		},
 		"Desire": function (e, r) {
 			vm.PlansSkip(0);
+			var v = r.thing.value;
 			vm.PendingPlan(null);
 			this.QueryPlans(function () {
-				vm.CurrentPlan({ Content: r.thing.value, AppearTime: god.now, Id: e, Efforts: ko.observableArray(), Done: ko.observable() });
+				vm.CurrentPlan({ Content: v, AppearTime: god.now, Id: e, Efforts: ko.observableArray(), Done: ko.observable() });
+				vm.EffortStart(god.now);
 			});
 		},
 		"GiveUp": function (e, r) {

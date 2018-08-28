@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,25 +38,25 @@ namespace Gods.Web {
 			Him.his = his;
 			RouteTable.Routes.Add(new Route(his.AjaxRoute, new Me()));
 			var webRoot = HostingEnvironment.MapPath("/");
-			var root = $"{webRoot}/Scripts/{nameof(Gods)}";
+			var root = $"{webRoot}/Scripts";
 			his.Implements = webRoot + his.Implements;
 			his.Validators = webRoot + his.Validators;
 			his.Modules = webRoot + his.Modules;
 			Gods.Him.FindImplements(tagInterface, his.Modules).Where(e => e.IsInterface).ToList().ForEach(Append);
-			Directory.CreateDirectory(root);
 			foreach (var item in CSharp) {
-				File.WriteAllText($"{root}/{nameof(CSharp)}/{item.Key}.js", $@"window.god = window.god || (window.god = {{}});
-(god.CSharp || (god.CSharp = {{}})).{item.Key} = {item.Value.ToString(Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.Converters.JavaScriptDateTimeConverter())};");
+				File.WriteAllText($"{root}/{nameof(CSharp)}/{item.Key}.js", $@"
+window.god = window.god || (window.god = {{}});
+(god.CSharp || (god.CSharp = {{}})).{item.Key} = {item.Value.ToString(Formatting.Indented, new JavaScriptDateTimeConverter())};".Trim());
 			}
 			foreach (var item in Javascript) {
 				var v = $"{root}/{nameof(Javascript)}/{item.Key}.js";
 				if (!File.Exists(v)) {
-					File.WriteAllText(v, $@"/// <reference path=""../CSharp/Me.js"" />
-/// <reference path=""../Him.js"" />
-god.MakeJavasciptLookLikeCSharp(""{item.Key}"",{item.Value.ToString(Newtonsoft.Json.Formatting.Indented)});");
+					File.WriteAllText(v, $@"
+/// <reference path=""/Scripts/CSharp/{item.Key}.js"" />
+/// <reference path=""/Scripts/god.web.js"" />
+god.MakeJavasciptLookLikeCSharp(""{item.Key}"",{item.Value.ToString(Formatting.Indented)});".Trim());
 				}
 			}
-			File.WriteAllText($"{root}/{nameof(His)}.js", $@"Him('{his.AjaxRoute}', '{his.AjaxKey}');".Trim());
 		}
 
 		private static void Append(Type item) {
@@ -92,6 +94,10 @@ god.MakeJavasciptLookLikeCSharp(""{item.Key}"",{item.Value.ToString(Newtonsoft.J
 			});
 			if (Methods.Count > 0) {
 				csharp[item.Name] = Methods;
+				var v = $"{his.AjaxRoute}/{Methods.Path.Replace('.', '/')}/";
+				foreach (var m in Methods) {
+					RouteTable.Routes.Add(new Route(v + m["Name"], new Me()));
+				}
 			}
 			cache.Add(new TypeCache(item));
 		}

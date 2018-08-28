@@ -1,6 +1,5 @@
-﻿/// <reference path="../../Gods/CSharp/Me.js" />
-/// <reference path="../../Gods/Him.js" />
-/// <reference path="ViewModel.js" />
+﻿/// <reference path="../../CSharp/Me.js" />
+/// <reference path="../../god.web.js" />
 god.MakeJavasciptLookLikeCSharp({
 	error: function (s) {
 		alert(s);
@@ -13,7 +12,7 @@ god.MakeJavasciptLookLikeCSharp({
 	}
 });
 (window.me = new god.CSharp.Me.I()).WakeUp();
-god.Javascript.Me.I.GiveUp = () => {
+god.Javascript.Me.I.GiveUp = (e) => {
 	return confirm("永远放弃么？");
 };
 addEventListener("keydown", e => {

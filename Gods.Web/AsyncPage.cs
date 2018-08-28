@@ -20,6 +20,7 @@ namespace Gods.Web {
 		public override void ProcessRequest(HttpContext context) {
 			var key = context.Request[Him.his.AjaxKey]?.Trim() ?? string.Empty;
 			var action =
+				Regex.IsMatch(context.Request.Path, $@"{Him.his.AjaxRoute}(/[a-zA-Z_][a-zA-Z_0-9]*){{2,}}") ? nameof(MatchPath) :
 				Regex.IsMatch(key, @"^-?\d+\.-?\d+$") ? nameof(MatchHashCode) :
 				Regex.IsMatch(key, "[a-zA-Z_][a-zA-Z_0-9]*") ? nameof(MatchThis) : nameof(ProcessRequest);
 			object result;
@@ -46,6 +47,11 @@ namespace Gods.Web {
 				}
 			}
 			context.Response.Write(result);
+		}
+
+		private object MatchPath(string key) {
+			var all = HttpContext.Current.Request.Path.Split('/', '\\').Skip(1);
+			return Him.Invoke(all.Take(all.Count() - 1).Aggregate(string.Empty, (s, ss) => s + '.' + ss), all.Last());
 		}
 
 		private void ProcessRequest(string key) {

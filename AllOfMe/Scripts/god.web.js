@@ -33,7 +33,12 @@
 				var arr = jo[i] instanceof Function ? [jo[i]] : [];
 				r[i] = {
 					get: () =>arr,
-					set: v=>(v instanceof Function ? arr : []).push(v),
+					set: v=> {
+						(v instanceof Function ? arr : []).push(v);
+						if (coding) {
+							new obj[n]()[i]();
+						}
+					},
 					enumerable: true
 				};
 			});
@@ -56,7 +61,7 @@
 		oi.forEach(m=> {
 			obj[n].prototype[m.Name] = function () {
 				var ev = [...arguments].filter(e=>e instanceof Event)[0] || window.event;
-				var a0 = document.querySelector(`form[data-god='${m.Name}']`) || [...arguments].filter(e=>e instanceof HTMLElement)[0];
+				var a0 = [...arguments].filter(e=>e instanceof HTMLElement)[0] || document.querySelector(`form[data-god='${m.Name}']`);
 				if (a0 instanceof HTMLElement) {//while coding, instanceof returns true
 					while (!(a0 instanceof HTMLFormElement)) {
 						a0 = a0.parentElement;
@@ -110,9 +115,9 @@
 					}
 				}
 				var cb = jo[m.Name].filter(e=>!canApplyThis(e));
-				for (let i of coding ? [] : cb) {
+				for (let i of cb) {
 					try {
-						if (!i(request)) {
+						if (i(request)) {
 							return;
 						}
 					} catch (e) {
@@ -143,8 +148,11 @@
 							console.log(s);
 						}
 					}
+					if (coding) {
+						events.error.apply(this, [s, ev]);
+					}
 					if ("Return" in m && typeof m["Return"] !== "string" && typeof s === "string" && s) {
-						[events.error, function () { }].filter(ee=>typeof ee === "function")[0].apply(this, [s, ev]);
+						events.error.apply(this, [s, ev]);
 						return;
 					}
 					for (var i of cb) {
@@ -186,15 +194,6 @@
 		}
 		findClass(CSharp[i], Javascript[i]);
 	}
-	god[ILikeCSharpSoI] = function (a) {
-		if (coding) {
-			cls.forEach(e=> {
-				for (var i in e.prototype) {
-					new e()[i]();
-				}
-			});
-		}
-	};
 	god[ILikeCSharpSoI] = function (name, callbacks, globleCallbacks) {
 		function find(go, jo) {
 			if (!jo) {
@@ -213,14 +212,7 @@
 			find(god.Javascript[name], callbacks);
 		}
 		for (var i in events) {
-			events[i] = (globleCallbacks || name)[i] || events[i];
-		}
-		if (coding) {
-			cls.forEach(e=> {
-				for (var i in e.prototype) {
-					new e()[i]();
-				}
-			});
+			events[i] = [(globleCallbacks || name)[i], events[i]].filter(e=>e instanceof Function)[0];
 		}
 	};
 })();

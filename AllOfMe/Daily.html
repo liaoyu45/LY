@@ -4,14 +4,14 @@
 <head>
 	<title></title>
 	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-	<script src="god.js"></script>
+	<script src="/Scripts/god.js"></script>
 
 	<script src="Scripts/knockout-3.4.2.debug.js"></script>
 	<script src="/Scripts/AllOfMe/Daily/ViewModel.js"></script>
 
-	<script src="/Scripts/Gods/CSharp/Me.js"></script>
-	<script src="Scripts/Gods/Him.js"></script>
-	<script src="/Scripts/Gods/Javascript/Me.js"></script>
+	<script src="/Scripts/CSharp/Me.js"></script>
+	<script src="Scripts/god.web.js"></script>
+	<script src="/Scripts/Javascript/Me.js"></script>
 
 	<script src="/Scripts/AllOfMe/Daily/Effects.js"></script>
 
@@ -88,9 +88,10 @@
 		</table>
 		<div class="conditions">
 			<div>
-				<label>始于：<time data-bind="text:$root.EffortStart"></time></label>
-				<label>止于：<time data-bind="text:$root.EffortEnd"></time></label>
-				<label>状态：<span data-bind="text:Done()?'已完成':'未完成'"></span></label>
+				<p>查询状态</p>
+				<div>始于：<time data-bind="text:$root.EffortStart"></time></div>
+				<div>止于：<time data-bind="text:$root.EffortEnd"></time></div>
+				<div>状态：<span data-bind="text:Done()?'已完成':'未完成'"></span></div>
 			</div>
 			<form id="queryEffortsForm" data-god="QueryEfforts">
 				<input type="hidden" name="planId" data-bind="value: Id" />
