@@ -129,9 +129,9 @@
 				r.open(method, u);
 				r.onabort = () =>this[ing] = false;
 				r.onload = e=> {
-					events.done.apply(this, [r, ev]);
+					events.done.apply(this, [r, ev, m]);
 					this[ing] = false;
-					var s = r.responseText;
+					var s = r.responseText.trim();
 					if (s.toLowerCase() === "false") {
 						s = false;
 					} else if (s.toLowerCase() === "true") {
@@ -148,12 +148,17 @@
 							console.log(s);
 						}
 					}
-					if (coding) {
-						events.error.apply(this, [s, ev]);
-					}
-					if ("Return" in m && typeof m["Return"] !== "string" && typeof s === "string" && s) {
-						events.error.apply(this, [s, ev]);
-						return;
+					var badArgs = [s, ev, m];
+					if ("Return" in m) {
+						if (typeof m["Return"] !== "string" && typeof s === "string" && s) {
+							events.error.apply(this, badArgs);
+							return;
+						}
+					} else {
+						if (s) {
+							events.error.apply(this, badArgs);
+							return;
+						}
 					}
 					for (var i of cb) {
 						try {

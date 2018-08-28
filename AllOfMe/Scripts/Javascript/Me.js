@@ -1,9 +1,6 @@
 /// <reference path="/Scripts/CSharp/Me.js" />
 /// <reference path="/Scripts/god.web.js" />
 /// <reference path="/Scripts/AllOfMe/Daily/ViewModel.js" />
-god.Javascript.Me.I.Desire = e=> {
-	alert(e.thing);
-};
 god.MakeJavasciptLookLikeCSharp("Me", {
 	"I": {
 		"WakeUp": function (e) {
@@ -16,12 +13,12 @@ god.MakeJavasciptLookLikeCSharp("Me", {
 			location.reload();
 		},
 		"Pay": function (e, r) {
-			vm.PendingEffort(null);
 			vm.CurrentPlan().Efforts.push({
 				AppearTime: god.now,
-				Content: r.content,
+				Content: vm.PendingEffort(),
 				Id: e
 			});
+			vm.PendingEffort(null);
 			vm.CurrentPlan().Done(false);
 		},
 		"Desire": function (e, r) {

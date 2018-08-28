@@ -86,11 +86,12 @@ e.GodId == Id
 			});
 		}
 
-		Effort[] Me.I.QueryEfforts(int planId, DateTime? start, DateTime? end) {
+		Effort[] Me.I.QueryEfforts(int planId, DateTime? start, DateTime? end, int skip, int take) {
 			Range.Arrange(ref start, ref end);
-			return Universe.Using(d => d.Plans.Include(e => e.Efforts).FirstOrDefault(e => e.GodId == Id && e.Id == planId).Efforts.Where(e => (!start.HasValue || e.AppearTime > start) && (!end.HasValue || e.AppearTime < end)).ToArray());
+			return Universe.Using(d => d.Plans.Include(e => e.Efforts).FirstOrDefault(e => e.GodId == Id && e.Id == planId).Efforts.Where(e => e.AppearTime > (start ?? mine) && e.AppearTime < (end ?? DateTime.Now)).Skip(skip).Take(take).ToArray());
 		}
 	}
+
 	class Range {
 		public static void Arrange<T>(ref T? small, ref T? big) where T : struct, IComparable<T> {
 			if (small.HasValue && big.HasValue && big.Value.CompareTo(small.Value) < 0) {
