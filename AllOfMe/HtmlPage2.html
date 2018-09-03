@@ -17,7 +17,36 @@
 		myfunction((god) => { });
 		myfunction(() => { });
 		myfunction(god=> { });
-		window.e
+		var all = [];
+		function objectToFormData(obj, form, namespace) {
+			const fd = form || new FormData();
+			var isArr = Array.isArray(obj);
+			for (var property in obj) {
+				if (obj.hasOwnProperty(property)) {
+					let key = isArr ? '[]' : `[${property}]`;
+					var formKey = namespace ? namespace + key : property;
+					// if the property is an object, but not a File, use recursivity.
+					if (typeof obj[property] === 'object' && !(obj[property] instanceof File)) {
+						objectToFormData(obj[property], fd, formKey);
+					} else {
+						// if it's a string or a File object
+						fd.append(formKey, obj[property]);
+						var r = {};
+						r[formKey] = obj[property];
+						all.push(r);
+					}
+				}
+			}
+			return fd;
+		}
+		var f = objectToFormData({ a: 1, b: [{ e: 1 }, { e: 2 }] }, null);
+		var eee = {};
+		for (var i of all) {
+			for (var ii in i) {
+				eee[ii] = i[ii];
+			}
+		}
+		console.log()
 	</script>
 </body>
 </html>

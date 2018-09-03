@@ -14,7 +14,7 @@ namespace Gods {
 
 		public static bool IsOutAssembly(Assembly assembly) {
 			var c = assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company?.ToLower() ?? string.Empty;
-			return c == MicrosoftCompany || c == MeMySelfAndI;
+			return c.StartsWith(MicrosoftCompany) || c.StartsWith(MeMySelfAndI);
 		}
 
 		/// <summary>

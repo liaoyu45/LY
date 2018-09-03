@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace Me.Invisible {
 	public class I : Me.I {
 		public int Id { get; set; }
-		public Dictionary<int, Expression<Func<Plan, bool>>> Query { get; set; } = new Dictionary<int, Expression<Func<Plan, bool>>>();
 
 		private DateTime today = DateTime.Now.Date;
 		private DateTime tomorrow = DateTime.Now.AddDays(1).Date;
@@ -46,6 +43,7 @@ e.GodId == Id
 			return r.ToArray();
 		}
 
+		[System.Obsolete]
 		string Me.I.WakeUp(string name, string password) {
 			if (Id > 0) {
 				return Universe.Using(d => d.Gods.Find(Id)?.Name);

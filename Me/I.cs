@@ -3,6 +3,7 @@
 namespace Me {
 	public interface I : World.I {
 		int Id { get; set; }
+		[System.IO.IODescription("")]
 		string WakeUp(string name, string password);
 		void Sleep();
 		int Pay(int planId, string content);

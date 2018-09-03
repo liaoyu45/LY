@@ -53,6 +53,7 @@ namespace Gods.Web {
 		object Read(int i);
 		void Remove(int i);
 	}
+
 	[AttributeUsage(AttributeTargets.Method)]
 	public class CacheAttribute : Attribute {
 
