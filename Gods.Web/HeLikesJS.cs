@@ -79,7 +79,7 @@ god.MakeJavasciptLookLikeCSharp(""{item.Key}"",{item.Value.ToString(Formatting.I
 				if (rt == typeof(string)) {
 					v = string.Empty;
 				} else if (rt == typeof(DateTime)) {
-					v = DateTime.Now;
+					v = DateTime.MinValue;
 				} else if (rt == typeof(void)) {
 					return;
 				} else if (rt.IsValueType) {

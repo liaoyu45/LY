@@ -46,8 +46,6 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="CacheManager.cs" />
-    <Compile Include="Extensions\ExceptionExtentions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="HeLikesJS.cs" />
     <Compile Include="HeValidates.cs" />
     <Compile Include="HeInvokes.cs" />
