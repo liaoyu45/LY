@@ -42,7 +42,7 @@ namespace Gods.Web {
 			his.Implements = webRoot + his.Implements;
 			his.Validators = webRoot + his.Validators;
 			his.Modules = webRoot + his.Modules;
-			Gods.Him.FindImplements(tagInterface, his.Modules).Where(e => e.IsInterface).ToList().ForEach(Append);
+			FindImplements(tagInterface, his.Modules).Where(e => e.IsInterface).ToList().ForEach(Append);
 			foreach (var item in CSharp) {
 				File.WriteAllText($"{root}/{nameof(CSharp)}/{item.Key}.js", $@"
 window.god = window.god || (window.god = {{}});
@@ -67,7 +67,7 @@ god.MakeJavasciptLookLikeCSharp(""{item.Key}"",{item.Value.ToString(Formatting.I
 				javascript[m.Name] = null;
 				var t = new JObject {
 					[nameof(m.Name)] = m.Name,
-					["Key"] = item.FullName.GetHashCode() + "." + Math.Abs(Gods.Him.SignMethod(m))
+					["Key"] = item.FullName.GetHashCode() + "." + Math.Abs(SignMethod(m))
 				};
 				Methods.Add(t);
 				var Parameters = JArray.FromObject(m.GetParameters().Select(e => e.Name).ToList());
@@ -130,7 +130,7 @@ god.MakeJavasciptLookLikeCSharp(""{item.Key}"",{item.Value.ToString(Formatting.I
 					return implement;
 				}
 				ever = true;
-				return implement = Gods.Him.FindImplements(declare, his.Implements).FirstOrDefault(e => !e.IsAbstract && e.GetConstructors().Any(ee => ee.GetParameters().Length == 0)) ?? declare;
+				return implement = FindImplements(declare, his.Implements).FirstOrDefault(e => !e.IsAbstract && e.GetConstructors().Any(ee => ee.GetParameters().Length == 0)) ?? declare;
 			}
 
 			public override int GetHashCode() {

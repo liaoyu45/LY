@@ -9,19 +9,12 @@ using System.Web;
 
 namespace Gods.Web {
 	public static partial class Him {
-		public static ICacheManager CacheManager { get; set; } = new CacheManager();
+		public static ICacheManager CacheManager { get; set; }
 		static MethodInfo m = typeof(JsonConvert).GetMethods().First(e => e.IsGenericMethod && e.Name == nameof(JsonConvert.DeserializeObject));
-		static object DeserializeObjectInStream(Type type, string json) {
-			try {
-				return m.MakeGenericMethod(type).Invoke(null, new[] { json });
-			} catch {
-			}
-			return null;
-		}
 
 		internal static object Invoke(int typeNameHash, int methodSign) {
 			var type = cache.FirstOrDefault(e => e.GetHashCode() == typeNameHash)?.GetImplement();
-			return Invoke(type, Gods.Him.GetSignedMethod(type, methodSign) ?? Gods.Him.GetSignedMethod(type, -methodSign));
+			return Invoke(type, GetSignedMethod(type, methodSign) ?? GetSignedMethod(type, -methodSign));
 		}
 
 		internal static object Invoke(string typeName, string methodName) {
@@ -106,6 +99,14 @@ namespace Gods.Web {
 				s.Dispose();
 			}
 			return plist.ToArray();
+		}
+
+		static object DeserializeObjectInStream(Type type, string json) {
+			try {
+				return m.MakeGenericMethod(type).Invoke(null, new[] { json });
+			} catch {
+			}
+			return null;
 		}
 	}
 }

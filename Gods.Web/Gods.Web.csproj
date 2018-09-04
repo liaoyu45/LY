@@ -51,6 +51,7 @@
     <Compile Include="HeLikesJS.cs" />
     <Compile Include="HeValidates.cs" />
     <Compile Include="HeInvokes.cs" />
+    <Compile Include="Him.cs" />
     <Compile Include="His.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,12 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Gods\Gods.csproj">
-      <Project>{cc8d063d-e023-4950-aab9-3f0f9f40db59}</Project>
-      <Name>Gods</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

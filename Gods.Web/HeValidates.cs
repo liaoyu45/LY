@@ -9,12 +9,12 @@ namespace Gods.Web {
 			if (validatorType == null) {
 				return null;
 			}
-			var s = Gods.Him.SignMethod(calling);
+			var s = SignMethod(calling);
 			if (validators.ContainsKey(s)) {
 				return validators[s]?.Invoke(obj);
 			}
 			var validatingType = obj.GetType().GetInterfaces().FirstOrDefault(i => i.GetInterfaces().Contains(tagInterface)) ?? obj.GetType();
-			var type = Gods.Him.FindImplements(validatorType.MakeGenericType(validatingType), his.Validators).FirstOrDefault();
+			var type = FindImplements(validatorType.MakeGenericType(validatingType), his.Validators).FirstOrDefault();
 			if (type == null) {
 				return validators[s] = null;
 			}

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://mit-license.org</licenseUrl>
+    <projectUrl>https://github.com/liaoyu45/LY</projectUrl>
+    <iconUrl>http://www.liaoyu45.com/favicon.ico</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Write JS like C#</description>
+    <releaseNotes></releaseNotes>
+    <copyright>LY</copyright>
+    <tags>C# JS</tags>
+  </metadata>
+</package>
