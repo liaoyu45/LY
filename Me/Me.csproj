@@ -34,9 +34,7 @@
     <Compile Include="Effort.cs" />
     <Compile Include="God.cs" />
     <Compile Include="Base\IdAndTime.cs" />
-    <Compile Include="PageData.cs" />
     <Compile Include="Base\NameBase.cs" />
-    <Compile Include="PayData.cs" />
     <Compile Include="Plan.cs" />
     <Compile Include="I.cs" />
   </ItemGroup>

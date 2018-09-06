@@ -3,7 +3,7 @@ using System.Linq;
 using System.Web;
 
 namespace Gods.Web {
-	public static partial class Him {
+	public partial class Him {
 		public static T MapSession<T>(object session, Func<T> action) {
 			if (HttpContext.Current?.Session == null) {
 				return action();

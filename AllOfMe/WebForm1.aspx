@@ -7,7 +7,10 @@
 	<title></title>
 </head>
 <body>
-	<form>
+	<form runat="server">
+		<asp:DataList runat="server" ID="qqwer">
+			<ItemTemplate></ItemTemplate>
+		</asp:DataList>
 		<div>
 			<input type="text" name="Name" value="109238" />
 			<input type="text" name="Intro" value="109238" />

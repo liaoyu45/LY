@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 
 namespace Gods.Web {
-	public static partial class Him {
+	public partial class Him {
 		/// <summary>
 		/// 将函数名称和参数的 <see cref="object.GetHashCode"/> 的平均值做为此函数的标识。仅保证在定义的类中几乎唯一。
 		/// </summary>

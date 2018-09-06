@@ -15,8 +15,10 @@ namespace Gods.Web {
 		private static Type tagInterface;
 		private static Type validatorType;
 		private static Dictionary<int, Func<object, object>> validators = new Dictionary<int, Func<object, object>>();
-		private static List<TypeCache> cache = new List<TypeCache>();
-		internal static His his;
+
+		public static List<TypeCache> AllTypeCache = new List<TypeCache>();
+
+		public static His his;
 
 		public static void Create<T>(His his) {
 			if (!System.Text.RegularExpressions.Regex.IsMatch(his.AjaxRoute, "[a-zA-Z_][a-zA-Z_0-9]*")) {
@@ -35,6 +37,10 @@ namespace Gods.Web {
 			} else {
 				tagInterface = t;
 			}
+			var fs = FindImplements(tagInterface, his.Modules).Where(e => e.IsInterface);
+			if (fs.GroupBy(e => e.Assembly).Select(e => e.Key).Any(e => e.ExportedTypes.Any(ee => ee.IsClass && ee.GetInterfaces().Contains(tagInterface)))) {
+				throw new BadImageFormatException("All classes in module assembly can not inherit the tag interface.");
+			}
 			Him.his = his;
 			RouteTable.Routes.Add(new Route(his.AjaxRoute, new Me()));
 			var webRoot = HostingEnvironment.MapPath("/");
@@ -42,7 +48,7 @@ namespace Gods.Web {
 			his.Implements = webRoot + his.Implements;
 			his.Validators = webRoot + his.Validators;
 			his.Modules = webRoot + his.Modules;
-			FindImplements(tagInterface, his.Modules).Where(e => e.IsInterface).ToList().ForEach(Append);
+			fs.ToList().ForEach(Append);
 			foreach (var item in CSharp) {
 				File.WriteAllText($"{root}/{nameof(CSharp)}/{item.Key}.js", $@"
 window.god = window.god || (window.god = {{}});
@@ -99,7 +105,7 @@ god.MakeJavasciptLookLikeCSharp(""{item.Key}"",{item.Value.ToString(Formatting.I
 					RouteTable.Routes.Add(new Route(v + m["Name"], new Me()));
 				}
 			}
-			cache.Add(new TypeCache(item));
+			AllTypeCache.Add(new TypeCache(item));
 		}
 
 		private static JObject MapNamespace(Type item, JObject j) {
@@ -112,30 +118,6 @@ god.MakeJavasciptLookLikeCSharp(""{item.Key}"",{item.Value.ToString(Formatting.I
 				}
 			}
 			return j;
-		}
-
-		private class TypeCache {
-			private Type declare;
-			private Type implement;
-			private bool ever;//TODO:reload maybe
-
-			public TypeCache(Type declare) {
-				this.declare = declare;
-				if (!declare.IsAbstract) {
-					implement = declare;
-				}
-			}
-			public Type GetImplement() {
-				if (ever) {
-					return implement;
-				}
-				ever = true;
-				return implement = FindImplements(declare, his.Implements).FirstOrDefault(e => !e.IsAbstract && e.GetConstructors().Any(ee => ee.GetParameters().Length == 0)) ?? declare;
-			}
-
-			public override int GetHashCode() {
-				return declare.FullName.GetHashCode();
-			}
 		}
 	}
 }

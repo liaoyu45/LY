@@ -8,17 +8,17 @@ using System.Reflection;
 using System.Web;
 
 namespace Gods.Web {
-	public static partial class Him {
+	public partial class Him {
 		public static ICacheManager CacheManager { get; set; }
 		static MethodInfo m = typeof(JsonConvert).GetMethods().First(e => e.IsGenericMethod && e.Name == nameof(JsonConvert.DeserializeObject));
 
 		internal static object Invoke(int typeNameHash, int methodSign) {
-			var type = cache.FirstOrDefault(e => e.GetHashCode() == typeNameHash)?.GetImplement();
+			var type = AllTypeCache.FirstOrDefault(e => e.GetHashCode() == typeNameHash)?.GetImplement();
 			return Invoke(type, GetSignedMethod(type, methodSign) ?? GetSignedMethod(type, -methodSign));
 		}
 
 		internal static object Invoke(string typeName, string methodName) {
-			var type = cache.FirstOrDefault(e => e.GetHashCode() == typeName.GetHashCode()).GetImplement();
+			var type = AllTypeCache.FirstOrDefault(e => e.GetHashCode() == typeName.GetHashCode()).GetImplement();
 			return Invoke(type, type.GetMethods().FirstOrDefault(e => e.Name == methodName));
 		}
 

@@ -10,7 +10,7 @@ namespace Gods.Web {
 		public static bool IsNotNormalType(ParameterInfo type) {
 			return type.ParameterType != typeof(string) && !type.ParameterType.IsValueType;
 		}
-		private static object MapNormalType(Type type, string value) {
+		public static object MapNormalType(Type type, string value) {
 			if (type == typeof(string)) {
 				return value?.Trim();
 			}

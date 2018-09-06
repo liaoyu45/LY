@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Gods.Web.Properties {
+namespace Gods.Web.Manage.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Gods.Web.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Gods.Web.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Gods.Web.Manage.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,43 @@ namespace Gods.Web.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] dsofile {
+            get {
+                object obj = ResourceManager.GetObject("dsofile", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 &lt;%@ Page Language=&quot;C#&quot; AutoEventWireup=&quot;true&quot; Inherits=&quot;Gods.Web.Manage.Him&quot; CodeBehind=&quot;~/Him.aspx.cs&quot; %&gt;
+        ///
+        ///&lt;!DOCTYPE html&gt;
+        ///
+        ///&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///	&lt;title&gt;&lt;/title&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///	&lt;p&gt;owieur&lt;/p&gt;
+        ///	&lt;form runat=&quot;server&quot;&gt;
+        ///		&lt;asp:GridView runat=&quot;server&quot; ID=&quot;eee&quot;&gt;
+        ///
+        ///		&lt;/asp:GridView&gt;
+        ///		&lt;asp:Button Text=&quot;&quot; ID=&quot;asre&quot; runat=&quot;server&quot; /&gt;
+        ///	&lt;/form&gt;
+        ///&lt;/body&gt;
+        ///&lt;/html&gt;
+        /// 的本地化字符串。
+        /// </summary>
+        internal static string Him {
+            get {
+                return ResourceManager.GetString("Him", resourceCulture);
             }
         }
     }
