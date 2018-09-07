@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Web.Hosting;
 using System.Web.Routing;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace Gods.Web {
 	public partial class Him {
@@ -20,6 +22,9 @@ namespace Gods.Web {
 
 		public static His his;
 
+		public static void Create<T>() {
+			Create<T>(new His());
+		}
 		public static void Create<T>(His his) {
 			if (!System.Text.RegularExpressions.Regex.IsMatch(his.AjaxRoute, "[a-zA-Z_][a-zA-Z_0-9]*")) {
 				throw new ArgumentException("invalid " + nameof(His.AjaxRoute), nameof(his));
@@ -37,32 +42,20 @@ namespace Gods.Web {
 			} else {
 				tagInterface = t;
 			}
+			var webRoot = HostingEnvironment.MapPath("/");
+			var root = $"{webRoot}/Scripts";
+			his.Implements = webRoot + his.Implements;
+			his.Validators = webRoot + his.Validators;
+			his.Modules = webRoot + his.Modules;
 			var fs = FindImplements(tagInterface, his.Modules).Where(e => e.IsInterface);
 			if (fs.GroupBy(e => e.Assembly).Select(e => e.Key).Any(e => e.ExportedTypes.Any(ee => ee.IsClass && ee.GetInterfaces().Contains(tagInterface)))) {
 				throw new BadImageFormatException("All classes in module assembly can not inherit the tag interface.");
 			}
 			Him.his = his;
 			RouteTable.Routes.Add(new Route(his.AjaxRoute, new Me()));
-			var webRoot = HostingEnvironment.MapPath("/");
-			var root = $"{webRoot}/Scripts";
-			his.Implements = webRoot + his.Implements;
-			his.Validators = webRoot + his.Validators;
-			his.Modules = webRoot + his.Modules;
 			fs.ToList().ForEach(Append);
-			foreach (var item in CSharp) {
-				File.WriteAllText($"{root}/{nameof(CSharp)}/{item.Key}.js", $@"
-window.god = window.god || (window.god = {{}});
-(god.CSharp || (god.CSharp = {{}})).{item.Key} = {item.Value.ToString(Formatting.Indented, new JavaScriptDateTimeConverter())};".Trim());
-			}
-			foreach (var item in Javascript) {
-				var v = $"{root}/{nameof(Javascript)}/{item.Key}.js";
-				if (!File.Exists(v)) {
-					File.WriteAllText(v, $@"
-/// <reference path=""/Scripts/CSharp/{item.Key}.js"" />
-/// <reference path=""/Scripts/god.web.js"" />
-god.MakeJavasciptLookLikeCSharp(""{item.Key}"",{item.Value.ToString(Formatting.Indented)});".Trim());
-				}
-			}
+			RouteTable.Routes.Add(new Route(nameof(CSharp), new JsWriter(CSharp)));
+			RouteTable.Routes.Add(new Route(nameof(Javascript), new JsWriter(Javascript)));
 		}
 
 		private static void Append(Type item) {
@@ -70,33 +63,15 @@ god.MakeJavasciptLookLikeCSharp(""{item.Key}"",{item.Value.ToString(Formatting.I
 			var csharp = MapNamespace(item, CSharp);
 			var Methods = new JArray();
 			item.GetMethods().Where(m => !m.IsSpecialName).ToList().ForEach(m => {
-				javascript[m.Name] = null;
+				javascript[m.Name] = m.GetCustomAttribute<DescriptionAttribute>()?.Description;
 				var t = new JObject {
 					[nameof(m.Name)] = m.Name,
 					["Key"] = item.FullName.GetHashCode() + "." + Math.Abs(SignMethod(m))
 				};
 				Methods.Add(t);
 				var Parameters = JArray.FromObject(m.GetParameters().Select(e => e.Name).ToList());
-				if (Parameters.Count > 0) {
-					t[nameof(Parameters)] = Parameters;
-				}
-				var rt = m.ReturnType;
-				JToken v;
-				if (rt == typeof(string)) {
-					v = string.Empty;
-				} else if (rt == typeof(DateTime)) {
-					v = DateTime.MinValue;
-				} else if (rt == typeof(void)) {
-					return;
-				} else if (rt.IsValueType) {
-					v = 0;
-				} else if (rt.GetInterfaces().Any(e => e.IsGenericType && e.GetGenericTypeDefinition() == typeof(IEnumerable<>))) {
-					rt = rt.IsArray ? rt.GetElementType() : rt.GenericTypeArguments[0];
-					v = JArray.FromObject(new[] { Activator.CreateInstance(rt) });
-				} else {
-					v = JToken.FromObject(Activator.CreateInstance(rt));
-				}
-				t["Return"] = v;
+				t[nameof(Parameters)] = Parameters;
+				t["Return"] = ToFlatObject(m.ReturnType);
 			});
 			if (Methods.Count > 0) {
 				csharp[item.Name] = Methods;

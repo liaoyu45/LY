@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
+using System.Linq;
 using System.Web;
 using System.Web.Routing;
 using System.Web.UI;
+using System.ComponentModel;
 
 namespace Gods.Web.Manage {
 	public partial class Him : Page, IRouteHandler, System.Web.SessionState.IRequiresSessionState {
@@ -13,21 +16,30 @@ namespace Gods.Web.Manage {
 		protected override void OnLoad(EventArgs e) {
 			if (!ever) {
 				ever = true;
-				File.WriteAllText(Request.MapPath(ASPX), Properties.Resources.Him.Split(new[] { "CodeBehind" }, StringSplitOptions.RemoveEmptyEntries)[0] + "%>");
+				File.WriteAllText(Request.MapPath(ASPX), Properties.Resources.Him.Replace("CodeBehind=\"~/ Him.aspx.cs\" ", string.Empty));
 				Response.Redirect(ASPX);
 				throw null;
 			}
 			if (IsPostBack) {
 				return;
 			}
-			Web.Him.AllTypeCache.ForEach(ee => {
-				new FileInfo(ee.Declare.Assembly.CodeBase);
-				new FileInfo(ee.Implement.Assembly.CodeBase);
-			});
-			eee.DataSource = Web.Him.AllTypeCache;
+			var c = new CodeContext();
+			foreach (var item in Web.Him.AllTypeCache) {
+				if (c.Interfaces.Any(i => i.Name == item.Declare.FullName)) {
+					continue;
+				}
+				c.Interfaces.Add(new Interface {
+					Name = item.Declare.FullName,
+					Description = item.Declare.GetCustomAttribute<DescriptionAttribute>()?.Description,
+				});
+			}
+			eee.DataSource = c.Interfaces.ToList();
+			eee.DataBind();
+			c.Dispose();
 		}
-		class MyClass {
 
+		public static void Create() {
+			RouteTable.Routes.Add(new Route(ASPX, new Him()));
 		}
 	}
 }

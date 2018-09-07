@@ -15,8 +15,6 @@ namespace Gods.Web {
 	}
 
 	public partial class You : Page, IHttpHandler {
-		protected override HttpContext Context => HttpContext.Current;
-
 		public override void ProcessRequest(HttpContext context) {
 			var key = context.Request[Him.his.AjaxKey]?.Trim() ?? string.Empty;
 			var action =
@@ -50,12 +48,12 @@ namespace Gods.Web {
 		}
 
 		private object MatchPath(string key) {
-			var all = HttpContext.Current.Request.Path.Split('/', '\\').Skip(1);
-			return Him.Invoke(all.Take(all.Count() - 1).Aggregate(string.Empty, (s, ss) => s + '.' + ss), all.Last());
+			var all = HttpContext.Current.Request.Path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries).Skip(1);
+			return Him.Invoke(all.Take(all.Count() - 1).Aggregate(string.Empty, (s, ss) => s + '.' + ss).Trim('.'), all.Last());
 		}
 
 		private void ProcessRequest(string key) {
-			base.ProcessRequest(Context);
+			base.ProcessRequest(HttpContext.Current);
 		}
 
 		private object MatchThis(string key) {

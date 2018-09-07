@@ -34,7 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Him.cs" />
-    <Compile Include="HttpWebResponseUtility.cs" />
     <Compile Include="IndexedFile.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

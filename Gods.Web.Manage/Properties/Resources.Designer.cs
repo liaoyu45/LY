@@ -61,16 +61,6 @@ namespace Gods.Web.Manage.Properties {
         }
         
         /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
-        internal static byte[] dsofile {
-            get {
-                object obj = ResourceManager.GetObject("dsofile", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   查找类似 &lt;%@ Page Language=&quot;C#&quot; AutoEventWireup=&quot;true&quot; Inherits=&quot;Gods.Web.Manage.Him&quot; CodeBehind=&quot;~/Him.aspx.cs&quot; %&gt;
         ///
         ///&lt;!DOCTYPE html&gt;

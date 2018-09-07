@@ -18,8 +18,8 @@ namespace Gods.Web {
 		}
 
 		internal static object Invoke(string typeName, string methodName) {
-			var type = AllTypeCache.FirstOrDefault(e => e.GetHashCode() == typeName.GetHashCode()).GetImplement();
-			return Invoke(type, type.GetMethods().FirstOrDefault(e => e.Name == methodName));
+			var c = AllTypeCache.FirstOrDefault(e => e.GetHashCode() == typeName.GetHashCode());
+			return Invoke(c?.GetImplement(), c?.Declare.GetMethods().FirstOrDefault(e => e.Name == methodName));
 		}
 
 		private static object Invoke(Type type, MethodInfo method) {

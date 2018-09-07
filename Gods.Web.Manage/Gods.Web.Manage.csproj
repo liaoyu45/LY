@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ActionRecord.cs" />
+    <Compile Include="BugRecord.cs" />
     <Compile Include="CodeContext.cs" />
     <Compile Include="Coder.cs" />
     <Compile Include="Him.aspx.cs">
@@ -50,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="dsofile.dll" />
     <Content Include="Him.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
