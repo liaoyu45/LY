@@ -48,7 +48,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Soul.cs" />
+    <Compile Include="Demon.cs" />
     <Compile Include="TheBigBang.cs" />
     <Compile Include="Universe.cs" />
   </ItemGroup>

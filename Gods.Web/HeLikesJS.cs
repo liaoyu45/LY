@@ -71,7 +71,10 @@ namespace Gods.Web {
 				Methods.Add(t);
 				var Parameters = JArray.FromObject(m.GetParameters().Select(e => e.Name).ToList());
 				t[nameof(Parameters)] = Parameters;
-				t["Return"] = ToFlatObject(m.ReturnType);
+				var rt = ToFlatObject(m.ReturnType);
+				if (rt != null) {
+					t["Return"] = rt;
+				}
 			});
 			if (Methods.Count > 0) {
 				csharp[item.Name] = Methods;

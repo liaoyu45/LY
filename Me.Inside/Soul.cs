@@ -5,11 +5,11 @@ namespace Me.Inside {
 		int Id { get; set; }
 		string WakeUp(string name, string password);
 		void Sleep();
-		int Pay(int planId, string content);
+		int Pay(int planId, string content, bool done);
 		int Desire(string thing);
 		void GiveUp(int planId);
-		void Finish(int planId);
-		Plan[] QueryPlans(DateTime? start, DateTime? end, int skip, int take);
-		Effort[] QueryEfforts(int planId, DateTime? start, DateTime? end, int skip, int take);
+		Plan[] QueryPlans(DateTime? start, bool? done);
+		Effort[] QueryEfforts(int planId);
+		void DeleteEffort(int id);
 	}
 }

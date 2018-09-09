@@ -1,0 +1,18 @@
+﻿form > * {
+	box-sizing: border-box;
+}
+
+textarea{
+	width: 100%;
+}
+
+table {
+	table-layout: fixed;
+	width: 100%;
+	text-align: center;
+}
+
+input[type=range], input[type=range] + a {
+	float: left;
+	display: block;
+}

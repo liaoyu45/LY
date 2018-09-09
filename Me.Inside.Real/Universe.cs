@@ -27,7 +27,11 @@ namespace Me.Inside.Real {
 		public static void Using(Action<Universe> action) {
 			Using(d => {
 				action(d);
-				return d.ChangeTracker.Entries().Count();
+				var c = d.ChangeTracker.Entries().Count();
+				if (c > 0) {
+					d.SaveChanges();
+				}
+				return c;
 			});
 		}
 	}
