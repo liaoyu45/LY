@@ -1,8 +1,12 @@
-﻿form > * {
-	box-sizing: border-box;
+﻿form {
+	text-align: right;
 }
 
-textarea{
+	form > * {
+		box-sizing: border-box;
+	}
+
+textarea {
 	width: 100%;
 }
 

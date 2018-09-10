@@ -25,8 +25,9 @@
 	function canApplyThis(f) {
 		return typeof f === "function" && f.toString().split('{')[0].indexOf("=>") === -1;
 	}
-	function makeClass(obj, n, jo) {
+	function makeClass(obj, n, joi) {
 		var oi = obj[n];
+		var jo = {};
 		Object.defineProperties(jo, (function () {
 			var r = {};
 			oi.map(m=>m.Name).forEach(i=> {
@@ -44,6 +45,15 @@
 			});
 			return r;
 		})());
+		Object.defineProperty(joi, n, {
+			get: () =>jo,
+			set: v=> {
+				for (var i in v) {
+					(i in jo ? jo : {})[i] = v[i];
+				}
+			},
+			enumerable: true
+		});
 		var obo = Symbol();//one by one
 		var ing = Symbol();
 		obj[n] = function (data) {
@@ -61,7 +71,7 @@
 		oi.forEach(m=> {
 			obj[n].prototype[m.Name] = function () {
 				var ev = [...arguments].filter(e=>e instanceof Event)[0] || window.event;
-				var a0 = [...arguments].filter(e=>e instanceof HTMLElement)[0] || document.querySelector(`form[data-god='${m.Name}']`);
+				var a0 = arguments.length ? [...arguments].filter(e=>e instanceof HTMLElement)[0] : document.querySelector(`form[data-csharp='${m.Name}']`);
 				if (a0 instanceof HTMLElement) {//while coding, instanceof returns true
 					while (!(a0 instanceof HTMLFormElement)) {
 						a0 = a0.parentElement;
@@ -126,6 +136,7 @@
 				}
 				cb = [...[...arguments].filter(e=>typeof e ==="function"), ...jo[m.Name].filter(canApplyThis)];
 				var r = new XMLHttpRequest();
+				r.withCredentials = true;
 				r.open(method, u);
 				r.onabort = () =>this[ing] = false;
 				r.onload = e=> {
@@ -149,7 +160,7 @@
 						}
 					}
 					var badArgs = [s, ev, m];
-					if (m["Return"]) {
+					if ("Return" in m) {
 						if (typeof m["Return"] !== "string" && typeof s === "string" && s) {
 							events.error.apply(this, badArgs);
 							return;
@@ -187,7 +198,7 @@
 			var oi = co[i];
 			var ji = i in jo ? jo[i] : jo[i] = {};
 			if (oi instanceof Array) {
-				makeClass(co, i, ji);
+				makeClass(co, i, jo);
 			} else {
 				findClass(oi, ji);
 			}
@@ -199,25 +210,9 @@
 		}
 		findClass(CSharp[i], Javascript[i]);
 	}
-	god[ILikeCSharpSoI] = function (name, callbacks, globleCallbacks) {
-		function find(go, jo) {
-			if (!jo) {
-				return;
-			}
-			var ns = Object.getOwnPropertyNames(jo);
-			if (ns.some(e=>jo[e] instanceof Function)) {
-				for (var i in jo) {
-					go[i] = jo[i];
-				}
-			} else {
-				ns.forEach(e=>find(go[e], jo[e]));
-			}
-		}
-		if (typeof name === "string") {
-			find(god.Javascript[name], callbacks);
-		}
+	god[ILikeCSharpSoI] = function (globleCallbacks) {
 		for (var i in events) {
-			events[i] = [(globleCallbacks || name)[i], events[i]].filter(e=>e instanceof Function)[0];
+			events[i] = [globleCallbacks[i], events[i]].filter(e=>e instanceof Function)[0];
 		}
 	};
 })();

@@ -1,7 +1,7 @@
-﻿namespace Me.Limit {
-	public class LimitIDo : Limit<I> {
-		public int Id { get; set; }
+﻿using Me.Inside;
 
+namespace Me.Limit {
+	public class LimitIDo : Limit<Soul> {
 		public string GiveUp(int planId) {
 			return "请不要放弃";
 		}

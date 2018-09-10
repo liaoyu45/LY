@@ -6,18 +6,18 @@ namespace Me.Inside.Real {
 	public class Demon : Soul {
 		public int Id { get; set; }
 
-		private DateTime today = DateTime.Now.Date;
-		private DateTime tomorrow = DateTime.Now.AddDays(1).Date;
-		static private DateTime mine = DateTime.Parse("1990-03-13");
 		int Soul.Pay(int planId, string content, bool done) {
 			return Universe.Using(d => {
 				Effort ee;
 				var p = d.Plans.First(e => e.GodId == Id && e.Id == planId);
-				if (p.Done) {
-					throw new Exception("已完成");
+				if (p.DoneTime.HasValue) {
+					throw new Exception("非法的接口调用，向已完成的计划添加内容。");
 				}
-				p.Efforts.Add(ee = new Effort { Content = content });
-				p.Done = done;
+				var now = DateTime.Now;
+				p.Efforts.Add(ee = new Effort { Content = content, AppearTime = now });
+				if (done) {
+					p.DoneTime = now;
+				}
 				d.SaveChanges();
 				return ee.Id;
 			});
@@ -35,15 +35,19 @@ namespace Me.Inside.Real {
 			});
 		}
 
-		Plan[] Soul.QueryPlans(DateTime? start, bool? done) {
-			var r = Universe.Using(d => d.Plans.Where(e => e.GodId == Id && (start == null || e.AppearTime > start) && (done == null || e.Done == done.Value)).OrderByDescending(e => e.AppearTime).ToList());
-			return r.ToArray();
+		Plan[] Soul.QueryPlans(int? start, bool? done) {
+			if (start == null || start < 1990) {
+				start = 1990;
+			}
+			var s = new DateTime(start.Value, 1, 1);
+			return Universe.Using(d => d.Plans.Where(e => e.GodId == Id && e.AppearTime > s && (done == null || e.DoneTime != null == done.Value)).OrderByDescending(e => e.AppearTime).ToArray());
 		}
 
 		string Soul.WakeUp(string name, string password) {
 			if (Id > 0) {
 				return Universe.Using(d => d.Gods.Find(Id)?.Name);
-			} else if (name?.Any() != true || password?.Any() != true) {
+			}
+			if (name?.Any() != true || password?.Any() != true) {
 				return null;
 			}
 			return Universe.Using(d => {
@@ -60,9 +64,7 @@ namespace Me.Inside.Real {
 			});
 		}
 
-		void Soul.Sleep() {
-			Id = 0;
-		}
+		void Soul.Sleep() => Id = 0;
 
 		void Soul.GiveUp(int planId) {
 			Universe.Using(d => {

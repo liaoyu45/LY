@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
-using System.Reflection;
+using System.Data.Entity;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Routing;
 using System.Web.UI;
-using System.ComponentModel;
 
 namespace Gods.Web.Manage {
 	public partial class Him : Page, IRouteHandler, System.Web.SessionState.IRequiresSessionState {
@@ -31,9 +33,13 @@ namespace Gods.Web.Manage {
 				c.Interfaces.Add(new Interface {
 					Name = item.Declare.FullName,
 					Description = item.Declare.GetCustomAttribute<DescriptionAttribute>()?.Description,
+					ActionRecords = new List<ActionRecord>(item.GetImplement() == null ? Enumerable.Empty<ActionRecord>() : new[] {new ActionRecord {
+						Content = item.Implement.GetCustomAttribute<DescriptionAttribute>()?.Description
+					}})
 				});
+				c.SaveChanges();
 			}
-			eee.DataSource = c.Interfaces.ToList();
+			eee.DataSource = c.Interfaces.Include(a => a.ActionRecords).Include(a => a.Coder).ToList();
 			eee.DataBind();
 			c.Dispose();
 		}

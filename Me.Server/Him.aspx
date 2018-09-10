@@ -10,7 +10,9 @@
 	<p>owieur</p>
 	<form runat="server">
 		<asp:GridView runat="server" ID="eee">
+			<Columns>
 
+			</Columns>
 		</asp:GridView>
 		<asp:Button Text="" ID="asre" runat="server" />
 	</form>

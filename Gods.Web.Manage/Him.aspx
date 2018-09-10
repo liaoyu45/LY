@@ -7,12 +7,25 @@
 	<title></title>
 </head>
 <body>
-	<p>owieur</p>
-	<form runat="server">
-		<asp:GridView runat="server" ID="eee">
-
-		</asp:GridView>
-		<asp:Button Text="" ID="asre" runat="server" />
-	</form>
+	<table>
+		<thead>
+			<tr>
+				<th>名称</th>
+				<th>描述</th>
+				<th>当前负责人</th>
+				<th>上次负责人</th>
+			</tr>
+		</thead>
+		<asp:Repeater runat="server" ID="eee">
+			<ItemTemplate>
+				<tr>
+					<td><%#Eval("Name") %></td>
+					<td><%#Eval("Description") %></td>
+					<td><%#Eval("CoderName") %></td>
+					<td><%#Eval("RecordsCount") %></td>
+				</tr>
+			</ItemTemplate>
+		</asp:Repeater>
+	</table>
 </body>
 </html>

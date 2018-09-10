@@ -34,6 +34,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Me.Inside\Me.Inside.csproj">
+      <Project>{6A59A733-595A-4747-8548-8C7D1F14C74B}</Project>
+      <Name>Me.Inside</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Me\Me.csproj">
       <Project>{C7ED56FA-750E-4419-BFA7-59725EB50529}</Project>
       <Name>Me</Name>

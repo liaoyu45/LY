@@ -8,7 +8,7 @@ window.vm = {
 	CurrentPlan: ko.observable(),
 	PendingPlan: ko.observable(),
 	PendingEffort: ko.observable(),
-	DoneState: ko.observable("all")
+	DoneState: ko.observable("")
 };
 addEventListener("load", () => ko.applyBindings(vm));
 god.Javascript.Me.Inside.Soul = {
@@ -28,7 +28,10 @@ god.Javascript.Me.Inside.Soul = {
 			Id: e
 		});
 		vm.PendingEffort(null);
-		vm.CurrentPlan().Done(r.done.checked);
+		if (r.done.checked) {
+			vm.CurrentPlan().DoneTime(new Date());
+		}
+		r.content.focus();
 	},
 	"Desire": function (e, r) {
 		var v = r.thing.value;
@@ -42,7 +45,7 @@ god.Javascript.Me.Inside.Soul = {
 	"QueryPlans": function (e) {
 		e.forEach(ee=> {
 			ee.Efforts = ko.observableArray(ee.Efforts);
-			ee.Done = ko.observable(ee.Done);
+			ee.DoneTime = ko.observable(ee.DoneTime);
 		});
 		vm.Plans(e);
 	},
@@ -63,21 +66,9 @@ god.MakeJavasciptLookLikeCSharp({
 	}
 });
 (window.me = new god.CSharp.Me.Inside.Soul()).WakeUp();
-god.Javascript.Me.Inside.Soul.Desire = function (e) {
-	alert("done");
-};
 god.Javascript.Me.Inside.Soul.GiveUp = (e) => {
 	var c = vm.Plans().filter(ee=>ee.Id === e.planId)[0].Content;
 	return !confirm("永远放弃么？" + c);
-};
-god.Javascript.Me.Inside.Soul.Pay = e=> {
-	if (vm.CurrentPlan().Done()) {
-		alert("已完成");
-		return true;
-	}
-};
-god.Javascript.Me.Inside.Soul.DeleteEffort = e=> {
-	return !confirm("白废了？");
 };
 god.Javascript.Me.Inside.Soul.Desire = e=> {
 	return !confirm("想要？" + e.thing.value);
