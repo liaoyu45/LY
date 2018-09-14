@@ -1,9 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Web.Hosting;
 using System.Web.Routing;
 
@@ -40,19 +42,38 @@ namespace Gods.Web {
 				tagInterface = t;
 			}
 			var webRoot = HostingEnvironment.MapPath("/");
+			var fs = FindImplements(tagInterface, webRoot + his.Modules).Where(e => e.IsInterface);
+			if (fs.GroupBy(e => e.Assembly).Select(e => e.Key).Any(e => e.ExportedTypes.Any(ee => ee.IsClass && ee.GetInterfaces().Contains(tagInterface)))) {
+				throw new BadImageFormatException("All classes in module assembly can not inherit the tag interface.");
+			}
 			var root = $"{webRoot}/Scripts";
 			his.Implements = webRoot + his.Implements;
 			his.Validators = webRoot + his.Validators;
 			his.Modules = webRoot + his.Modules;
-			var fs = FindImplements(tagInterface, his.Modules).Where(e => e.IsInterface);
-			if (fs.GroupBy(e => e.Assembly).Select(e => e.Key).Any(e => e.ExportedTypes.Any(ee => ee.IsClass && ee.GetInterfaces().Contains(tagInterface)))) {
-				throw new BadImageFormatException("All classes in module assembly can not inherit the tag interface.");
-			}
 			Him.his = his;
 			RouteTable.Routes.Add(new Route(his.AjaxRoute, new Me()));
 			fs.ToList().ForEach(Append);
-			RouteTable.Routes.Add(new Route(nameof(CSharp), new JsWriter(CSharp)));
-			RouteTable.Routes.Add(new Route(nameof(Javascript), new JsWriter(Javascript)));
+			RouteTable.Routes.Add(new Route(nameof(CSharp), new JsWriter(() => {
+				var context = HttpContext.Current;
+				context.Response.ContentType = "application/x-javascript";
+				var n = context.Request.RawUrl.Split('?')[1].Split('.')[0];
+				var MakeJavasciptLookLikeCSharp = JsonConvert.SerializeObject(new {
+					Key = his.AjaxKey,
+					Url = context.Request.Url.ToString().Replace(context.Request.RawUrl, string.Empty) + "/" + his.AjaxRoute
+				});
+				var aliasScript = context.Request.Url.PathAndQuery.Intersect(".=&").Any() ? string.Empty : "god.exists = true;";
+				System.IO.File.WriteAllText(context.Request.MapPath("log.txt"), context.Request.Path);
+				return $@"
+localStorage.setItem(""{nameof(MakeJavasciptLookLikeCSharp)}"", '{MakeJavasciptLookLikeCSharp}');
+window.god = window.god || (window.god = {{}});
+god.CSharp = {{}};
+{aliasScript}
+god.CSharp.{n} = ".TrimStart() + CSharp[n];
+			})));
+			RouteTable.Routes.Add(new Route(nameof(Javascript), new JsWriter(() => {
+				HttpContext.Current.Response.ContentType = "application/json";
+				return Javascript[HttpContext.Current.Request.RawUrl.Split('?')[1]];
+			})));
 		}
 
 		private static void Append(Type item) {

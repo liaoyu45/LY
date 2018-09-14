@@ -51,6 +51,7 @@
     <Compile Include="HeInvokes.cs" />
     <Compile Include="Him.cs" />
     <Compile Include="His.cs" />
+    <Content Include="IRequest.txt" />
     <Compile Include="JsWriter.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

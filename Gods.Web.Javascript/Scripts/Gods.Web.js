@@ -215,4 +215,9 @@
 			events[i] = [globleCallbacks[i], events[i]].filter(e=>e instanceof Function)[0];
 		}
 	};
+	if (!("exists" in god)) {
+		for (var i in god) {
+			window[i] = god[i];
+		}
+	}
 })();
