@@ -5,7 +5,6 @@
 	var ILikeCSharpSoI = "MakeJavasciptLookLikeCSharp";
 	var CSharp = god.CSharp || (god.CSharp = {});
 	var Javascript = god.Javascript || (god.Javascript = {});
-	var events = {};
 	var settings = (function () {
 		var r = { Key: "Him1344150689", Url: "/Gods" };
 		var s = coding ? null : localStorage.getItem(ILikeCSharpSoI);
@@ -17,7 +16,7 @@
 		localStorage.setItem(ILikeCSharpSoI, JSON.stringify(r));
 		return r;
 	})();
-	var cls = [];
+	var events = {};
 	["waiting", "error", "done"].forEach(e=>events[e] = s=>console.log(s));
 	function isValid(e) {
 		return e instanceof String || !isNaN(e) || e instanceof Date || e instanceof Boolean;
@@ -67,7 +66,6 @@
 				this[i] = data[i];
 			}
 		};
-		cls.push(obj[n]);
 		oi.forEach(m=> {
 			obj[n].prototype[m.Name] = function () {
 				var ev = [...arguments].filter(e=>e instanceof Event)[0] || window.event;
@@ -140,7 +138,11 @@
 				r.open(method, u);
 				r.onabort = () =>this[ing] = false;
 				r.onload = e=> {
-					events.done.apply(this, [r, ev, m]);
+					try {
+						events.done.apply(this, [r, ev, m]);
+					} catch (e) {
+						console.log(e);
+					}
 					this[ing] = false;
 					var s = r.responseText.trim();
 					if (s.toLowerCase() === "false") {
@@ -159,17 +161,13 @@
 							console.log(s);
 						}
 					}
-					var badArgs = [s, ev, m];
-					if ("Return" in m) {
-						if (typeof m["Return"] !== "string" && typeof s === "string" && s) {
-							events.error.apply(this, badArgs);
-							return;
+					if ("Return" in m && typeof m["Return"] !== "string" && typeof s === "string" && s || !!s) {
+						try {
+							events.error.apply(this, [s, ev, m]);
+						} catch (e) {
+							console.log(e);
 						}
-					} else {
-						if (s) {
-							events.error.apply(this, badArgs);
-							return;
-						}
+						return;
 					}
 					for (var i of cb) {
 						try {
@@ -187,7 +185,11 @@
 					}
 					this[ing] = true;
 				}
-				events.waiting.apply(this, [r, ev]);
+				try {
+					events.waiting.apply(r, this[obo]);
+				} catch (e) {
+					console.log(e);
+				}
 				r.send(data);
 				return r;
 			};

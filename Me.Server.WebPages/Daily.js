@@ -1,4 +1,4 @@
-﻿/// <reference path="http://localhost:53201/CSharp?Me.js?1=1" />
+﻿/// <reference path="http://localhost:53201/CSharp?Me.js" />
 /// <reference path="/Scripts/Gods.Web.js" />
 /// <reference path="/Scripts/knockout-3.4.2.debug.js" />
 window.vm = {
