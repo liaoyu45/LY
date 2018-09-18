@@ -102,19 +102,7 @@ namespace Gods.Web {
 		}
 
 		private static Dictionary<string, object> MapParameters(MethodInfo method) {
-			var pis = method.GetParameters();
-			var objPara = pis.Where(IsNotNormalType);
-			if (objPara.Count() > 1) {
-				throw new ArgumentException("If a methods contain user-defined-type parameter, GetParameters().length must be 1.");
-			}
-			if (objPara.Count() == 1) {
-				var p0 = objPara.First();
-				var s = new StreamReader(HttpContext.Current.Request.InputStream, System.Text.Encoding.UTF8);
-				var p0Arg = DeserializeObjectInStream(p0.ParameterType, s.ReadToEnd());
-				s.Dispose();
-				return new Dictionary<string, object> { { p0.Name, p0Arg } };
-			}
-			return pis.ToDictionary(e => e.Name, e => MapNormalType(e.ParameterType, HttpContext.Current.Request[e.Name]));
+			return method.GetParameters().ToDictionary(e => e.Name, e => MapNormalType(e.ParameterType, e.Name));
 		}
 
 		static object DeserializeObjectInStream(Type type, string json) {

@@ -1,18 +1,28 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 
 namespace Gods.Web {
 	public partial class Him {
 		public static bool IsNormalType(ParameterInfo type) {
-			return type.ParameterType == typeof(string) || type.ParameterType.IsValueType;
+			return type.ParameterType == typeof(string) || type.ParameterType.IsValueType || type.ParameterType == typeof(byte[]) || type.ParameterType == typeof(Stream);
 		}
-		public static bool IsNotNormalType(ParameterInfo type) {
-			return type.ParameterType != typeof(string) && !type.ParameterType.IsValueType;
-		}
-		public static object MapNormalType(Type type, string value) {
+
+		public static object MapNormalType(Type type, string name) {
+			var value = HttpContext.Current.Request[name];
 			if (type == typeof(string)) {
 				return value?.Trim();
+			}
+			if (type == typeof(byte[])) {
+				var s = HttpContext.Current.Request.Files[name]?.InputStream;
+				var bs = new byte[s?.Length ?? 0];
+				s?.Read(bs, 0, bs.Length);
+				return bs;
+			}
+			if (type == typeof(Stream)) {
+				return HttpContext.Current.Response.OutputStream;
 			}
 			var pv = value?.Trim() ?? string.Empty;
 			if (pv.Length == 0) {
