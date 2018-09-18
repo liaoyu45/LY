@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -31,10 +32,21 @@ namespace Gods.Web {
 				result = e.Message;
 				context.Response.StatusCode = 404;
 			}
+			if (result is byte[]) {
+				var bs = result as byte[];
+				context.Response.OutputStream.Write(bs, 0, bs.Length);
+				return;
+			}
+			if (result is Dictionary<string, Stream>) {
+				var d = result as Dictionary<string, Stream>;
+				context.Response.ContentType = d.First().Key;
+				d.First().Value.CopyTo(context.Response.OutputStream);
+				return;
+			}
 			if (result != null) {
 				if (result is DateTime) {
 					result = ((DateTime)result).ToString("YYYY-MM-DD HH:ss:mm");
-				} else if (result.GetType() != typeof(string) && result.GetType().IsClass) {
+				} else if (result.GetType() != typeof(string) && result.GetType().IsClass && !(result is byte[])) {
 					context.Response.ContentType = "application/json";
 					var er = new JsonSerializer { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, Formatting = Formatting.Indented };
 					er.Converters.Add(new Newtonsoft.Json.Converters.IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" });

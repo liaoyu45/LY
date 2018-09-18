@@ -51,13 +51,27 @@ namespace Gods.Web {
 				if (WillIntercept(method, ps)) {
 					return newPs;
 				}
-			} else {
-				if (newPs != null) {
+			} else if (newPs is Dictionary<string, object>) {
+				var d = newPs as Dictionary<string, object>;
+				if (WillIntercept(method, d)) {
 					return newPs;
 				}
-				ps = MapParameters(method);
+				var od = MapParameters(method);
+				foreach (var item in d.Keys) {
+					od[item] = d[item];
+				}
+				ps = od.Values.ToArray();
+			} else if (newPs != null) {
+				return newPs;
+			} else {
+				ps = ps ?? MapParameters(method).Values.ToArray(); 
 			}
 			return MapSession(ins, () => method.Invoke(ins, ps));
+		}
+
+		private static bool WillIntercept(MethodInfo method, Dictionary<string, object> dictionary) {
+			var ps = method.GetParameters();
+			return dictionary.Keys.Except(ps.Select(a => a.Name)).Any() || dictionary.Values.Where(a => a != null).Select(a => a.GetType()).Except(ps.Select(a => a.ParameterType)).Any();
 		}
 
 		private static bool WillIntercept(MethodInfo method, object[] newPs) {
@@ -87,18 +101,20 @@ namespace Gods.Web {
 			}
 		}
 
-		private static object[] MapParameters(MethodInfo method) {
-			var plist = new List<object>();
+		private static Dictionary<string, object> MapParameters(MethodInfo method) {
 			var pis = method.GetParameters();
-			plist.AddRange(pis.Where(IsNormalType).Select(e => MapNormalType(e.ParameterType, HttpContext.Current.Request[e.Name])));
-			var p0 = pis.Where(IsNotNormalType).FirstOrDefault()?.ParameterType;
-			if (p0 != null) {
-				var s = new StreamReader(HttpContext.Current.Request.InputStream, System.Text.Encoding.UTF8);
-				var p0Arg = DeserializeObjectInStream(p0, s.ReadToEnd());
-				plist.Add(p0Arg);
-				s.Dispose();
+			var objPara = pis.Where(IsNotNormalType);
+			if (objPara.Count() > 1) {
+				throw new ArgumentException("If a methods contain user-defined-type parameter, GetParameters().length must be 1.");
 			}
-			return plist.ToArray();
+			if (objPara.Count() == 1) {
+				var p0 = objPara.First();
+				var s = new StreamReader(HttpContext.Current.Request.InputStream, System.Text.Encoding.UTF8);
+				var p0Arg = DeserializeObjectInStream(p0.ParameterType, s.ReadToEnd());
+				s.Dispose();
+				return new Dictionary<string, object> { { p0.Name, p0Arg } };
+			}
+			return pis.ToDictionary(e => e.Name, e => MapNormalType(e.ParameterType, HttpContext.Current.Request[e.Name]));
 		}
 
 		static object DeserializeObjectInStream(Type type, string json) {

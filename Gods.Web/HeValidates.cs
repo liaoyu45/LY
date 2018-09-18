@@ -31,6 +31,15 @@ namespace Gods.Web {
 			var vps = type.GetProperties();
 			return (validators[s] = o => {
 				var ins = construcor.Invoke(construcor.GetParameters().Select(e => e.ParameterType == validatingType ? o : e.ParameterType == typeof(MethodInfo) ? (object)method : HttpContext.Current).ToArray());
+				var fs = type.GetFields((BindingFlags)36);
+				foreach (var item in fs) {
+					if (item.FieldType == typeof(HttpContext)) {
+						item.SetValue(ins, HttpContext.Current);
+					}
+					if (item.FieldType == validatingType) {
+						item.SetValue(ins, o);
+					}
+				}
 				return MapSession(ins, () =>
 					method?.Invoke(ins, method.GetParameters().Select(p => MapNormalType(p.ParameterType, HttpContext.Current.Request[p.Name])).ToArray())
 				);
