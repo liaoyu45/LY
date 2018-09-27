@@ -654,6 +654,50 @@
 		        moveArray: moveArray, removeItem: removeItem
 		    };
 		})();
+        this.lockable = function (lockF, options) {
+        	if (!arguments.length) {
+        		var caller = arguments.callee.caller;
+        		if (ed.indexOf(caller) === -1) {
+        			ed.push(caller);
+        			caller.unlock = function () {
+        				ed.splice(ed.indexOf(caller), 1);
+        			};
+        			return;
+        		}
+        		return true;
+        	}
+        	var empty = function () { },
+				on = options && options.on || empty,
+				off = options && options.off || empty,
+				repeat = options && options.repeat || empty,
+				ing,
+				ri = 1;
+        	if (typeof options === "function") {
+        		off = options;
+        	}
+        	var f = function () {
+        		"use strick"
+        		if (ing) {
+        			repeat(ri++);
+        			return;
+        		}
+        		if (on()) {
+        			ing = false;
+        			return;
+        		}
+        		var r = lockF.apply(this, arguments);
+        		if (typeof r === "undefined") {
+        			ing = true;
+        		} else {
+        			ing = !!r;
+        		}
+        	};
+        	f.unlock = function () {
+        		ing = false;
+        		off.apply(arguments);
+        	};
+        	return f;
+        }
     }
     var god = new GodThere();
     if (!window.god) {

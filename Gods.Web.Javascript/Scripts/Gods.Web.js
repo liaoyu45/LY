@@ -5,6 +5,7 @@
 	var ILikeCSharpSoI = "MakeJavasciptLookLikeCSharp";
 	var CSharp = god.CSharp || (god.CSharp = {});
 	var Javascript = god.Javascript || (god.Javascript = {});
+	var events = {};
 	var settings = (function () {
 		var r = { Key: "Him1344150689", Url: "/Gods" };
 		var s = coding ? null : localStorage.getItem(ILikeCSharpSoI);
@@ -16,10 +17,10 @@
 		localStorage.setItem(ILikeCSharpSoI, JSON.stringify(r));
 		return r;
 	})();
-	var events = {};
+	var cls = [];
 	["waiting", "error", "done"].forEach(e=>events[e] = s=>console.log(s));
 	function isValid(e) {
-		return e instanceof String || !isNaN(e) || e instanceof Date || e instanceof Boolean;
+		return ["number", "string", "boolean"].indexOf(typeof e) > -1 || [String, Number, Date, Boolean].some(a=>e instanceof a);
 	}
 	function canApplyThis(f) {
 		return typeof f === "function" && f.toString().split('{')[0].indexOf("=>") === -1;
@@ -66,6 +67,7 @@
 				this[i] = data[i];
 			}
 		};
+		cls.push(obj[n]);
 		oi.forEach(m=> {
 			obj[n].prototype[m.Name] = function () {
 				var ev = [...arguments].filter(e=>e instanceof Event)[0] || window.event;
@@ -94,7 +96,7 @@
 						return;
 					}
 					method = "post";
-					data = new FormData(request = a0);
+					request = data = new FormData(a0);
 					data.append(settings.Key, m.Key);
 					for (var i in this) {
 						if (i.constructor !== Symbol && isValid(this[i]) && !(i in a0)) {
@@ -137,12 +139,8 @@
 				r.withCredentials = true;
 				r.open(method, u);
 				r.onabort = () =>this[ing] = false;
-				r.onload = e=> {
-					try {
-						events.done.apply(this, [r, ev, m]);
-					} catch (e) {
-						console.log(e);
-					}
+				r.onerror = r.onload = e=> {
+					events.done.apply(this, [r, ev, m]);
 					this[ing] = false;
 					var s = r.responseText.trim();
 					if (s.toLowerCase() === "false") {
@@ -161,13 +159,17 @@
 							console.log(s);
 						}
 					}
-					if ("Return" in m && typeof m["Return"] !== "string" && typeof s === "string" && s || !!s) {
-						try {
-							events.error.apply(this, [s, ev, m]);
-						} catch (e) {
-							console.log(e);
+					var badArgs = [s, ev, m];
+					if ("Return" in m) {
+						if (typeof m["Return"] !== "string" && typeof s === "string" && s) {
+							events.error.apply(this, badArgs);
+							return;
 						}
-						return;
+					} else {
+						if (s) {
+							events.error.apply(this, badArgs);
+							return;
+						}
 					}
 					for (var i of cb) {
 						try {
@@ -185,11 +187,7 @@
 					}
 					this[ing] = true;
 				}
-				try {
-					events.waiting.apply(r, this[obo]);
-				} catch (e) {
-					console.log(e);
-				}
+				events.waiting.apply(this, [r, ev]);
 				r.send(data);
 				return r;
 			};

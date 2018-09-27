@@ -56,7 +56,7 @@ namespace Gods.Web {
 					}
 				}
 			}
-			context.Response.Write(result);
+			context.Response.Write(result ?? string.Empty);
 		}
 
 		private object MatchPath(string key) {
