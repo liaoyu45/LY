@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Web;
 
 namespace Gods.Web {
@@ -113,10 +114,10 @@ namespace Gods.Web {
 						item.SetValue(v, MapNormalType(item.PropertyType, item.Name));
 					}
 				} else {
-					using (var r = new StreamReader(HttpContext.Current.Response.OutputStream)) {
-						v = m.MakeGenericMethod(para.ParameterType).Invoke(null, new[] { r.ReadToEnd() });
-						return new Dictionary<string, object> { { para.Name, v } };
-					} 
+					var bs = new byte[HttpContext.Current.Response.OutputStream.Length];
+					HttpContext.Current.Response.OutputStream.Read(bs, 0, (int)HttpContext.Current.Response.OutputStream.Length);
+					v = m.MakeGenericMethod(para.ParameterType).Invoke(null, new[] { Encoding.UTF8.GetString(bs) });
+					return new Dictionary<string, object> { { para.Name, v } };
 				}
 			}
 			return method.GetParameters().ToDictionary(e => e.Name, e => MapNormalType(e.ParameterType, e.Name));

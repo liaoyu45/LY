@@ -87,5 +87,9 @@ namespace Me.Inside.Real {
 				}
 			});
 		}
+
+		public void TestObject(Effort e) {
+			Console.WriteLine();
+		}
 	}
 }

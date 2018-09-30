@@ -9,5 +9,6 @@
 		Plan[] QueryPlans(int? start, bool? done);
 		Effort[] QueryEfforts(int planId);
 		void DeleteEffort(int id);
+		void TestObject(Effort e);
 	}
 }
