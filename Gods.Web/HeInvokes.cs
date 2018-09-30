@@ -64,7 +64,7 @@ namespace Gods.Web {
 			} else if (newPs != null) {
 				return newPs;
 			} else {
-				ps = ps ?? MapParameters(method).Values.ToArray(); 
+				ps = ps ?? MapParameters(method).Values.ToArray();
 			}
 			return MapSession(ins, () => method.Invoke(ins, ps));
 		}
@@ -102,15 +102,24 @@ namespace Gods.Web {
 		}
 
 		private static Dictionary<string, object> MapParameters(MethodInfo method) {
-			return method.GetParameters().ToDictionary(e => e.Name, e => MapNormalType(e.ParameterType, e.Name));
-		}
-
-		static object DeserializeObjectInStream(Type type, string json) {
-			try {
-				return m.MakeGenericMethod(type).Invoke(null, new[] { json });
-			} catch {
+			var para = method.GetParameters().FirstOrDefault(a => !IsNormalType(a));
+			if (para != null) {
+				object v;
+				var req = HttpContext.Current.Request;
+				var ps = para.ParameterType.GetProperties();
+				if (req.Form.Cast<string>().Concat(req.QueryString.Cast<string>()).Intersect(ps.Select(a => a.Name)).Any()) {
+					v = Activator.CreateInstance(para.ParameterType);
+					foreach (var item in ps) {
+						item.SetValue(v, MapNormalType(item.PropertyType, item.Name));
+					}
+				} else {
+					using (var r = new StreamReader(HttpContext.Current.Response.OutputStream)) {
+						v = m.MakeGenericMethod(para.ParameterType).Invoke(null, new[] { r.ReadToEnd() });
+						return new Dictionary<string, object> { { para.Name, v } };
+					} 
+				}
 			}
-			return null;
+			return method.GetParameters().ToDictionary(e => e.Name, e => MapNormalType(e.ParameterType, e.Name));
 		}
 	}
 }
