@@ -42,6 +42,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scripts\god.js" />
     <Content Include="Scripts\Gods.Web.js" />
   </ItemGroup>
   <PropertyGroup>
