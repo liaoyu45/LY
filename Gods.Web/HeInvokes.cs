@@ -107,15 +107,16 @@ namespace Gods.Web {
 			if (para != null) {
 				object v;
 				var req = HttpContext.Current.Request;
-				var ps = para.ParameterType.GetProperties();
+				var ps = para.ParameterType.GetProperties().Where(e => e.CanWrite);
 				if (req.Form.Cast<string>().Concat(req.QueryString.Cast<string>()).Intersect(ps.Select(a => a.Name)).Any()) {
 					v = Activator.CreateInstance(para.ParameterType);
 					foreach (var item in ps) {
 						item.SetValue(v, MapNormalType(item.PropertyType, item.Name));
 					}
+					return new Dictionary<string, object> { { para.Name, v } };
 				} else {
 					var bs = new byte[HttpContext.Current.Response.OutputStream.Length];
-					HttpContext.Current.Response.OutputStream.Read(bs, 0, (int)HttpContext.Current.Response.OutputStream.Length);
+					HttpContext.Current.Request.InputStream.Read(bs, 0, (int)HttpContext.Current.Response.OutputStream.Length);
 					v = m.MakeGenericMethod(para.ParameterType).Invoke(null, new[] { Encoding.UTF8.GetString(bs) });
 					return new Dictionary<string, object> { { para.Name, v } };
 				}

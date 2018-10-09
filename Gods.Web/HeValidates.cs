@@ -41,7 +41,7 @@ namespace Gods.Web {
 					}
 				}
 				return MapSession(ins, () =>
-					method?.Invoke(ins, method.GetParameters().Select(p => MapNormalType(p.ParameterType, HttpContext.Current.Request[p.Name])).ToArray())
+					method?.Invoke(ins, method.GetParameters().Select(p => MapNormalType(p.ParameterType, p.Name)).ToArray())
 				);
 			})(obj);
 		}
