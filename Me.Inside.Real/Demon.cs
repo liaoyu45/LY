@@ -91,5 +91,9 @@ namespace Me.Inside.Real {
 		public void TestObject(Effort e) {
 			Console.WriteLine();
 		}
+
+		public void TestStream(System.IO.Stream s) {
+			Console.WriteLine(s);
+		}
 	}
 }

@@ -22,7 +22,7 @@ namespace Gods.Web {
 				return bs;
 			}
 			if (type == typeof(Stream)) {
-				return HttpContext.Current.Response.OutputStream;
+				return HttpContext.Current.Request.InputStream;
 			}
 			var pv = value?.Trim() ?? string.Empty;
 			if (pv.Length == 0) {

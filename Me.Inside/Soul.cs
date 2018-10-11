@@ -10,5 +10,6 @@
 		Effort[] QueryEfforts(int planId);
 		void DeleteEffort(int id);
 		void TestObject(Effort e);
+		void TestStream(System.IO.Stream s);
 	}
 }
