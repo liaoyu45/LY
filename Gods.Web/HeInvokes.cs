@@ -115,8 +115,8 @@ namespace Gods.Web {
 					}
 					return new Dictionary<string, object> { { para.Name, v } };
 				} else {
-					var bs = new byte[HttpContext.Current.Response.OutputStream.Length];
-					HttpContext.Current.Request.InputStream.Read(bs, 0, (int)HttpContext.Current.Response.OutputStream.Length);
+					var bs = new byte[HttpContext.Current.Request.InputStream.Length];
+					HttpContext.Current.Request.InputStream.Read(bs, 0, bs.Length);
 					v = m.MakeGenericMethod(para.ParameterType).Invoke(null, new[] { Encoding.UTF8.GetString(bs) });
 					return new Dictionary<string, object> { { para.Name, v } };
 				}
