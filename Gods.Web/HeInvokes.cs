@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -28,9 +27,8 @@ namespace Gods.Web {
 				throw new MissingMethodException();
 			}
 			if (type.IsInterface) {
-				return Activator.CreateInstance(method.ReturnType);
+				return method == typeof(void) ? null : Activator.CreateInstance(method.ReturnType);
 			}
-			ValidateAttributes(method);
 			var k = CacheManager?.Cacheable(method) ?? 0;
 			if (k > 0) {
 				var r = CacheManager.Read(k);
@@ -92,7 +90,7 @@ namespace Gods.Web {
 
 		private static void ValidateAttributes(MethodInfo method) {
 			var pis = method.GetParameters();
-			foreach (var item in pis.Where(IsNormalType)) {
+			foreach (var item in pis) {
 				var attrs = item.GetCustomAttributes<ValidationAttribute>(true);
 				foreach (var at in attrs) {
 					if (!at.IsValid(HttpContext.Current.Request[item.Name])) {
@@ -103,6 +101,7 @@ namespace Gods.Web {
 		}
 
 		private static Dictionary<string, object> MapParameters(MethodInfo method) {
+			ValidateAttributes(method);
 			var para = method.GetParameters().FirstOrDefault(a => !IsNormalType(a));
 			if (para != null) {
 				object v;

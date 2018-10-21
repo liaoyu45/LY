@@ -12,7 +12,7 @@ namespace Me.Inside.Real {
 			Database.SetInitializer(new TheBigBang());
 		}
 
-		public Universe() : base(nameof(Universe)) { }
+		public Universe() : base(nameof(Me)) { }
 
 		public static T Using<T>(Func<Universe, T> func) {
 			using (var d = new Universe()) {

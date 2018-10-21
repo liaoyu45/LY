@@ -30,10 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ActionRecord.cs" />
-    <Compile Include="BugRecord.cs" />
-    <Compile Include="CodeContext.cs" />
-    <Compile Include="Coder.cs" />
     <Compile Include="Him.aspx.cs">
       <DependentUpon>Him.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -41,7 +37,6 @@
     <Compile Include="Him.aspx.designer.cs">
       <DependentUpon>Him.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Interface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -50,11 +45,28 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\metro-all.css" />
+    <Content Include="Content\metro-all.min.css" />
+    <Content Include="Content\metro-colors.css" />
+    <Content Include="Content\metro-colors.min.css" />
+    <Content Include="Content\metro-icons.css" />
+    <Content Include="Content\metro-icons.min.css" />
+    <Content Include="Content\metro-rtl.css" />
+    <Content Include="Content\metro-rtl.min.css" />
+    <Content Include="Content\metro.css" />
+    <Content Include="Content\metro.min.css" />
+    <Content Include="mif\metro.svg" />
+    <Content Include="Scripts\metro.js" />
+    <Content Include="Scripts\metro.min.js" />
     <None Include="App.config" />
     <Content Include="Him.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
+    <None Include="mif\metro.json" />
+    <None Include="mif\metro.ttf" />
+    <None Include="mif\metro.woff" />
     <None Include="packages.config" />
+    <None Include="Scripts\metro.min.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -81,6 +93,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

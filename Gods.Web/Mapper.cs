@@ -6,8 +6,9 @@ using System.Web;
 
 namespace Gods.Web {
 	public partial class Him {
+		private static readonly Type[] NormalTypes = { typeof(string), typeof(byte[]), typeof(Stream) };
 		public static bool IsNormalType(ParameterInfo type) {
-			return type.ParameterType == typeof(string) || type.ParameterType.IsValueType || type.ParameterType == typeof(byte[]) || type.ParameterType == typeof(Stream);
+			return type.ParameterType.IsValueType || NormalTypes.Contains(type.ParameterType);
 		}
 
 		public static object MapNormalType(Type type, string name) {

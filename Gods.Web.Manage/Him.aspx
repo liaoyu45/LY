@@ -7,25 +7,19 @@
 	<title></title>
 </head>
 <body>
-	<table>
-		<thead>
-			<tr>
-				<th>名称</th>
-				<th>描述</th>
-				<th>当前负责人</th>
-				<th>上次负责人</th>
-			</tr>
-		</thead>
-		<asp:Repeater runat="server" ID="eee">
+	<form runat="server" enableviewstate="false">
+		<asp:Repeater runat="server" ID="interfaces">
 			<ItemTemplate>
-				<tr>
-					<td><%#Eval("Name") %></td>
-					<td><%#Eval("Description") %></td>
-					<td><%#Eval("CoderName") %></td>
-					<td><%#Eval("RecordsCount") %></td>
-				</tr>
+				<dl>
+					<dt><%#Container.DataItem %></dt>
+					<asp:Repeater runat="server">
+						<ItemTemplate>
+							<dd><%#Container.DataItem %></dd>
+						</ItemTemplate>
+					</asp:Repeater>
+				</dl>
 			</ItemTemplate>
 		</asp:Repeater>
-	</table>
+	</form>
 </body>
 </html>

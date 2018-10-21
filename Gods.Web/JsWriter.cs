@@ -14,7 +14,9 @@ namespace Gods.Web {
 
 		IHttpHandler IRouteHandler.GetHttpHandler(RequestContext requestContext) => this;
 
-		void IHttpHandler.ProcessRequest(HttpContext context) =>
+		void IHttpHandler.ProcessRequest(HttpContext context) {
+			context.Response.ContentType = "application/x-javascript";
 			context.Response.Write(processRequest?.Invoke());
+		}
 	}
 }

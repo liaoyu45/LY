@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Routing;
@@ -25,10 +26,10 @@ namespace Gods.Web {
 			Create<T>(new His());
 		}
 		public static void Create<T>(His his) {
-			if (!System.Text.RegularExpressions.Regex.IsMatch(his.AjaxRoute, "[a-zA-Z_][a-zA-Z_0-9]*")) {
+			var t = typeof(T);
+			if (!Regex.IsMatch(his.AjaxRoute, "[a-zA-Z_][a-zA-Z_0-9]*")) {
 				throw new ArgumentException("invalid " + nameof(His.AjaxRoute), nameof(his));
 			}
-			var t = typeof(T);
 			if (!t.IsInterface) {
 				throw new ArgumentException("T should be an interface.");
 			}
@@ -54,15 +55,14 @@ namespace Gods.Web {
 			RouteTable.Routes.Add(new Route(his.AjaxRoute, new Me()));
 			fs.ToList().ForEach(Append);
 			RouteTable.Routes.Add(new Route(nameof(CSharp), new JsWriter(() => {
-				var context = HttpContext.Current;
-				context.Response.ContentType = "application/x-javascript";
-				var n = context.Request.RawUrl.Split('?')[1].Split('.')[0];
+				var r = HttpContext.Current.Request;
+				var n = r.RawUrl.Split('?')[1].Split('.')[0];
 				var MakeJavasciptLookLikeCSharp = JsonConvert.SerializeObject(new {
 					Key = his.AjaxKey,
-					Url = context.Request.Url.ToString().Replace(context.Request.RawUrl, string.Empty) + "/" + his.AjaxRoute
+					Url = r.Url.ToString().Replace(r.RawUrl, string.Empty) + "/" + his.AjaxRoute
 				});
-				var aliasScript = context.Request.Url.PathAndQuery.Intersect(".=&").Any() ? string.Empty : "god.exists = true;";
-				System.IO.File.WriteAllText(context.Request.MapPath("log.txt"), context.Request.Path);
+				var aliasScript = r.Url.PathAndQuery.Intersect(".=&").Any() ? string.Empty : "god.exists = true;";
+				System.IO.File.WriteAllText(r.MapPath("log.txt"), r.Path);
 				return $@"
 localStorage.setItem(""{nameof(MakeJavasciptLookLikeCSharp)}"", '{MakeJavasciptLookLikeCSharp}');
 window.god = window.god || (window.god = {{}});
@@ -70,23 +70,21 @@ god.CSharp = {{}};
 {aliasScript}
 god.CSharp.{n} = ".TrimStart() + CSharp[n];
 			})));
-			RouteTable.Routes.Add(new Route(nameof(Javascript), new JsWriter(() => {
-				HttpContext.Current.Response.ContentType = "application/json";
-				return Javascript[HttpContext.Current.Request.RawUrl.Split('?')[1]];
-			})));
+			RouteTable.Routes.Add(new Route(nameof(Javascript), new JsWriter(() =>
+				Javascript[HttpContext.Current.Request.RawUrl.Split('?')[1]])));
 		}
 
 		private static void Append(Type item) {
 			var javascript = MapNamespace(item, Javascript)[item.Name] = new JObject();
 			var csharp = MapNamespace(item, CSharp);
-			var Methods = new JArray();
+			var methods = new JArray();
 			item.GetMethods().Where(m => !m.IsSpecialName).ToList().ForEach(m => {
 				javascript[m.Name] = m.GetCustomAttribute<DescriptionAttribute>()?.Description;
 				var t = new JObject {
 					[nameof(m.Name)] = m.Name,
 					["Key"] = item.FullName.GetHashCode() + "." + Math.Abs(SignMethod(m))
 				};
-				Methods.Add(t);
+				methods.Add(t);
 				var Parameters = JArray.FromObject(m.GetParameters().Select(e => e.Name).ToList());
 				t[nameof(Parameters)] = Parameters;
 				var rt = ToFlatObject(m.ReturnType);
@@ -94,10 +92,10 @@ god.CSharp.{n} = ".TrimStart() + CSharp[n];
 					t["Return"] = rt;
 				}
 			});
-			if (Methods.Count > 0) {
-				csharp[item.Name] = Methods;
-				var v = $"{his.AjaxRoute}/{Methods.Path.Replace('.', '/')}/";
-				foreach (var m in Methods) {
+			csharp[item.Name] = methods;
+			if (his.WillUseRoute && methods.Count > 0) {
+				var v = $"{his.AjaxRoute}/{methods.Path.Replace('.', '/')}/";
+				foreach (var m in methods) {
 					RouteTable.Routes.Add(new Route(v + m["Name"], new Me()));
 				}
 			}
