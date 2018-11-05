@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 
 namespace Me.Real {
-	public partial class Soul : Gods.Web.Me, Inside.Soul {
+	public partial class Soul : System.Web.UI.Page, Inside.Soul {
 		public int Id { get; set; }
 
 		int Me.Inside.Soul.NewPlan(string thing) {
