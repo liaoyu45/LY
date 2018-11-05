@@ -1,0 +1,33 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Outside.Master.cs" Inherits="Me.Real.Outside" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+	<link href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta charset="UTF-8">
+	<link href="Content/metro-all.min.css" rel="stylesheet" />
+	<script src="Scripts/knockout-3.4.2.js"></script>
+	<script src="Scripts/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript">
+
+	</script>
+	<script src="Scripts/metro.min.js"></script>
+	<%--<script src="http://localhost:53201/CSharp?M\0-0e.js"></script>
+	<script src="/Scripts/Gods.Web.js"></script>--%>
+	<asp:ContentPlaceHolder ID="head" runat="server">
+	</asp:ContentPlaceHolder>
+	<style>
+		html, body {
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+	</asp:ContentPlaceHolder>
+</body>
+</html>

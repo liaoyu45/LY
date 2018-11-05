@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Web;
 
 namespace Gods.Web {
@@ -8,7 +7,7 @@ namespace Gods.Web {
 			if (HttpContext.Current?.Session == null) {
 				return action();
 			}
-			var ps = session.GetType().GetProperties().ToList();
+			var ps = session.GetType().GetProperties();
 			foreach (var item in ps) {
 				item.SetValue(session, HttpContext.Current.Session[item.Name]);
 			}

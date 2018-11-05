@@ -39,13 +39,16 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\ContentBase.cs" />
-    <Compile Include="Base\IdAndTime.cs" />
-    <Compile Include="Base\NameBase.cs" />
-    <Compile Include="Effort.cs" />
-    <Compile Include="God.cs" />
+    <Compile Include="Models\Base\ContentBase.cs" />
+    <Compile Include="Models\Base\IdAndTime.cs" />
+    <Compile Include="Desire.cs" />
+    <Compile Include="Models\Effort.cs" />
+    <Compile Include="Models\Plan.cs" />
     <Compile Include="Soul.cs" />
-    <Compile Include="Plan.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

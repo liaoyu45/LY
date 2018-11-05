@@ -125,6 +125,14 @@ class Program {
 	private static HttpListener httpPostRequest = new HttpListener();
 
 	static void Main(string[] args) {
+		while (true) {
+			var ss = Console.ReadLine();
+			var s = byte.Parse(ss);
+			Console.WriteLine(Encoding.UTF8.GetString(new byte[] { 240, 159, 149, s }));
+		}
+	}
+
+	private static void TestHttpListener() {
 		httpPostRequest.Prefixes.Add("http://127.0.0.1:30000/posttype/");
 		httpPostRequest.Start();
 

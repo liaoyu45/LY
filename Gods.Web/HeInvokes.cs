@@ -65,7 +65,18 @@ namespace Gods.Web {
 			} else {
 				ps = ps ?? MapParameters(method).Values.ToArray();
 			}
-			return MapSession(ins, () => method.Invoke(ins, ps));
+			ins.GetType().GetFields((BindingFlags)63).Where(e => !e.IsSpecialName).ToList().ForEach(a => MapNormalType(a.FieldType, a.Name));
+			return MapSession(ins, () => {
+				try {
+					return method.Invoke(ins, ps);
+				} catch (Exception e) {
+					int r;
+					if (int.TryParse(e.Message, out r)) {
+						return r;
+					}
+					throw;
+				}
+			});
 		}
 
 		private static bool WillIntercept(MethodInfo method, Dictionary<string, object> dictionary) {
@@ -102,7 +113,7 @@ namespace Gods.Web {
 
 		private static Dictionary<string, object> MapParameters(MethodInfo method) {
 			ValidateAttributes(method);
-			var para = method.GetParameters().FirstOrDefault(a => !IsNormalType(a));
+			var para = method.GetParameters().FirstOrDefault(a => !IsNormalType(a.ParameterType));
 			if (para != null) {
 				object v;
 				var req = HttpContext.Current.Request;

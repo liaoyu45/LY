@@ -1,0 +1,905 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{189ACEB7-C8D9-4D76-B8D9-C1C50B63483B}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Me.Real</RootNamespace>
+    <AssemblyName>Me.Real</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\metro-all.css" />
+    <Content Include="Content\metro-all.min.css" />
+    <Content Include="Content\metro-colors.css" />
+    <Content Include="Content\metro-colors.min.css" />
+    <Content Include="Content\metro-icons.css" />
+    <Content Include="Content\metro-icons.min.css" />
+    <Content Include="Content\metro-rtl.css" />
+    <Content Include="Content\metro-rtl.min.css" />
+    <Content Include="Content\metro.css" />
+    <Content Include="Content\metro.min.css" />
+    <Content Include="Desire.aspx" />
+    <Content Include="Efforts.aspx" />
+    <Content Include="favicon.ico" />
+    <Content Include="Daily.css" />
+    <Content Include="Daily.html" />
+    <Content Include="Daily.js" />
+    <Content Include="Soul.aspx" />
+    <Content Include="Metro-UI-CSS-master\build\css\metro-all.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\metro-all.min.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\metro-colors.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\metro-colors.min.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\metro-icons.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\metro-icons.min.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\metro-rtl.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\metro-rtl.min.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\metro.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\metro.min.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\schemes\darcula.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\schemes\darcula.min.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\schemes\red-alert.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\schemes\red-alert.min.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\schemes\red-dark.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\schemes\red-dark.min.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\schemes\red-mirohost.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\schemes\red-mirohost.min.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\schemes\sky-net.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\schemes\sky-net.min.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\third-party\datatables.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\third-party\datatables.min.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\third-party\select2.css" />
+    <Content Include="Metro-UI-CSS-master\build\css\third-party\select2.min.css" />
+    <Content Include="Metro-UI-CSS-master\build\js\metro.js" />
+    <Content Include="Metro-UI-CSS-master\build\js\metro.min.js" />
+    <Content Include="Metro-UI-CSS-master\build\mif\metro.svg" />
+    <Content Include="Metro-UI-CSS-master\docs\accordion.html" />
+    <Content Include="Metro-UI-CSS-master\docs\animation.html" />
+    <Content Include="Metro-UI-CSS-master\docs\app-bar.html" />
+    <Content Include="Metro-UI-CSS-master\docs\audio.html" />
+    <Content Include="Metro-UI-CSS-master\docs\badge.html" />
+    <Content Include="Metro-UI-CSS-master\docs\border.html" />
+    <Content Include="Metro-UI-CSS-master\docs\bottom-nav.html" />
+    <Content Include="Metro-UI-CSS-master\docs\bottom-sheet.html" />
+    <Content Include="Metro-UI-CSS-master\docs\browsers.html" />
+    <Content Include="Metro-UI-CSS-master\docs\buttons.html" />
+    <Content Include="Metro-UI-CSS-master\docs\calendar.html" />
+    <Content Include="Metro-UI-CSS-master\docs\calendarpicker.html" />
+    <Content Include="Metro-UI-CSS-master\docs\cards.html" />
+    <Content Include="Metro-UI-CSS-master\docs\carousel.html" />
+    <Content Include="Metro-UI-CSS-master\docs\charms.html" />
+    <Content Include="Metro-UI-CSS-master\docs\checkbox.html" />
+    <Content Include="Metro-UI-CSS-master\docs\clear.html" />
+    <Content Include="Metro-UI-CSS-master\docs\collapse.html" />
+    <Content Include="Metro-UI-CSS-master\docs\color-module.html" />
+    <Content Include="Metro-UI-CSS-master\docs\color-schemes.html" />
+    <Content Include="Metro-UI-CSS-master\docs\colors.html" />
+    <Content Include="Metro-UI-CSS-master\docs\configuring.html" />
+    <Content Include="Metro-UI-CSS-master\docs\containers.html" />
+    <Content Include="Metro-UI-CSS-master\docs\contents.html" />
+    <Content Include="Metro-UI-CSS-master\docs\countdown.html" />
+    <Content Include="Metro-UI-CSS-master\docs\counter.html" />
+    <Content Include="Metro-UI-CSS-master\docs\css\site.css" />
+    <Content Include="Metro-UI-CSS-master\docs\cube.html" />
+    <Content Include="Metro-UI-CSS-master\docs\cursors.html" />
+    <Content Include="Metro-UI-CSS-master\docs\data\html-source.html" />
+    <Content Include="Metro-UI-CSS-master\docs\dateformat.html" />
+    <Content Include="Metro-UI-CSS-master\docs\datepicker.html" />
+    <Content Include="Metro-UI-CSS-master\docs\dialog.html" />
+    <Content Include="Metro-UI-CSS-master\docs\display.html" />
+    <Content Include="Metro-UI-CSS-master\docs\docsearch\docsearch.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\docsearch\docsearch.min.js" />
+    <Content Include="Metro-UI-CSS-master\docs\donut.html" />
+    <Content Include="Metro-UI-CSS-master\docs\download.html" />
+    <Content Include="Metro-UI-CSS-master\docs\draggable.html" />
+    <Content Include="Metro-UI-CSS-master\docs\dropdown.html" />
+    <Content Include="Metro-UI-CSS-master\docs\easing.html" />
+    <Content Include="Metro-UI-CSS-master\docs\embed.html" />
+    <Content Include="Metro-UI-CSS-master\docs\events.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\ajax\data\select.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\ajax\select.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\colors\color-schemes-2.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\colors\color-schemes-grayscale.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\colors\color-schemes.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\cube\cube-custom-func.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\cube\cube.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\datetime\datepicker.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\desktop\descktop.css" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\desktop\desktop.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\desktop\desktop.js" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\dialogs\dialogs.css" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\dialogs\dialogs.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\dialogs\dialogs.js" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\forms\login.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\github\github.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\schemes\scheme.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\datatables.js" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\table-100K.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\table-big.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\table-html.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\table-inspector-exprot-custom-func.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\table-json-with-header.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\table-json.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\table-methods.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\third-party\datatable.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\third-party\select2.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\tiles\start.css" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\tiles\start.html" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\tiles\start.js" />
+    <Content Include="Metro-UI-CSS-master\docs\extensions.html" />
+    <Content Include="Metro-UI-CSS-master\docs\favicon.ico" />
+    <Content Include="Metro-UI-CSS-master\docs\figures.html" />
+    <Content Include="Metro-UI-CSS-master\docs\file.html" />
+    <Content Include="Metro-UI-CSS-master\docs\flex.html" />
+    <Content Include="Metro-UI-CSS-master\docs\float.html" />
+    <Content Include="Metro-UI-CSS-master\docs\footer.html" />
+    <Content Include="Metro-UI-CSS-master\docs\forms.html" />
+    <Content Include="Metro-UI-CSS-master\docs\functions.html" />
+    <Content Include="Metro-UI-CSS-master\docs\gravatar.html" />
+    <Content Include="Metro-UI-CSS-master\docs\grid.html" />
+    <Content Include="Metro-UI-CSS-master\docs\header.html" />
+    <Content Include="Metro-UI-CSS-master\docs\highlight\highlight.pack.js" />
+    <Content Include="Metro-UI-CSS-master\docs\highlight\highlightjs-line-numbers.min.js" />
+    <Content Include="Metro-UI-CSS-master\docs\highlight\styles\darcula.css" />
+    <Content Include="Metro-UI-CSS-master\docs\highlight\styles\github-gist.css" />
+    <Content Include="Metro-UI-CSS-master\docs\highlight\styles\github.css" />
+    <Content Include="Metro-UI-CSS-master\docs\hints.html" />
+    <Content Include="Metro-UI-CSS-master\docs\hotkeys.html" />
+    <Content Include="Metro-UI-CSS-master\docs\i18n.html" />
+    <Content Include="Metro-UI-CSS-master\docs\icons.html" />
+    <Content Include="Metro-UI-CSS-master\docs\image-compare.html" />
+    <Content Include="Metro-UI-CSS-master\docs\image-magnifier.html" />
+    <Content Include="Metro-UI-CSS-master\docs\images.html" />
+    <Content Include="Metro-UI-CSS-master\docs\images\1.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\2.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\3.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\4.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\5.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\access.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\ambass.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\analog.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\Battlefield_4_Icon.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\bg-1.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\bg-2.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\bg-3.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\bg-4.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\bronze-medal.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\checkmark.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\ChernodubAr.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\complementary.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\1-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\3-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\4-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\6-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\alias.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\all-scroll.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\cell.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\col-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\context-menu.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\copy.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\crosshair.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\default.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\e-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\grab.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\grabbing.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\help.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\move.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\n-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\ne-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\no-drop.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\not-allowed.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\nw-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\pointer.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\progress.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\row-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\s-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\se-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\sw-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\text.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\vertical-text.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\w-resize.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\wait.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\zoom-in.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\cursors\zoom-out.gif" />
+    <Content Include="Metro-UI-CSS-master\docs\images\desktop.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\disk-network.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\disk-os.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\disk.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\double-complementary.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\email.svg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-color-module-all.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-color-module-generator.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-color-module-grayscale.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-colors-schemes.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-cube-custom-func.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-cube.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-datatable.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-datepicker.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-desktop.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-dialogs.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-forms-login.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-github.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-select-options.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-select2.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-table-html.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-table-inspector-export-custom-func.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-table-json.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-table-methods.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-table.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\examples-tiles-start.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\excel.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\file.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\file0.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\folder.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\github.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\gold-medal.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\group.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\help.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\hopetoun_falls.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\ic-1.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\ic-2.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\imena_logo.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\img_girl.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\jeki_chan.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\jek_vorobey.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\jetbrains.svg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\jolie.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\keycdn-logo.svg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\krossovki-2018-sand.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\location.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\logo-light.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\logo.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\logo4.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\m4-logo-social.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\me.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\me2.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\me3.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\media-server.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\me_civil.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\mirohost_logo.svg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\monochromatic.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\network.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\olshansky.svg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\olshanskysmall.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\onedrive.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\outlook.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\paintings\bacon.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\paintings\gogen.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\paintings\klimt.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\paintings\kuning.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\paintings\munk.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\paintings\picasso.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\paintings\picasso2.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\paintings\sezann.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\phone.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\phpstorm.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\phpstorm.svg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\phpstormboxshot.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\play-icon.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\player_stop.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\power.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\powerpoint.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\premium-medal.jpeg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\pumba-bg.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\pumba.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\pumba2.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\round.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\sb-bg-1.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\setup.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\share.svg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\shvarcenegger.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\silver-medal.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\split-complementary.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\square.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\streamer.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\support-1.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\support.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\tetradic.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\timon_pumba.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\triadic.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\vin_d.jpg" />
+    <Content Include="Metro-UI-CSS-master\docs\images\whats-new.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\wind-rose.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\word.png" />
+    <Content Include="Metro-UI-CSS-master\docs\images\x-box.png" />
+    <Content Include="Metro-UI-CSS-master\docs\index-old.html" />
+    <Content Include="Metro-UI-CSS-master\docs\index.html" />
+    <Content Include="Metro-UI-CSS-master\docs\info-box.html" />
+    <Content Include="Metro-UI-CSS-master\docs\input-material.html" />
+    <Content Include="Metro-UI-CSS-master\docs\input.html" />
+    <Content Include="Metro-UI-CSS-master\docs\intro.html" />
+    <Content Include="Metro-UI-CSS-master\docs\js\clipboard.min.js" />
+    <Content Include="Metro-UI-CSS-master\docs\js\holder.min.js" />
+    <Content Include="Metro-UI-CSS-master\docs\js\jquery-3.3.1.min.js" />
+    <Content Include="Metro-UI-CSS-master\docs\js\loader.js" />
+    <Content Include="Metro-UI-CSS-master\docs\js\particles.min.js" />
+    <Content Include="Metro-UI-CSS-master\docs\js\site.js" />
+    <Content Include="Metro-UI-CSS-master\docs\keypad.html" />
+    <Content Include="Metro-UI-CSS-master\docs\list.html" />
+    <Content Include="Metro-UI-CSS-master\docs\lists.html" />
+    <Content Include="Metro-UI-CSS-master\docs\listview.html" />
+    <Content Include="Metro-UI-CSS-master\docs\master.html" />
+    <Content Include="Metro-UI-CSS-master\docs\media.html" />
+    <Content Include="Metro-UI-CSS-master\docs\menu.html" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\metro-all.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\metro-all.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\metro-colors.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\metro-colors.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\metro-icons.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\metro-icons.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\metro-rtl.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\metro-rtl.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\metro.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\metro.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\schemes\darcula.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\schemes\darcula.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\schemes\red-alert.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\schemes\red-alert.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\schemes\red-dark.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\schemes\red-dark.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\schemes\red-mirohost.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\schemes\red-mirohost.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\schemes\sky-net.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\schemes\sky-net.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\third-party\datatables.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\third-party\datatables.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\third-party\select2.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\css\third-party\select2.min.css" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\js\metro.js" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\js\metro.min.js" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\mif\metro.svg" />
+    <Content Include="Metro-UI-CSS-master\docs\micro-tpl.html" />
+    <Content Include="Metro-UI-CSS-master\docs\mouse-wheel.html" />
+    <Content Include="Metro-UI-CSS-master\docs\navview.html" />
+    <Content Include="Metro-UI-CSS-master\docs\notify.html" />
+    <Content Include="Metro-UI-CSS-master\docs\panels.html" />
+    <Content Include="Metro-UI-CSS-master\docs\particles\particles.min.js" />
+    <Content Include="Metro-UI-CSS-master\docs\popovers.html" />
+    <Content Include="Metro-UI-CSS-master\docs\position.html" />
+    <Content Include="Metro-UI-CSS-master\docs\progress.html" />
+    <Content Include="Metro-UI-CSS-master\docs\radio.html" />
+    <Content Include="Metro-UI-CSS-master\docs\rating.html" />
+    <Content Include="Metro-UI-CSS-master\docs\ribbon-menu.html" />
+    <Content Include="Metro-UI-CSS-master\docs\ripple.html" />
+    <Content Include="Metro-UI-CSS-master\docs\scroll-events.html" />
+    <Content Include="Metro-UI-CSS-master\docs\select.html" />
+    <Content Include="Metro-UI-CSS-master\docs\session-storage.html" />
+    <Content Include="Metro-UI-CSS-master\docs\sidebar.html" />
+    <Content Include="Metro-UI-CSS-master\docs\sidenav.html" />
+    <Content Include="Metro-UI-CSS-master\docs\sidenavigation.html" />
+    <Content Include="Metro-UI-CSS-master\docs\sitemap_metroui.xml" />
+    <Content Include="Metro-UI-CSS-master\docs\sizing.html" />
+    <Content Include="Metro-UI-CSS-master\docs\slider.html" />
+    <Content Include="Metro-UI-CSS-master\docs\sorter.html" />
+    <Content Include="Metro-UI-CSS-master\docs\spacing.html" />
+    <Content Include="Metro-UI-CSS-master\docs\spinner.html" />
+    <Content Include="Metro-UI-CSS-master\docs\sponsors-old.html" />
+    <Content Include="Metro-UI-CSS-master\docs\sponsors.html" />
+    <Content Include="Metro-UI-CSS-master\docs\stepper.html" />
+    <Content Include="Metro-UI-CSS-master\docs\storage.html" />
+    <Content Include="Metro-UI-CSS-master\docs\streamer.html" />
+    <Content Include="Metro-UI-CSS-master\docs\switch.html" />
+    <Content Include="Metro-UI-CSS-master\docs\table-component.html" />
+    <Content Include="Metro-UI-CSS-master\docs\tables.html" />
+    <Content Include="Metro-UI-CSS-master\docs\tabs-material.html" />
+    <Content Include="Metro-UI-CSS-master\docs\tabs.html" />
+    <Content Include="Metro-UI-CSS-master\docs\tag-input.html" />
+    <Content Include="Metro-UI-CSS-master\docs\template.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\accordion.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\appbar-color.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\bottom-nav.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\bottom-sheet.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\calendar.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\calendarpicker.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\checks.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\chips.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\collapse.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\countdown.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\dialog-overlay.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\dialog-with-checks.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\dropdown.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\file.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\head-bar.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\html-container.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\image-comparer.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\image-magnifier-glass.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\image-magnifier-zoom.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\input-autocomplete.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\input-history.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\input-material.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\list.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\listview.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\resize.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\select.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\side-bar.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\simple-lists.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\spinner.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\swipe.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\table-export.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\table-filters.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\table-filters2.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\table-html.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\table-json.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\table-load-data.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\tabs-material.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\tabs-methods.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\tag-input.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\tiles.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\timepicker.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\treeview.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\validator.html" />
+    <Content Include="Metro-UI-CSS-master\docs\test\windows.html" />
+    <Content Include="Metro-UI-CSS-master\docs\textarea.html" />
+    <Content Include="Metro-UI-CSS-master\docs\tiles.html" />
+    <Content Include="Metro-UI-CSS-master\docs\timepicker.html" />
+    <Content Include="Metro-UI-CSS-master\docs\toast.html" />
+    <Content Include="Metro-UI-CSS-master\docs\touch.html" />
+    <Content Include="Metro-UI-CSS-master\docs\treeview.html" />
+    <Content Include="Metro-UI-CSS-master\docs\typography.html" />
+    <Content Include="Metro-UI-CSS-master\docs\validator.html" />
+    <Content Include="Metro-UI-CSS-master\docs\video.html" />
+    <Content Include="Metro-UI-CSS-master\docs\vuejs.html" />
+    <Content Include="Metro-UI-CSS-master\docs\windows.html" />
+    <Content Include="Metro-UI-CSS-master\docs\wizard.html" />
+    <Content Include="Metro-UI-CSS-master\icons\metro.svg" />
+    <Content Include="Metro-UI-CSS-master\js\metro.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\accordion.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\activity.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\app-bar.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\audio.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\bottom-sheet.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\button-group.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\calendar.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\calendarpicker.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\carousel.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\charms.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\checkbox.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\clock.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\collapse.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\countdown.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\counter.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\cube.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\datepicker.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\dialog.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\donut.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\draggable.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\dropdown.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\file.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\gravatar.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\hint.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\html-container.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\image-comparer.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\image-magnifier.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\info-box.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\input-material.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\input.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\keypad.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\list.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\listview.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\master.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\navview.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\notify.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\panel.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\popovers.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\progress.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\radio.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\rating.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\resizable.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\ribbon-menu.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\ripple.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\select.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\sidebar.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\slider.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\sorter.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\spinner.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\stepper.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\streamer.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\switch.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\table.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\tabs-material.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\tabs.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\tag-input.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\textarea.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\tiles.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\timepicker.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\toast.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\touch.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\treeview.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\validator.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\video.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\window.js" />
+    <Content Include="Metro-UI-CSS-master\js\plugins\wizard.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\animation.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\colors.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\easing.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\export.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\extensions.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\hotkeys.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\i18n.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\md5.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\mousewheel.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\scroll-events.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\session-storage.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\storage.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\tpl.js" />
+    <Content Include="Metro-UI-CSS-master\js\utils\utilities.js" />
+    <Content Include="Metro-UI-CSS-master\js\_\plugin.js" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\arrow-left.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\arrow-right.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\calendar.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\checkmark.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\chevron-left.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\chevron-right.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\clock.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\cross.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\eye.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\help.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\menu.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\minus.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\pencil.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\plus.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\search.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\apps\upload.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\backward.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\dice.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\eject.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\embed.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\enlarge.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\equalizer.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\first.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\forward.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\last.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\list.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\loop.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\next.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\pause.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\play.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\prev.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\share.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\shrink.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\shuffle.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\stop.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\volume-decrease.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\volume-high.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\volume-increase.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\volume-low.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\volume-medium.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\dark\volume-mute.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\backward.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\dice.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\eject.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\embed.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\enlarge.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\equalizer.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\first.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\forward.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\last.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\list.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\loop.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\next.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\pause.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\play.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\prev.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\share.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\shrink.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\shuffle.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\stop.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\volume-decrease.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\volume-high.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\volume-increase.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\volume-low.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\volume-medium.svg" />
+    <Content Include="Metro-UI-CSS-master\less\images\media\light\volume-mute.svg" />
+    <Content Include="mif\metro.svg" />
+    <Content Include="Scripts\metro.js" />
+    <Content Include="Scripts\metro.min.js" />
+    <Content Include="Scripts\Gods.Web.js" />
+    <Content Include="Metro-UI-CSS-master\build\js\metro.min.js.map" />
+    <Content Include="Metro-UI-CSS-master\build\mif\metro.json" />
+    <Content Include="Metro-UI-CSS-master\build\mif\metro.ttf" />
+    <Content Include="Metro-UI-CSS-master\build\mif\metro.woff" />
+    <Content Include="Metro-UI-CSS-master\docs\.htaccess" />
+    <Content Include="Metro-UI-CSS-master\docs\css\site.less" />
+    <Content Include="Metro-UI-CSS-master\docs\data\paintings.json" />
+    <Content Include="Metro-UI-CSS-master\docs\data\streamer_data.json" />
+    <Content Include="Metro-UI-CSS-master\docs\data\streamer_data_schemes.json" />
+    <Content Include="Metro-UI-CSS-master\docs\data\table.json" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\ajax\data\select.json" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\desktop\descktop.less" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\dialogs\dialogs.less" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\readme" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\table-100k.json" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\table-big.json" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\table-insp.json" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\table-no-header.json" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\table\table.json" />
+    <Content Include="Metro-UI-CSS-master\docs\examples\tiles\start.less" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\js\metro.min.js.map" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\mif\metro.json" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\mif\metro.ttf" />
+    <Content Include="Metro-UI-CSS-master\docs\metro\mif\metro.woff" />
+    <Content Include="Metro-UI-CSS-master\docs\particles\particles.json" />
+    <Content Include="Metro-UI-CSS-master\icons\metro.json" />
+    <Content Include="Metro-UI-CSS-master\icons\metro.ttf" />
+    <Content Include="Metro-UI-CSS-master\icons\metro.woff" />
+    <Content Include="Metro-UI-CSS-master\less\accordion-rtl.less" />
+    <Content Include="Metro-UI-CSS-master\less\accordion.less" />
+    <Content Include="Metro-UI-CSS-master\less\activity.less" />
+    <Content Include="Metro-UI-CSS-master\less\animations.less" />
+    <Content Include="Metro-UI-CSS-master\less\app-bar.less" />
+    <Content Include="Metro-UI-CSS-master\less\badges.less" />
+    <Content Include="Metro-UI-CSS-master\less\border.less" />
+    <Content Include="Metro-UI-CSS-master\less\bottom-nav.less" />
+    <Content Include="Metro-UI-CSS-master\less\bottom-sheet.less" />
+    <Content Include="Metro-UI-CSS-master\less\breadcrumbs.less" />
+    <Content Include="Metro-UI-CSS-master\less\buttons.less" />
+    <Content Include="Metro-UI-CSS-master\less\calendar.less" />
+    <Content Include="Metro-UI-CSS-master\less\calendarpicker.less" />
+    <Content Include="Metro-UI-CSS-master\less\cards.less" />
+    <Content Include="Metro-UI-CSS-master\less\carousel.less" />
+    <Content Include="Metro-UI-CSS-master\less\charms.less" />
+    <Content Include="Metro-UI-CSS-master\less\checkbox.less" />
+    <Content Include="Metro-UI-CSS-master\less\chips.less" />
+    <Content Include="Metro-UI-CSS-master\less\colors-defs.less" />
+    <Content Include="Metro-UI-CSS-master\less\container.less" />
+    <Content Include="Metro-UI-CSS-master\less\countdown.less" />
+    <Content Include="Metro-UI-CSS-master\less\cube.less" />
+    <Content Include="Metro-UI-CSS-master\less\cursors.less" />
+    <Content Include="Metro-UI-CSS-master\less\datepicker.less" />
+    <Content Include="Metro-UI-CSS-master\less\debug.less" />
+    <Content Include="Metro-UI-CSS-master\less\default-icons.less" />
+    <Content Include="Metro-UI-CSS-master\less\dialog.less" />
+    <Content Include="Metro-UI-CSS-master\less\display.less" />
+    <Content Include="Metro-UI-CSS-master\less\donut.less" />
+    <Content Include="Metro-UI-CSS-master\less\draggable.less" />
+    <Content Include="Metro-UI-CSS-master\less\elements-colors.less" />
+    <Content Include="Metro-UI-CSS-master\less\embed.less" />
+    <Content Include="Metro-UI-CSS-master\less\file.less" />
+    <Content Include="Metro-UI-CSS-master\less\flex.less" />
+    <Content Include="Metro-UI-CSS-master\less\float.less" />
+    <Content Include="Metro-UI-CSS-master\less\form.less" />
+    <Content Include="Metro-UI-CSS-master\less\forms-rtl.less" />
+    <Content Include="Metro-UI-CSS-master\less\grid.less" />
+    <Content Include="Metro-UI-CSS-master\less\hamburger.less" />
+    <Content Include="Metro-UI-CSS-master\less\head-bar.less" />
+    <Content Include="Metro-UI-CSS-master\less\hero.less" />
+    <Content Include="Metro-UI-CSS-master\less\hint.less" />
+    <Content Include="Metro-UI-CSS-master\less\ie.less" />
+    <Content Include="Metro-UI-CSS-master\less\image-compare.less" />
+    <Content Include="Metro-UI-CSS-master\less\image-magnifier.less" />
+    <Content Include="Metro-UI-CSS-master\less\images.less" />
+    <Content Include="Metro-UI-CSS-master\less\include\default-icons.less" />
+    <Content Include="Metro-UI-CSS-master\less\include\mixins.less" />
+    <Content Include="Metro-UI-CSS-master\less\include\vars.less" />
+    <Content Include="Metro-UI-CSS-master\less\info-box.less" />
+    <Content Include="Metro-UI-CSS-master\less\info-panel.less" />
+    <Content Include="Metro-UI-CSS-master\less\input-material.less" />
+    <Content Include="Metro-UI-CSS-master\less\input.less" />
+    <Content Include="Metro-UI-CSS-master\less\inputs.less" />
+    <Content Include="Metro-UI-CSS-master\less\keypad.less" />
+    <Content Include="Metro-UI-CSS-master\less\lists.less" />
+    <Content Include="Metro-UI-CSS-master\less\listview.less" />
+    <Content Include="Metro-UI-CSS-master\less\master.less" />
+    <Content Include="Metro-UI-CSS-master\less\media-player.less" />
+    <Content Include="Metro-UI-CSS-master\less\menu.less" />
+    <Content Include="Metro-UI-CSS-master\less\metro-colors.less" />
+    <Content Include="Metro-UI-CSS-master\less\metro-icons.less" />
+    <Content Include="Metro-UI-CSS-master\less\metro-rtl.less" />
+    <Content Include="Metro-UI-CSS-master\less\metro.less" />
+    <Content Include="Metro-UI-CSS-master\less\mif-base.less" />
+    <Content Include="Metro-UI-CSS-master\less\mif-icons.less" />
+    <Content Include="Metro-UI-CSS-master\less\navview.less" />
+    <Content Include="Metro-UI-CSS-master\less\notify.less" />
+    <Content Include="Metro-UI-CSS-master\less\overlay.less" />
+    <Content Include="Metro-UI-CSS-master\less\pagination.less" />
+    <Content Include="Metro-UI-CSS-master\less\panel.less" />
+    <Content Include="Metro-UI-CSS-master\less\popovers.less" />
+    <Content Include="Metro-UI-CSS-master\less\position.less" />
+    <Content Include="Metro-UI-CSS-master\less\print.less" />
+    <Content Include="Metro-UI-CSS-master\less\progress.less" />
+    <Content Include="Metro-UI-CSS-master\less\radio.less" />
+    <Content Include="Metro-UI-CSS-master\less\rating.less" />
+    <Content Include="Metro-UI-CSS-master\less\reset.less" />
+    <Content Include="Metro-UI-CSS-master\less\resizeable.less" />
+    <Content Include="Metro-UI-CSS-master\less\ribbon-menu.less" />
+    <Content Include="Metro-UI-CSS-master\less\ripple.less" />
+    <Content Include="Metro-UI-CSS-master\less\schemes\builder\builder.less" />
+    <Content Include="Metro-UI-CSS-master\less\schemes\darcula.less" />
+    <Content Include="Metro-UI-CSS-master\less\schemes\readme.md" />
+    <Content Include="Metro-UI-CSS-master\less\schemes\red-alert.less" />
+    <Content Include="Metro-UI-CSS-master\less\schemes\red-dark.less" />
+    <Content Include="Metro-UI-CSS-master\less\schemes\red-mirohost.less" />
+    <Content Include="Metro-UI-CSS-master\less\schemes\sky-net.less" />
+    <Content Include="Metro-UI-CSS-master\less\select.less" />
+    <Content Include="Metro-UI-CSS-master\less\shadow.less" />
+    <Content Include="Metro-UI-CSS-master\less\sidebar.less" />
+    <Content Include="Metro-UI-CSS-master\less\sidenav-counter.less" />
+    <Content Include="Metro-UI-CSS-master\less\sidenav-m3.less" />
+    <Content Include="Metro-UI-CSS-master\less\sidenav-simple.less" />
+    <Content Include="Metro-UI-CSS-master\less\sizing.less" />
+    <Content Include="Metro-UI-CSS-master\less\slider.less" />
+    <Content Include="Metro-UI-CSS-master\less\spacing.less" />
+    <Content Include="Metro-UI-CSS-master\less\spinner.less" />
+    <Content Include="Metro-UI-CSS-master\less\stepper.less" />
+    <Content Include="Metro-UI-CSS-master\less\streamer.less" />
+    <Content Include="Metro-UI-CSS-master\less\switch.less" />
+    <Content Include="Metro-UI-CSS-master\less\table.less" />
+    <Content Include="Metro-UI-CSS-master\less\tabs-material.less" />
+    <Content Include="Metro-UI-CSS-master\less\tabs.less" />
+    <Content Include="Metro-UI-CSS-master\less\tag-input.less" />
+    <Content Include="Metro-UI-CSS-master\less\textarea.less" />
+    <Content Include="Metro-UI-CSS-master\less\third-party\datatables.less" />
+    <Content Include="Metro-UI-CSS-master\less\third-party\select2.less" />
+    <Content Include="Metro-UI-CSS-master\less\tiles-effects.less" />
+    <Content Include="Metro-UI-CSS-master\less\tiles.less" />
+    <Content Include="Metro-UI-CSS-master\less\timepicker.less" />
+    <Content Include="Metro-UI-CSS-master\less\toast.less" />
+    <Content Include="Metro-UI-CSS-master\less\topbar.less" />
+    <Content Include="Metro-UI-CSS-master\less\treeview.less" />
+    <Content Include="Metro-UI-CSS-master\less\typography.less" />
+    <Content Include="Metro-UI-CSS-master\less\utils.less" />
+    <Content Include="Metro-UI-CSS-master\less\wheelpicker.less" />
+    <Content Include="Metro-UI-CSS-master\less\window.less" />
+    <Content Include="Metro-UI-CSS-master\less\wizard.less" />
+    <Content Include="Outside.Master" />
+    <Content Include="mif\metro.woff" />
+    <Content Include="mif\metro.ttf" />
+    <Content Include="mif\metro.json" />
+    <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.3.1.js" />
+    <Content Include="Scripts\jquery-3.3.1.min.js" />
+    <Content Include="Scripts\jquery-3.3.1.slim.js" />
+    <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
+    <Content Include="Scripts\knockout-3.4.2.debug.js" />
+    <Content Include="Scripts\knockout-3.4.2.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="70.png" />
+    <Content Include="web.config" />
+    <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.3.1.min.map" />
+    <Content Include="Scripts\metro.min.js.map" />
+    <None Include="web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Desire.aspx.cs">
+      <DependentUpon>Desire.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Desire.aspx.designer.cs">
+      <DependentUpon>Desire.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Efforts.aspx.cs">
+      <DependentUpon>Efforts.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Efforts.aspx.designer.cs">
+      <DependentUpon>Efforts.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Soul.aspx.cs">
+      <DependentUpon>Soul.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Soul.aspx.designer.cs">
+      <DependentUpon>Soul.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Outside.Master.cs">
+      <DependentUpon>Outside.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Outside.Master.designer.cs">
+      <DependentUpon>Outside.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Code\TheBigBang.cs" />
+    <Compile Include="Code\Universe.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Gods.Web\Gods.Web.csproj">
+      <Project>{a522e914-ed91-4a6b-a15c-78ff07061fb1}</Project>
+      <Name>Gods.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Me.Inside\Me.Inside.csproj">
+      <Project>{6a59a733-595a-4747-8548-8c7d1f14c74b}</Project>
+      <Name>Me.Inside</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Me\Me.csproj">
+      <Project>{c7ed56fa-750e-4419-bfa7-59725eb50529}</Project>
+      <Name>Me</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>54734</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:54734/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
