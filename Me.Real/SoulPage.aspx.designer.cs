@@ -10,6 +10,6 @@
 namespace Me.Real {
     
     
-    public partial class Soul {
+    public partial class SoulPage {
     }
 }

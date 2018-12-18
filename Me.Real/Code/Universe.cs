@@ -1,5 +1,6 @@
 ﻿using Me.Inside;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 
@@ -14,6 +15,21 @@ namespace Me.Real {
 		}
 
 		public Universe() : base(nameof(Me)) { }
+
+		public static T AddOrUpdate<T>(Dictionary<string, object> source, params object[] ids) where T : class, new() {
+			using (var u = new Universe()) {
+				var update = ids?.Length > 0;
+				var r = update ? u.Set<T>().Find(ids) : new T();
+				foreach (var item in source) {
+					typeof(T).GetProperty(item.Key).SetValue(r, item.Value);
+				}
+				if (!update) {
+					u.Set<T>().Add(r);
+				}
+				u.SaveChanges();
+				return r;
+			}
+		}
 
 		public static T Using<T>(Func<Universe, T> func) {
 			using (var d = new Universe()) {

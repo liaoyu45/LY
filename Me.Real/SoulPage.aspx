@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Outside.Master" AutoEventWireup="true" CodeBehind="Soul.aspx.cs" Inherits="Me.Real.Soul" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Outside.Master" AutoEventWireup="true" CodeBehind="SoulPage.aspx.cs" Inherits="Me.Real.SoulPage" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 	<script src="http://localhost:54734/CSharp?Me.js"></script>
@@ -17,13 +17,6 @@
 			display: inline;
 		}
 	</style>
-	<script type="text/javascript">
-		var saveNewPlan = [{
-			html: "<span class='mif-play'></span>",
-			cls: "alert",
-			onclick: "alert('You press user button')"
-		}];
-	</script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 	<h1 data-bind="text: Name" class="mif-"></h1>
@@ -84,49 +77,82 @@
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript">
-		var saveNewPlan = {
-			cls: "button",
-			html: "保存",
-			onclick: () =>alert(1)
-		};
-		var vm = {};
-
-	</script>
 	<div data-role="dialog" id="tagsDialog" data-overlay-click-close="true">
 		<div class="dialog-title">选择标签</div>
 		<div class="dialog-content">
-			<ul data-role="listview" data-view="icons" id="tags" data-on-node-click="vm.selectedTag($(this).data('listview').getSelected)">
-				<li data-icon="<span class='mif-folder fg-orange'>"
-					data-caption="Video"
-					data-content="<div class='mt-1' data-role='progress' data-value='35' data-small='true'>"></li>
-				<li data-icon="<span class='mif-folder fg-cyan'>"
-					data-caption="Images"
-					data-content="<div class='mt-1' data-role='progress' data-value='78' data-small='true'>"></li>
+			<ul class="listview view-icons" data-bind="foreach: Tags">
+				<li class="node" data-bind="css: { 'current-select': $root.CurrentTag().Id === Id }, click: function () { return $root.CurrentTag() === $data ? resetCurrentTag() : $root.CurrentTag({ Name: Name, Id: Id }); }">
+					<span class="icon">
+						<img src="#" data-bind="attr: { src: `images/${Id}.png` }" /></span>
+					<div class="data">
+						<div class="caption" data-bind="text: Name"></div>
+					</div>
+				</li>
 			</ul>
 		</div>
 		<div class="dialog-actions">
-			<form class="input">
-				<input type="text" />
-				<div class="button-group">
-					<input type="button" class="button success" value="新建" />
-					<input type="button" class="button" value="取消" />
-					<input type="button" class="button primary" value="确定" />
-				</div>
-			</form>
+			<input type="button" class="button warning" value="编辑" data-bind="
+	enable: ss.UpldateTag,
+	value: CurrentTag().Id ? '编辑' : '新建',
+	click: function () { Metro.dialog.open(newTagDialog); }
+	" />
+			<input type="button" class="button primary" value="确定" onclick="bindSelectedTag(1);" />
+			<input type="button" class="button js-dialog-close" value="关闭" onclick="bindSelectedTag();" />
 		</div>
 	</div>
+	<form data-role="dialog" id="newTagDialog" data-bind="with: CurrentTag">
+		<input type="hidden" name="id" data-bind="value: Id" />
+		<input type="file" name="image" style="display: none;" id="image" />
+		<div class="dialog-title" data-bind="text: Id ? '编辑标签' : '新建标签'"></div>
+		<div class="dialog-content">
+			<div class="input">
+				<div class="prepend">名称：</div>
+				<input type="text" name="name" data-bind="value: Name" required />
+				<div class="button-group">
+					<button class="button input-custom-button success" type="button" onclick="image.click();">选择图标</button>
+				</div>
+			</div>
+		</div>
+		<div class="dialog-actions">
+			<input type="button" class="button success" value="确定" onclick="s.UpdateTag(this);" />
+			<input type="button" class="button warning" value="删除" data-bind="visible: Id" onclick="	s.DeleteTag(this);" />
+			<input type="button" class="button js-dialog-close" value="关闭" />
+		</div>
+	</form>
 	<script type="text/javascript">
 		var vm = {
 			Name: ko.observable(),
 			selectedTag: ko.observable(),
 			LastPlan: ko.observable(),
 			LastEffort: ko.observable(),
-			Plans: ko.observableArray()
+			Plans: ko.observableArray(),
+			Tags: ko.observableArray(),
+			CurrentTag: ko.observable()
 		};
+		function resetCurrentTag() {
+			vm.CurrentTag({ Name: "", Id: 0 });
+		}
+		resetCurrentTag();
+		var s = new CSharp.Me.Inside.Soul();
+		for (var i in s.progress) {
+			//TODO:
+		}
+		var ss = Javascript.Me.Inside.Soul;
+		function rebindTags() {
+			resetCurrentTag();
+			$(newTagDialog).data("dialog").close();
+			s.Tags(vm.Tags);
+		}
+		rebindTags();
+		ss.UpdateTag = u=> vm.Tags().some(e=>e.Name === vm.CurrentTag().Name);
+		ss.UpdateTag = rebindTags;
+		ss.DeleteTag = () =>!vm.CurrentTag();
+		ss.DeleteTag = rebindTags;
 		ko.applyBindings(vm);
-		function bindSelectedTag(v) {
-			vm.selectedTag(v);
+		function bindSelectedTag(b) {
+			vm.selectedTag(b ? vm.CurrentTag().Name : null);
+			resetCurrentTag();
+			$(tagsDialog).data("dialog").close();
 		}
 	</script>
 </asp:Content>

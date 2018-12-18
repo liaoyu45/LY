@@ -16,7 +16,7 @@
 	<script type="text/javascript">
 
 	</script>
-	<script src="Scripts/metro.min.js"></script>
+	<script src="/Scripts/metro.min.js"></script>
 	<script src="/Scripts/Gods.Web.js"></script>
 	<style>
 		html, body {
@@ -25,8 +25,15 @@
 		}
 	</style>
 </head>
-<body style="background-color:#464646">
+<body style="background-color: #464646">
 	<asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
 	</asp:ContentPlaceHolder>
+	<div id="loadingLock" data-role="activity" data-type="metro" style="display: none; z-index: 2147483647; position: fixed; top: 0;"></div>
+	<script type="text/javascript">
+		MakeJavasciptLookLikeCSharp({
+			waiting: r=>loadingLock.style.display = "",
+			done: r=>loadingLock.style.display = "none"
+		});
+	</script>
 </body>
 </html>

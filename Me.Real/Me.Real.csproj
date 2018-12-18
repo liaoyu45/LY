@@ -48,6 +48,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="App_Data\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -67,7 +68,9 @@
     <Content Include="Daily.css" />
     <Content Include="Daily.html" />
     <Content Include="Daily.js" />
-    <Content Include="Soul.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="HtmlPage1.html" />
+    <Content Include="SoulPage.aspx" />
     <Content Include="Metro-UI-CSS-master\build\css\metro-all.css" />
     <Content Include="Metro-UI-CSS-master\build\css\metro-all.min.css" />
     <Content Include="Metro-UI-CSS-master\build\css\metro-colors.css" />
@@ -827,12 +830,8 @@
     <Compile Include="Efforts.aspx.designer.cs">
       <DependentUpon>Efforts.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Soul.aspx.cs">
-      <DependentUpon>Soul.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Soul.aspx.designer.cs">
-      <DependentUpon>Soul.aspx</DependentUpon>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Outside.Master.cs">
       <DependentUpon>Outside.Master</DependentUpon>
@@ -843,6 +842,13 @@
     </Compile>
     <Compile Include="Code\TheBigBang.cs" />
     <Compile Include="Code\Universe.cs" />
+    <Compile Include="SoulPage.aspx.cs">
+      <DependentUpon>SoulPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SoulPage.aspx.designer.cs">
+      <DependentUpon>SoulPage.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">

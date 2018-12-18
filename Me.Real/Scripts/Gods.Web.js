@@ -56,7 +56,6 @@
 				enumerable: true
 			});
 			var obo = Symbol();//one by one
-			var ing = Symbol();
 			obj[n] = function (data) {
 				if (data instanceof Boolean) {
 					this[obo] = data;
@@ -64,20 +63,22 @@
 				} else {
 					this[obo] = true;
 				}
-				for (var i in data || {}) {
-					this[i] = data[i];
-				}
+				this.progress = {};
+				oi.forEach(e=>this.progress[e.Name] = 0);
 			};
 			cls.push(obj[n]);
 			oi.forEach(m=> {
-				obj[n].prototype[m.Name] = function () {
+				var mn = m.Name,
+					mp = m.Parameters,
+					mk = m.Key;
+				obj[n].prototype[mn] = function () {
 					var ev = [...arguments].filter(e=>e instanceof Event)[0] || window.event;
-					var a0 = arguments.length ? [...arguments].filter(e=>e instanceof HTMLElement)[0] : document.querySelector(`form[data-csharp='${m.Name}']`);
+					var a0 = arguments.length ? [...arguments].filter(e=>e instanceof HTMLElement)[0] : document.querySelector(`form[data-csharp='${mn}']`);
 					if (a0 instanceof HTMLElement) {//while coding, instanceof returns true
 						while (!(a0 instanceof HTMLFormElement)) {
 							a0 = a0.parentElement;
 							if (!a0 || a0 === document.body) {
-								console.log("Can not find an HTMLFormElement: " + m.Name);
+								console.log("Can not find an HTMLFormElement: " + mn);
 								return;
 							}
 						}
@@ -98,34 +99,24 @@
 						}
 						method = "post";
 						request = data = new FormData(a0);
-						data.append(settings.Key, m.Key);
-						for (var i in this) {
-							if (i.constructor !== Symbol && isValid(this[i]) && !(i in a0)) {
-								data.append(i, this[i]);
-							}
-						}
+						data.append(settings.Key, mk);
 					} else {
 						method = "get";
-						u += `?${settings.Key}=${m.Key}`;
+						u += `?${settings.Key}=${mk}`;
 						request = {};
-						if (m.Parameters) {
-							for (let i in this) {
-								if (m.Parameters.some(e=>e === i)) {
-									request[i] = this[i];
-								}
-							}
-							for (let i of m.Parameters) {
+						if (mp) {
+							for (let i of mp) {
 								if (a0 instanceof Object && i in a0 || coding) {
 									request[i] = a0[i];
 								}
 							}
-							[...arguments].filter(isValid).slice(0, m.Parameters.length).forEach((a, i) => request[m.Parameters[i]] = a);
+							[...arguments].filter(isValid).slice(0, mp.length).forEach((a, i) => request[mp[i]] = a);
 							for (let i in request) {
 								u += `&${i}=${request[i]}`;
 							}
 						}
 					}
-					var cb = jo[m.Name].filter(e=>!canApplyThis(e));
+					var cb = jo[mn].filter(e=>!canApplyThis(e));
 					for (let i of cb) {
 						try {
 							if (i(request)) {
@@ -135,14 +126,14 @@
 							return;
 						}
 					}
-					cb = [...[...arguments].filter(e=>typeof e ==="function"), ...jo[m.Name].filter(canApplyThis)];
+					cb = [...[...arguments].filter(e=>typeof e ==="function"), ...jo[mn].filter(canApplyThis)];
 					var r = new XMLHttpRequest();
 					r.withCredentials = true;
 					r.open(method, u);
-					r.onabort = () =>this[ing] = false;
+					r.onabort = () =>this.progress[mn]++;
 					r.onerror = r.onload = e=> {
 						events.done.apply(this, [r, ev, m]);
-						this[ing] = false;
+						this.progress[mn]++;
 						var s = r.responseText.trim();
 						if (s.toLowerCase() === "false") {
 							s = false;
@@ -183,13 +174,13 @@
 						}
 					};
 					if (this[obo]) {
-						if (this[ing]) {
+						if (this.progress[nm] % 2) {
 							return;
 						}
-						this[ing] = true;
 					}
 					events.waiting.apply(this, [r, ev]);
 					r.send(data);
+					this.progress[mn]++;
 					return r;
 				};
 			});
