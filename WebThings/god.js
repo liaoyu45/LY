@@ -6,17 +6,59 @@
 			coding: location.href.length === 11,
 			debugging: location.href.indexOf("localhost") > 0
 		};
-
-		this.ConstructorArgs = function (realArgs, formatArgs) {
-			this.constructor.toString().split(/\(|\)/)[1].split(',').filter(e=>e.trim()).map(e=>e.trim()).forEach((e, i) => {
-				var ai = realArgs[i] || formatArgs[i];
-				if (ai instanceof Array && ai.length === 1 && god.modes.coding && typeof ai[0] === "function" && (ai[0] + "").startsWith("function")) {
-					return this[e] = [new ai[0]];
+		function construct(realArgs, formatArgs, d) {
+			if (!construct.ever) {
+				construct.ever = [];
+				construct.getEver = function (f, ee) {
+					var e = construct.ever.filter(e => e.constructor === f)[0];
+					!e && construct.ever.push(e = new f);
+					return e;
+				};
+				construct.R = function (min, max) {
+					return ' '.repeat(Math.floor(Math.random() * Math.abs(max - min) + Math.min(max, min))).split("");
 				}
-				this[e] = ai;
-			});
-		};
+				construct.prepare = [["string", () => Math.random().toString(36).split('.')[1]], ["number", () => Math.random()], ["boolean", () => Math.random() > .5]];
+			}
+			if (!construct.ever.some(e => e.constructor === this.constructor)) {
+				construct.ever.push(this);
+			}
+			this.constructor.toString().split(/\(|\)/)[1].match(/\b[^,]+\b/g).forEach((e, i) => {
+				var fa = formatArgs[i];
+				var ra = realArgs[i];
+				if (fa instanceof Function) {
+					if (!(ra instanceof fa)) {
+						ra = (coding || !d) && construct.getEver(fa);
+					}
+				} else if (fa instanceof Array) {
+					var mm = fa.filter(e => typeof e === "number").map(e => parseInt(e)).filter(e => e > 0);
+					mm = mm.length === 1 && [mm[0], mm[0]] || !mm.length && [4, 8] || mm;
+					var rmm = construct.R(mm[0], mm[1]);
+					var fa0 = fa[0], fa0t = typeof fa0;
+					var isA = ra instanceof Array;
+					switch (fa0t) {
+						case "object":
+						case "symbol":
+							throw `'${fa0t}' type is not supported, value: '${fa0}'`;
+						case "function":
+							ra = coding && [construct.getEver(fa0)] || isA && ra.filter(e => e instanceof fa0) || !d && rmm.map(e => new fa0) || [];
+							var relate = fa.filter(e => typeof e === "string")[0];
+							relate && ra.forEach(e => e[relate] = ko.observable(this));
+							break;
+						default:
+							var prepare = construct.prepare.filter(e => e[0] === fa0t)[0][1];
+							ra = coding && [fa0] || isA && ra.filter(e => typeof e === fa0t) || !d && rmm.map(prepare) || [];
+					}
+				} else if (typeof fa === "number") {
+					ra = coding && fa || !isNaN(ra) && parseFloat(ra) || !d && Math.random() || 0;
+				} else if (typeof fa === "string") {
+					ra = coding && fa || typeof ra === "string" && ra || !d && Math.random().toString(36).split('.')[1] || "";
+				} else if (typeof fa === "boolean") {
 
+				}
+				this[e.trim()] = ko[fa instanceof Array ? "observableArray" : "observable"](ra);
+			});
+		}
+		this.construct = construct;
 		Object.defineProperties(this, {
 			emptyFunction: {
 				get: () =>() => { }
