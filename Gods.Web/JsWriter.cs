@@ -4,7 +4,7 @@ using System.Web.Routing;
 
 namespace Gods.Web {
 	internal class JsWriter : IRouteHandler, IHttpHandler {
-		Func<object> processRequest;
+		private readonly Func<object> processRequest;
 
 		public JsWriter(Func<object> processRequest) {
 			this.processRequest = processRequest;

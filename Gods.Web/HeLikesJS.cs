@@ -56,7 +56,16 @@ namespace Gods.Web {
 			fs.ToList().ForEach(Append);
 			RouteTable.Routes.Add(new Route(nameof(CSharp), new JsWriter(() => {
 				var r = HttpContext.Current.Request;
-				var n = r.RawUrl.Split('?')[1].Split('.')[0];
+				if (r.RawUrl.EndsWith("?") || !r.RawUrl.Contains("?")) {
+					return "Continue with ?[namespace.]*<ClassName>";
+				}
+				var n = r.RawUrl.Split('?')[1].Split('.');
+				var cc = CSharp as JToken;
+				foreach (var item in n) {
+					if ((cc = cc[item]) == null) {
+						return $"{item } does not exists";
+					}
+				}
 				var MakeJavasciptLookLikeCSharp = JsonConvert.SerializeObject(new {
 					Key = his.AjaxKey,
 					Url = r.Url.ToString().Replace(r.RawUrl, string.Empty) + "/" + his.AjaxRoute
@@ -68,7 +77,7 @@ localStorage.setItem(""{nameof(MakeJavasciptLookLikeCSharp)}"", '{MakeJavasciptL
 window.god = window.god || (window.god = {{}});
 god.CSharp = {{}};
 {aliasScript}
-god.CSharp.{n} = ".TrimStart() + CSharp[n];
+god.CSharp.{n.Last()} = ".TrimStart() + cc;
 			})));
 			RouteTable.Routes.Add(new Route(nameof(Javascript), new JsWriter(() =>
 				Javascript[HttpContext.Current.Request.RawUrl.Split('?')[1]])));

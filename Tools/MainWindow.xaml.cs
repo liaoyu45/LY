@@ -30,7 +30,7 @@ namespace Tools {
 			InitializeComponent();
 			Loaded += delegate {
 				IntPtr handle = new System.Windows.Interop.WindowInteropHelper(this).Handle;
-				SetWindowPos(handle, HWND_TOPMOST, 0, 0, 100, 200, SWP_SHOWWINDOW);
+				//SetWindowPos(handle, HWND_TOPMOST, 0, 0, 100, 200, SWP_SHOWWINDOW);
 			};
 			options.Visibility = Visibility.Collapsed;
 			erazor.Visibility = Visibility.Collapsed;
@@ -46,7 +46,6 @@ namespace Tools {
 			open.Click += (s, e) => PickPicture();
 			reset.Click += (s, e) => ClearAndReset();
 			save.Click += (s, e) => Save();
-			larger.Click += (s, e) => WindowState = WindowState.Maximized;
 			handle.Click += (s, e) => handle.Content = Dragging ? "🧔" : "🖐";
 			KeyDown += (s, e) => WindowState = WindowState.Normal;
 		}

@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Tools"
         mc:Ignorable="d"
 		AllowsTransparency="True"
-        Title="MainWindow" Height="350" Width="525"
+        Title="MainWindow" 
+		WindowState="Maximized"
 		WindowStyle="None"
 		ResizeMode="NoResize"
 		BorderThickness="0">
@@ -43,7 +44,6 @@
 				<Button Width="33" Height="33" FontSize="22" Name="open">⏏</Button>
 				<Button Width="33" Height="33" FontSize="22" Name="reset">⏺</Button>
 				<Button Width="33" Height="33" FontSize="22" Name="save">☑</Button>
-				<Button Width="33" Height="33" FontSize="22" Name="larger">🔍</Button>
 				<Button Width="33" Height="33" FontSize="22" Name="handle">🖐</Button>
 			</WrapPanel>
 			<ProgressBar IsHitTestVisible="False" VerticalAlignment="Bottom" Name="frames"></ProgressBar>
