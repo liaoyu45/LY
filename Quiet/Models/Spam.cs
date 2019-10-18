@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace Quiet {
-	public class Spam : Abstracts.ModelBase {
+namespace Quiet.Models {
+	public class Spam : ModelBase {
 		public string Name { get; set; }
 		public string Phone { get; set; }
 		public string Website { get; set; }
+		public string Email { get; set; }
+		public string MoreData { get; set; }
 		public string Description { get; set; }
-		public WarnLevel WarnLevel { get; set; }
-		public int ComplainsCount { get; set; }
 
 		public List<Complain> Complains { get; set; } = new List<Complain>();
 	}

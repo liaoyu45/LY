@@ -33,14 +33,14 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Db.cs" />
     <Compile Include="Models\Complain.cs" />
     <Compile Include="I.cs" />
-    <Compile Include="Abstracts\ModelBase.cs" />
+    <Compile Include="ModelBase.cs" />
     <Compile Include="Models\Spam.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="UserEntrance.cs" />
     <Compile Include="UserMain.cs" />
-    <Compile Include="WarnLevel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -51,7 +51,6 @@
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,9 +1,10 @@
-﻿namespace Quiet {
-	public interface UserMain : I {
+﻿using Quiet.Models;
+
+namespace Quiet {
+	public interface UserMain : Quiet.I {
 		User Info { get; set; }
-		Complain[] Report(string name, string websit, string phone);
-		void Report(string name, string websit, string phone, WarnLevel level);
-		Spam[] DailyQuests();
+		int Report(string name, string websit, string phone, string data, string description);
+		Spam[] RecentlySpams();
 		int Fight(string data);
 	}
 }

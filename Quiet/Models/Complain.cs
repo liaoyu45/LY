@@ -1,5 +1,5 @@
-﻿namespace Quiet {
-	public class Complain : Abstracts.ModelBase {
+﻿namespace Quiet.Models {
+	public class Complain : ModelBase {
 		public int UserId { get; set; }
 		public int SpamId { get; set; }
 		public string Description { get; set; }
