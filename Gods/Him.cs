@@ -7,8 +7,7 @@ using System.Linq;
 using System.Reflection;
 
 namespace Gods {
-
-	public static class Him {
+	public static partial class Him {
 		public readonly static string MicrosoftCompany = nameof(Microsoft).ToLower();
 		public readonly static string MeMySelfAndI = typeof(Him).Assembly.GetCustomAttribute<AssemblyCompanyAttribute>().Company;
 

@@ -2,22 +2,11 @@
 	"user strict";
 	function init() {
 		var coding = location.href.length === 11;
-		var god = window.god || (window.god = {});
 		var ILikeCSharpSoI = "MakeJavasciptLookLikeCSharp";
-		var CSharp = god.CSharp || (god.CSharp = {});
-		var Javascript = god.Javascript || (god.Javascript = {});
+		var CSharp = window.CSharp || (window.CSharp = {});
+		var Javascript = window.Javascript || (window.Javascript = {});
 		var events = {};
-		var settings = (function () {
-			var r = { Key: "Him1344150689", Url: "/Gods" };
-			var s = coding ? null : localStorage.getItem(ILikeCSharpSoI);
-			try {
-				return s ? JSON.parse(s) : r;
-			} catch (e) {
-				console.log("can not be");
-			}
-			localStorage.setItem(ILikeCSharpSoI, JSON.stringify(r));
-			return r;
-		})();
+		var settings = { Key: "Him1344150689", Url: "/Gods" };
 		["waiting", "error", "done"].forEach(e=>events[e] = s=>console.log(s));
 		function isValid(e) {
 			return ["number", "string", "boolean"].indexOf(typeof e) > -1 || [String, Number, Date, Boolean].some(a=>e instanceof a);
@@ -54,21 +43,15 @@
 				},
 				enumerable: true
 			});
-			var obo = Symbol();//one by one
-			CSharp[n] = function (data) {
-				if (data instanceof Boolean) {
-					this[obo] = data;
-					data = arguments[1];
-				} else {
-					this[obo] = true;
-				}
-				this.progress = {};
-				oi.forEach(e=>this.progress[e.Name] = 0);
-			};
+			var self = {};
+			Object.defineProperty(CSharp, n, {
+				get: () =>self
+			});
 			oi.forEach(m=> {
 				var mn = m.Name,
 					mp = m.Parameters,
-					mk = m.Key;
+					mk = m.Key,
+					prrr = false;
 				CSharp[n].prototype[mn] = function () {
 					var ev = [...arguments].filter(e=>e instanceof Event)[0] || window.event;
 					var a0 = arguments.length ? [...arguments].filter(e=>e instanceof HTMLElement)[0] : document.querySelector(`form[data-csharp='${mn}']`);
@@ -128,10 +111,10 @@
 					var r = new XMLHttpRequest();
 					r.withCredentials = true;
 					r.open(method, u);
-					r.onabort = () =>this.progress[mn]++;
+					r.onabort = () =>prrr = false;
 					r.onerror = r.onload = e=> {
-						events.done.apply(this, [r, ev, m]);
-						this.progress[mn]++;
+						events.done.apply(self, [r, ev, m]);
+						prrr = false;
 						var s = r.responseText.trim();
 						if (s.toLowerCase() === "false") {
 							s = false;
@@ -152,18 +135,18 @@
 						var badArgs = [s, ev, m];
 						if ("Return" in m) {
 							if (typeof m["Return"] !== "string" && typeof s === "string" && s) {
-								events.error.apply(this, badArgs);
+								events.error.apply(self, badArgs);
 								return;
 							}
 						} else {
 							if (s) {
-								events.error.apply(this, badArgs);
+								events.error.apply(self, badArgs);
 								return;
 							}
 						}
 						for (var i of cb) {
 							try {
-								if (i.apply(this, [s || m["Return"], request, ev])) {
+								if (i.apply(self, [s || m["Return"], request, ev])) {
 									break;
 								}
 							} catch (e) {
@@ -171,29 +154,22 @@
 							}
 						}
 					};
-					if (this[obo]) {
-						if (this.progress[mn] % 2) {
-							return;
-						}
+					if (prrr) {
+						return;
 					}
-					events.waiting.apply(this, [r, ev]);
+					events.waiting.apply(self, [r, ev]);
 					r.send(data);
-					this.progress[mn]++;
+					prrr = true;
 					return r;
 				};
 			});
 		}
 		Object.getOwnPropertyNames(CSharp).forEach(makeClass);
-		god[ILikeCSharpSoI] = function (globleCallbacks) {
+		CSharp[ILikeCSharpSoI] = function (globleCallbacks) {
 			for (var i in events) {
 				events[i] = [globleCallbacks[i], events[i]].filter(e=>e instanceof Function)[0];
 			}
 		};
-		if (!("exists" in god)) {
-			for (var i in god) {
-				window[i] = god[i];
-			}
-		}
 	}
 	var src = [...document.scripts].filter(e=>e.src.toLowerCase().split('?')[0].endsWith("gods.web.js"))[0].src.split('?')[1];
 	if (src) {

@@ -1,5 +1,8 @@
 ﻿namespace Gods.Web {
 	public class His {
+		/// <summary>
+		/// 
+		/// </summary>
 		public string Implements { get; set; } = "bin";
 		public string Validators { get; set; } = "bin";
 		public string Modules { get; set; } = "bin";

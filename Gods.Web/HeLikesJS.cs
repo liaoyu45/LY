@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -66,18 +65,10 @@ namespace Gods.Web {
 						return $"{item } does not exists";
 					}
 				}
-				var MakeJavasciptLookLikeCSharp = JsonConvert.SerializeObject(new {
-					Key = his.AjaxKey,
-					Url = r.Url.ToString().Replace(r.RawUrl, string.Empty) + "/" + his.AjaxRoute
-				});
-				var aliasScript = r.Url.PathAndQuery.Intersect(".=&").Any() ? string.Empty : "god.exists = true;";
 				System.IO.File.WriteAllText(r.MapPath("log.txt"), r.Path);
 				return $@"
-localStorage.setItem(""{nameof(MakeJavasciptLookLikeCSharp)}"", '{MakeJavasciptLookLikeCSharp}');
-window.god = window.god || (window.god = {{}});
-god.CSharp = {{}};
-{aliasScript}
-god.CSharp.{n.Last()} = ".TrimStart() + cc;
+window.CSharp = window.CSharp || {{}};
+CSharp.{n.Last()} = ".TrimStart() + cc;
 			})));
 			RouteTable.Routes.Add(new Route(nameof(Javascript), new JsWriter(() =>
 				Javascript[HttpContext.Current.Request.RawUrl.Split('?')[1]])));
