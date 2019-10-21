@@ -6,7 +6,6 @@ namespace Quiet.Models {
 		public string Phone { get; set; }
 		public string Website { get; set; }
 		public string Email { get; set; }
-		public string MoreData { get; set; }
 		public string Description { get; set; }
 
 		public List<Complain> Complains { get; set; } = new List<Complain>();
