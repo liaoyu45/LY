@@ -33,22 +33,19 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AOP\TargetMethodAttribute.cs" />
+    <Compile Include="AOP\CallingEventArgs.cs" />
     <Compile Include="AOP\ModelBase.cs" />
     <Compile Include="AOP\AOPAttribute.cs" />
-    <Compile Include="AOP\AOPException.cs" />
-    <Compile Include="AOP\SinkHelper.cs" />
     <Compile Include="AOP\Sink.cs" />
-    <Compile Include="AOP\IValidator.cs" />
     <Compile Include="AOP\Property.cs" />
-    <Compile Include="AOP\ValidatorExtensions.cs" />
-    <Compile Include="AOP\TargetTypeAttribute.cs" />
     <Compile Include="Data\Space.cs" />
     <Compile Include="Data\Space~T.cs" />
     <Compile Include="Linq\Sort.cs" />
     <Compile Include="Logic\IfElse.cs" />
     <Compile Include="Math\FourierTransform.cs" />
     <Compile Include="Module\Loader.cs" />
+    <Compile Include="Safe\SafeCaller.cs" />
+    <Compile Include="Safe\SafeCaller`1.cs" />
     <Compile Include="Siblings\SiblingEventHandler.cs" />
     <Compile Include="Siblings\SiblingsContext.cs" />
     <Compile Include="Siblings\Declarations.cs" />

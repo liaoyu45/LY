@@ -3,37 +3,25 @@ using System.Runtime.Remoting.Messaging;
 
 namespace Gods.AOP {
 	class Sink : IMessageSink {
-		private SinkHelper helper;
+		private ModelBase modelBase;
 
-		public Sink(IMessageSink nextSink) {
-			this.NextSink = nextSink;
-		}
+		public IMessageSink NextSink { get; set; }
 
-		public IMessageSink NextSink { get; }
-
-		public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink) {
-			return null;
-		}
+		public IMessageCtrl AsyncProcessMessage(IMessage msg, IMessageSink replySink) => null;
 
 		public IMessage SyncProcessMessage(IMessage msg) {
 			var method = msg as IMethodCallMessage;
+			var r = NextSink.SyncProcessMessage(msg);
 			if (method.MethodBase.IsConstructor) {
-				return CreateHelper(msg);
+				modelBase = RemotingServices.Unmarshal((r as IMethodReturnMessage).ReturnValue as ObjRef) as ModelBase;
+				try {
+					ModelBase.NewModel?.Invoke(modelBase);
+				} catch {
+				}
+			} else {
+				modelBase.NotifyMethod(method);
 			}
-			if (!method.MethodBase.IsSpecialName) {
-				this.helper?.Analysis(method); 
-			}
-			return this.NextSink.SyncProcessMessage(msg);
-		}
-
-		private IMessage CreateHelper(IMessage msg) {
-			var retMsg = this.NextSink.SyncProcessMessage(msg);
-			var model = RemotingServices.Unmarshal((retMsg as IMethodReturnMessage).ReturnValue as ObjRef);
-			var type = model.GetType();
-			if (ValidatorExtensions.GetValidators(type).GetEnumerator().MoveNext()) {
-				this.helper = new SinkHelper(model as ModelBase);
-			}
-			return retMsg;
+			return r;
 		}
 	}
 }
