@@ -36,8 +36,8 @@ namespace {@namespace} {{
 
 		[System.Runtime.ExceptionServices.HandleProcessCorruptedStateExceptions]
 		[System.Security.SecurityCritical]
-		public override object Call(string method, params object[] {ps}) {{{(debug ?
-			$@"base.Call(""{m.Name}"", {ps});" : string.Empty)}
+		public override object Call(string method, params object[] {ps}) {{{(debug ? $@"
+			base.Call(""{m.Name}"", {ps});" : string.Empty)}
 			try {{
 				{@return}{callerStr}.{m.Name}({args});
 			}} catch (System.Exception e) {{
