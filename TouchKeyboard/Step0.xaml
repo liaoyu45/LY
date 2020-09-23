@@ -47,8 +47,8 @@
 			<RowDefinition/>
 		</Grid.RowDefinitions>
 		<Grid Name="addPanel" Background="{StaticResource bga.01}" Grid.RowSpan="2">
-			<Ellipse Margin="{Binding Margin0}" Width="{Binding Diameter}" Height="{Binding Diameter}"/>
-			<Ellipse Margin="{Binding Margin1}" Width="{Binding Diameter}" Height="{Binding Diameter}"/>
+			<Ellipse HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding Margin0}" Width="{Binding Diameter}" Height="{Binding Diameter}"/>
+			<Ellipse HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding Margin1}" Width="{Binding Diameter}" Height="{Binding Diameter}"/>
 		</Grid>
 		<Grid Name="countPanel" Background="{StaticResource bga.01}" HorizontalAlignment="Left">
 			<ListBox IsHitTestVisible="False" ItemsSource="{Binding Items}" Width="{Binding ElementName=countPanel,Path=ActualHeight}" Height="{Binding ElementName=countPanel,Path=ActualHeight}">
