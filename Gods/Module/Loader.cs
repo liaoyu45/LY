@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Gods.Module {
 	public class Loader : IDisposable {
-		private List<object> allInstances = new List<object>();
+		private readonly List<object> allInstances = new List<object>();
 
 		public List<Type> AllTypes { get; private set; }
 
