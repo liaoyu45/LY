@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quiet", "Quiet\Quiet.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuietForLY", "QuietForLY\QuietForLY.csproj", "{3F7FFBE1-13F3-41CB-9827-FD40C53A8998}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TouchKeyboard", "TouchKeyboard\TouchKeyboard.csproj", "{F300757A-C3CC-4D1E-A5A5-789B7F2F9816}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,10 @@ Global
 		{3F7FFBE1-13F3-41CB-9827-FD40C53A8998}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F7FFBE1-13F3-41CB-9827-FD40C53A8998}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F7FFBE1-13F3-41CB-9827-FD40C53A8998}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F300757A-C3CC-4D1E-A5A5-789B7F2F9816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F300757A-C3CC-4D1E-A5A5-789B7F2F9816}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F300757A-C3CC-4D1E-A5A5-789B7F2F9816}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F300757A-C3CC-4D1E-A5A5-789B7F2F9816}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,6 +125,7 @@ Global
 		{8354747B-28E6-41E4-9C90-D64FF3A3FC9E} = {079B7C3F-F647-4573-896A-8B04871CE47A}
 		{BDF2805B-6382-4761-8046-500B3A3D1E51} = {A9865574-F523-4AF8-A532-D44FE25E4923}
 		{3F7FFBE1-13F3-41CB-9827-FD40C53A8998} = {A9865574-F523-4AF8-A532-D44FE25E4923}
+		{F300757A-C3CC-4D1E-A5A5-789B7F2F9816} = {079B7C3F-F647-4573-896A-8B04871CE47A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C7F2DA8-1273-43FE-A94F-2FF42DDBC8D7}

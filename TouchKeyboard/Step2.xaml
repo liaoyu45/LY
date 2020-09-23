@@ -1,0 +1,11 @@
+﻿<Window x:Class="TouchKeyboard.Step2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		Style="{StaticResource max}"
+		xmlns:m="clr-namespace:TouchKeyboard.Models"
+		DataContext=""
+        Title="Step2" Height="450" Width="800">
+	<Grid>
+		<ListBox IsHitTestVisible="False" Style="{StaticResource fullListBox}"></ListBox>
+	</Grid>
+</Window>
