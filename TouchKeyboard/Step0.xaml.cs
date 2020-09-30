@@ -5,26 +5,17 @@ namespace TouchKeyboard {
 		public Step0() {
 			InitializeComponent();
 			var ctx = Models.Step0Model.DataContext;
-			ctx.KeysCount = Settings.KeysCount;
 			Steps.SlideWindow<Step1>(this, delegate {
 				Settings.Radius = ctx.Radius;
-				Settings.KeysCount = ctx.KeysCount;
 			});
-			System.Windows.Input.InputDevice d = default;
-			Utils.SetDragMove(countPanel, true);
-			countPanel.TouchDown += (s, e) => d ??= e.Device;
-			addPanel.TouchDown += (s, e) => ctx.AttachFinger(e.Device.GetHashCode());
-			TouchLeave += (s, e) => {
-				d = e.Device == d ? null : d;
-				ctx.DettachFinger(e.Device.GetHashCode());
-			};
-			TouchMove += (s, e) => {
-				if (d == e.Device) {
-					ctx.SetKeysCount(countPanel.Margin.Left / (ActualWidth - countPanel.ActualWidth));
-				} else {
-					ctx.SetRadius(e.Device.GetHashCode(), e.GetTouchPoint(this).Position); 
-				}
-			};
+			TouchDown += (s, e) => ctx.AttachFinger(e.Device.GetHashCode());
+			TouchLeave += (s, e) => { ctx.DettachFinger(e.Device.GetHashCode()); };
+			TouchMove += (s, e) => { ctx.SetRadius(e.Device.GetHashCode(), e.GetTouchPoint(this).Position); };
+
+			MouseDown += (s, e) => { ctx.AttachFinger(1); ctx.SetRadius(1, e.GetPosition(this)); };
+			MouseMove += (s, e) => { ctx.AttachFinger(2); ctx.SetRadius(2, e.GetPosition(this)); };
+			MouseUp += delegate { ctx.DettachFinger(2); ctx.DettachFinger(1); };
+			MouseLeave += delegate { ctx.DettachFinger(2); ctx.DettachFinger(1); };
 		}
 	}
 }

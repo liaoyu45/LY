@@ -1,86 +1,11 @@
 ﻿<Window x:Class="TouchKeyboard.Step0"
-		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:models="clr-namespace:TouchKeyboard.Models"
-		xmlns:local="clr-namespace:TouchKeyboard"
-		Style="{StaticResource max}">
-	<Window.Resources>
-		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-		<GradientStopCollection x:Key="GradientStopCollection">
-			<GradientStop Color="White"/>
-			<GradientStop Offset=".03" Color="Black"/>
-			<GradientStop Offset=".2" Color="White"/>
-			<GradientStop Offset=".24" Color="Black"/>
-			<GradientStop Offset=".27" Color="White"/>
-			<GradientStop Offset="1" Color="Black"/>
-		</GradientStopCollection>
-		<VisualBrush x:Key="squar">
-			<VisualBrush.Visual>
-				<Grid Width="2" Height="2">
-					<Path Data="M0,0L1,1 0,2">
-						<Path.Fill>
-							<LinearGradientBrush GradientStops="{StaticResource GradientStopCollection}" EndPoint="1 0"/>
-						</Path.Fill>
-					</Path>
-					<Path Data="M2,0L1,1 0,0">
-						<Path.Fill>
-							<LinearGradientBrush GradientStops="{StaticResource GradientStopCollection}" EndPoint="0 1"/>
-						</Path.Fill>
-					</Path>
-					<Path Data="M2,2L1,1 2,0">
-						<Path.Fill>
-							<LinearGradientBrush GradientStops="{StaticResource GradientStopCollection}" EndPoint="0 0" StartPoint="1 0"/>
-						</Path.Fill>
-					</Path>
-					<Path Data="M0,2L1,1 2,2">
-						<Path.Fill>
-							<LinearGradientBrush GradientStops="{StaticResource GradientStopCollection}" EndPoint="0 0" StartPoint="0 1"/>
-						</Path.Fill>
-					</Path>
-				</Grid>
-			</VisualBrush.Visual>
-		</VisualBrush>
-	</Window.Resources>
-	<Grid DataContext="{x:Static models:Step0Model.DataContext}">
-		<Grid.RowDefinitions>
-			<RowDefinition Height=".618*"/>
-			<RowDefinition/>
-		</Grid.RowDefinitions>
-		<Grid Name="addPanel" Background="{StaticResource bga.01}" Grid.RowSpan="2">
-			<Ellipse HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding Margin0}" Width="{Binding Diameter}" Height="{Binding Diameter}"/>
-			<Ellipse HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding Margin1}" Width="{Binding Diameter}" Height="{Binding Diameter}"/>
-		</Grid>
-		<Grid Name="countPanel" Background="{StaticResource bga.01}" HorizontalAlignment="Left">
-			<ListBox IsHitTestVisible="False" ItemsSource="{Binding Items}" Width="{Binding ElementName=countPanel,Path=ActualHeight}" Height="{Binding ElementName=countPanel,Path=ActualHeight}">
-				<ListBox.ItemsPanel>
-					<ItemsPanelTemplate>
-						<UniformGrid Rows="{Binding Size}" Columns="{Binding Size}"/>
-					</ItemsPanelTemplate>
-				</ListBox.ItemsPanel>
-				<ListBox.ItemContainerStyle>
-					<Style TargetType="ListBoxItem">
-						<Setter Property="Template">
-							<Setter.Value>
-								<ControlTemplate TargetType="ListBoxItem">
-									<Grid Background="{StaticResource squar}">
-										<Grid>
-											<Grid.Background>
-												<VisualBrush>
-													<VisualBrush.Visual>
-														<Grid Width="2" Height="2" Background="{StaticResource bga.01}">
-															<ContentPresenter Visibility="{Binding Visible, Converter={StaticResource BooleanToVisibilityConverter}}" TextBlock.Foreground="White" TextBlock.FontSize="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-														</Grid>
-													</VisualBrush.Visual>
-												</VisualBrush>
-											</Grid.Background>
-										</Grid>
-									</Grid>
-								</ControlTemplate>
-							</Setter.Value>
-						</Setter>
-					</Style>
-				</ListBox.ItemContainerStyle>
-			</ListBox>
-		</Grid>
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="clr-namespace:TouchKeyboard.Models"
+        Style="{StaticResource max}"
+		 DataContext="{x:Static models:Step0Model.DataContext}">
+	<Grid Background="{StaticResource bga.01}">
+		<Ellipse HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding Margin0}" Width="{Binding Diameter}" Height="{Binding Diameter}"/>
+		<Ellipse HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{Binding Margin1}" Width="{Binding Diameter}" Height="{Binding Diameter}"/>
 	</Grid>
 </Window>

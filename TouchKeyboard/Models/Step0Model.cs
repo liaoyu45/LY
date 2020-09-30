@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 
@@ -7,41 +6,20 @@ namespace TouchKeyboard.Models {
 	public class Step0Model : NotifyBase {
 		public static Step0Model DataContext { get; } = new Step0Model();
 
-		private int s = (int)Math.Sqrt(Beard.KeysMin);
-		private int kc;
-		private double r = 44;
-
-		public int Size {
-			get { return s; }
-			set {
-				s = value;
-				Notify(nameof(Size));
-			}
-		}
+		private double radius = 44;
 
 		public double Diameter => Radius * 2;
 
 		public double Radius {
-			get { return r; }
+			get { return radius; }
 			set {
-				r = value;
+				radius = value;
 				Notify(nameof(Radius));
 				Notify(nameof(Diameter));
 			}
 		}
 
-		public int KeysCount {
-			get { return kc; }
-			set {
-				kc = value;
-				Size = (int)Math.Ceiling(Math.Sqrt(kc));
-				foreach (var item in Items) {
-					item.Visible = item.Index == kc - 1;
-				}
-			}
-		}
-
-		public ObservableCollection<Item> Items { get; } = new ObservableCollection<Item>(Enumerable.Range(0, Beard.KeysMax).Select(e => new Item(e)));
+		public ObservableCollection<Item> Items { get; } = new ObservableCollection<Item>();
 
 		public class Item : NotifyBase {
 			private bool visible;
@@ -78,7 +56,9 @@ namespace TouchKeyboard.Models {
 		}
 
 		public void AttachFinger(int id) {
-			(fingers.FirstOrDefault(a => a.Id == 0) ?? new Finger()).Id = id;
+			if (!fingers.Any(a => a.Id == id)) {
+				(fingers.FirstOrDefault(a => a.Id == 0) ?? new Finger()).Id = id;
+			}
 		}
 
 		public void DettachFinger(int id) {
@@ -93,10 +73,6 @@ namespace TouchKeyboard.Models {
 			public int Id { get; set; }
 			public Point Point { get; set; }
 			public Thickness Margin { get; set; }
-		}
-
-		public void SetKeysCount(double addedPercent) {
-			KeysCount = Beard.KeysMin + (int)(addedPercent * Beard.KeysRange);
 		}
 	}
 }

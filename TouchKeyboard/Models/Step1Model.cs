@@ -8,19 +8,15 @@ namespace TouchKeyboard.Models {
 		public System.Collections.ObjectModel.ObservableCollection<Thickness> Points { get; } = new System.Collections.ObjectModel.ObservableCollection<Thickness>();
 
 		public void AttachFinger(int id, Point p) {
-			p = Settings.InsideWorkArea(p);
 			if (Fingers.FirstOrDefault(a => (a.Point - p).Length < Settings.Diameter) is Finger ff) {
 				ff.Id = id;
 				ff.Point = p;
 				return;
 			}
-			if (Fingers.Count < Settings.KeysCount) {
-				Fingers.Add(new Finger { Id = id, Point = p });
-			}
+			Fingers.Add(new Finger { Id = id, Point = p });
 		}
 
 		public void MoveFinger(int id, Point p) {
-			p = Settings.InsideWorkArea(p);
 			if (Fingers.FirstOrDefault(a => a.Id == id) is Finger f) {
 				f.Point = p;
 			}
